@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "model_id": "secchi-placeholder-rf",
+  "model_version": "2026-04-21-mvp",
+  "trained_at": "2026-04-21T02:15:00Z",
+  "feature_order": [
+    "year",
+    "month",
+    "LATITUDE",
+    "LONGITUDE",
+    "AREA_ACRES",
+    "DEPTH_MAX_FEET",
+    "DOMAX",
+    "DOMIN",
+    "MLD",
+    "OXIC",
+    "SCHMIDT",
+    "TPEC",
+    "TPBG",
+    "PH",
+    "COLOR",
+    "CONDUCT",
+    "ALK",
+    "TMAX",
+    "TMIN"
+  ],
+  "artifacts": [
+    {
+      "name": "imputer",
+      "path": "imputer.joblib",
+      "required": true,
+      "sha256": "85efc3ebc762e6fd8ab14a2fe628636b6c05c2c8a3c0674f69941e05c8191d04"
+    },
+    {
+      "name": "predictor",
+      "path": "rf_predictor.joblib",
+      "required": true,
+      "sha256": "d54b7399bc4ddedaf46c6f107cc22b7a4ff862c3e2bb21c3dcb43c59eb0c1859"
+    },
+    {
+      "name": "baseline",
+      "path": "baseline_lakes_summary.json",
+      "required": true,
+      "sha256": "bcd009d7b1aec15decd30cd79ea77754133ecd50c46bcd5ffd64ab467bf17fb9"
+    },
+    {
+      "name": "lake_names",
+      "path": "lake_names.json",
+      "required": true,
+      "sha256": "1795de8f8616f449fbf83b7e055050635166a47e3bb804d454f3b7bb718c110e"
+    }
+  ],
+  "explainability": {
+    "type": "shap_tree",
+    "fallback": "none"
+  },
+  "compatibility": {
+    "python": "3.11",
+    "scikit_learn": "1.6.1"
+  }
+}
