@@ -56,3 +56,13 @@ dashboard/app/backend/venv/
 # Logs
 logs/
 *.log
+
+# Model artifacts
+*.joblib
+*.pkl
+*.pt
+*.onnx
+*.h5
+*.keras
+*.hdf5
+*.h5
