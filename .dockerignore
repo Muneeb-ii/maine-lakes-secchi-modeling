@@ -1,0 +1,12 @@
+.git
+.cursor
+.codex
+venv
+.venv
+__pycache__
+*.pyc
+.DS_Store
+dashboard/app/backend/venv
+dashboard/app/frontend/node_modules
+dashboard/app/frontend/dist
+reports

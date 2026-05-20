@@ -1,0 +1,58 @@
+.DS_Store
+
+# Local IDE and agent state
+.cursor/
+.codex/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.python-version
+.venv/
+venv/
+env/
+
+# Frontend / Node
+node_modules/
+dashboard/app/frontend/node_modules/
+dashboard/app/frontend/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.pnpm-store/
+.yarn/
+.parcel-cache/
+.vite/
+coverage/
+
+# Build and cache artifacts
+build/
+dist/
+.cache/
+.temp/
+.next/
+out/
+.output/
+.svelte-kit/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local plotting/runtime caches
+.mplconfig_*/
+
+# Dashboard local virtualenv
+dashboard/app/backend/venv/
+
+# Logs
+logs/
+*.log
