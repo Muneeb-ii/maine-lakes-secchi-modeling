@@ -1,0 +1,48 @@
+Field,Description,Source Dataset
+MIDAS,Original identifier from Secchi dataset with lake and station info. E.g. 'c3806-1',Secchi Modeling
+STATION,Extracted Station Number. E.g. 1,Derived
+LAKE_NAME,Lake name(s).,MaineLakes Geography
+REGION,"Region assignment for each MIDAS-matched lake record (e.g., Coastal, Inland, Northern).",Class_Final_LakeNames
+SAMPDATE,Date on which the measurement was taken.,Secchi Modeling
+SECCHI,Secchi disk transparency in meters.,Secchi Modeling
+SECCBOT,Did the Secchi disk hit the bottom of the lake?,Secchi Modeling
+TMAX,The maximum temperature in Celcius from a profile on a given date after data cleaning.,Secchi Modeling
+TMIN,The minimum temperature in Celcius from a profile after data cleaning.,Secchi Modeling
+DOMAX,The maximum dissolved oxygen in ppm from a profile after data cleaning.,Secchi Modeling
+DOMIN,The minimum dissolved oxygen in ppm from a profile after data cleaning.,Secchi Modeling
+MLD,Mixed layer depth in meters defined as where RLakeAnalyzer found the thermocline.,Secchi Modeling
+OXIC,Oxic layer depth in meters defined as where DO > 2 ppm.,Secchi Modeling
+SCHMIDT,Schmidt stability in J/m2 computed by RLakeAnalyzer.,Secchi Modeling
+TPEC,Total phosphorus in ppb from bottom grab samples.,Secchi Modeling
+TPBG,Total phosphorus in ppb from epicore samples.,Secchi Modeling
+CHLA,Chlorophyll-a in ppb from epicore samples.,Secchi Modeling
+PH,pH from epicore samples.,Secchi Modeling
+COLOR,Color in SPU from epicroe samples.,Secchi Modeling
+CONDUCT,Specific conductivity in uS/cm.,Secchi Modeling
+ALK,Alkalinity in ppm.,Secchi Modeling
+WATER_QUALITY_STATEMENT,General statement about the lake's water quality,MaineLakes Geography
+TROPHIC_CATEGORY,"Trophic category: OLIGOtrophic, MESOtrophic, EUTROphic",MaineLakes Geography
+AREA_ACRES,"Lake area, in acres",MaineLakes Geography
+PERIMETER_MILES,"Lake perimeter, in miles",MaineLakes Geography
+DEPTH_MEAN_FEET,"Mean lake depth, in feet",MaineLakes Geography
+DEPTH_MAX_FEET,"Maximum lake depth, in feet",MaineLakes Geography
+VOLUME_ACREFEET,"Lake volume, in acre-feet",MaineLakes Geography
+DIRECT_DRAINAGE_AREA_SQ_MILES,"Area of direct-drainage watershed, in square miles.",MaineLakes Geography
+TOTAL_DRAINAGE_AREA_SQ_MILES,"Total drainage area of the lake, in square miles.",MaineLakes Geography
+FLUSHING_RATE_TIMES_YR,Number of times that the water in the lake is (theoretically) replaced (by water inputs) during a year.,MaineLakes Geography
+ELEVATION_FEET,"Surface elevation of the lake, in feet",MaineLakes Geography
+DAM,Dam significance status (1=no functional dam; 2=large increase; 3=small increase),MaineLakes Geography
+LATITUDE,Latitude (approximate lake center),MaineLakes Geography
+LONGITUDE,Longitude (approximate lake center),MaineLakes Geography
+UTM_X,"UTM-X (easting) coordinate - UTM zone 19, NAD 83",MaineLakes Geography
+UTM_Y,"UTM-Y (northing) coordinate - UTM zone 19, NAD 83",MaineLakes Geography
+TOWNS,Town(s) in which the lake occurs,MaineLakes Geography
+COUNTY,County in which the lake occurs,MaineLakes Geography
+DELORME_PAGE,Page in the DeLorme gazeteer on which the lake appears,MaineLakes Geography
+USGS_QUAD24,USGS topographic map on which the lake appears,MaineLakes Geography
+MAJOR_DRAINAGE,Name of the major drainage in which the lake occurs,MaineLakes Geography
+SUB_DRAINAGE,Name of the sub-drainage in which the lake occurs,MaineLakes Geography
+HUC10_NAME,Name of the HUC-10 'watershed',MaineLakes Geography
+HUC10_CODE,Code of the HUC-10 'watershed',MaineLakes Geography
+INVASIVE_PLANT_INFESTATION,Status of known infestations of invasive aquatic plants.,MaineLakes Geography
+FISHERY_MANAGEMENT,Fisheries management type.,MaineLakes Geography
