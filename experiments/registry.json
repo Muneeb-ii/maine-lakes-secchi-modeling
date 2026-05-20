@@ -1,0 +1,379 @@
+{
+  "datasets": [
+    {
+      "path": "data/Merged_Dataset.csv",
+      "role": "canonical_research_data"
+    },
+    {
+      "path": "data/Merged_Dataset_Metadata.csv",
+      "role": "canonical_research_metadata"
+    }
+  ],
+  "experiments": [
+    {
+      "id": "01",
+      "slug": "missingness_overview",
+      "title": "Missingness and data quality overview",
+      "status": "canonical",
+      "script": "experiments/scripts/01_missingness_overview.py",
+      "report": "reports/01_missingness_overview.md",
+      "artifacts": [],
+      "depends_on": []
+    },
+    {
+      "id": "02",
+      "slug": "univariate_distributions",
+      "title": "Univariate feature distributions",
+      "status": "canonical",
+      "script": "experiments/scripts/02_univariate_distributions.py",
+      "report": "reports/02_univariate_distributions.md",
+      "artifacts": [],
+      "depends_on": ["01"]
+    },
+    {
+      "id": "03",
+      "slug": "correlations_and_redundancy",
+      "title": "Correlations and feature redundancy",
+      "status": "canonical",
+      "script": "experiments/scripts/03_correlations_and_redundancy.py",
+      "report": "reports/03_correlations_and_redundancy.md",
+      "artifacts": [],
+      "depends_on": ["02"]
+    },
+    {
+      "id": "04",
+      "slug": "predictor_secchi_relationships",
+      "title": "Predictor-to-secchi relationships",
+      "status": "canonical",
+      "script": "experiments/scripts/04_predictor_secchi_relationships.py",
+      "report": "reports/04_predictor_secchi_relationships.md",
+      "artifacts": [],
+      "depends_on": ["03"]
+    },
+    {
+      "id": "05",
+      "slug": "feature_necessity_and_sets",
+      "title": "Feature necessity and candidate sets",
+      "status": "canonical",
+      "script": "experiments/scripts/05_feature_necessity_and_sets.py",
+      "report": "reports/05_feature_necessity_and_sets.md",
+      "artifacts": [],
+      "depends_on": ["03", "04"]
+    },
+    {
+      "id": "06",
+      "slug": "temporal_trends",
+      "title": "Temporal trends and seasonality",
+      "status": "canonical",
+      "script": "experiments/scripts/06_temporal_trends.py",
+      "report": "reports/06_temporal_trends.md",
+      "artifacts": [],
+      "depends_on": ["01"]
+    },
+    {
+      "id": "07",
+      "slug": "spatial_variance_midas",
+      "title": "Lake-level spatial variance",
+      "status": "canonical",
+      "script": "experiments/scripts/07_spatial_variance_midas.py",
+      "report": "reports/07_spatial_variance_midas.md",
+      "artifacts": [],
+      "depends_on": ["01"]
+    },
+    {
+      "id": "08",
+      "slug": "nonlinear_and_interactions",
+      "title": "Nonlinear structure and interactions",
+      "status": "canonical",
+      "script": "experiments/scripts/08_nonlinear_and_interactions.py",
+      "report": "reports/08_nonlinear_and_interactions.md",
+      "artifacts": [],
+      "depends_on": ["03", "04", "05"]
+    },
+    {
+      "id": "09",
+      "slug": "deep_vs_shallow",
+      "title": "Deep versus shallow lake structure",
+      "status": "canonical",
+      "script": "experiments/scripts/09_deep_vs_shallow.py",
+      "report": "reports/09_deep_vs_shallow.md",
+      "artifacts": [
+        "reports/09_depth_histogram.png",
+        "reports/09_secchi_boxplot.png"
+      ],
+      "depends_on": ["07"]
+    },
+    {
+      "id": "10",
+      "slug": "baseline_model",
+      "title": "Baseline predictive model",
+      "status": "canonical",
+      "script": "experiments/scripts/10_baseline_model.py",
+      "report": "reports/10_baseline_model.md",
+      "artifacts": [
+        "reports/10_baseline_feature_importance.png"
+      ],
+      "depends_on": ["05", "06", "08"]
+    },
+    {
+      "id": "11",
+      "slug": "divergent_depth_models",
+      "title": "Divergent depth-specific models",
+      "status": "canonical",
+      "script": "experiments/scripts/11_divergent_depth_models.py",
+      "report": "reports/11_divergent_depth_models.md",
+      "artifacts": [
+        "reports/11_divergent_feature_importance.png"
+      ],
+      "depends_on": ["09", "10"]
+    },
+    {
+      "id": "12",
+      "slug": "lake_type_models",
+      "title": "Lake type and trophic state models",
+      "status": "canonical",
+      "script": "experiments/scripts/12_lake_type_models.py",
+      "report": "reports/12_lake_type_models.md",
+      "artifacts": [
+        "reports/12_lake_type_feature_importance.png",
+        "reports/12_secchi_boxplot.png"
+      ],
+      "depends_on": ["09", "10"]
+    },
+    {
+      "id": "13",
+      "slug": "ecological_class_impact",
+      "title": "Ecological class versus geography",
+      "status": "canonical",
+      "script": "experiments/scripts/13_ecological_class_impact.py",
+      "report": "reports/13_ecological_class_impact.md",
+      "artifacts": [
+        "reports/13_feature_importance_mod_d.png"
+      ],
+      "depends_on": ["11", "12"]
+    },
+    {
+      "id": "14",
+      "slug": "lake_generalization",
+      "title": "Lake generalization under leave-one-lake-out",
+      "status": "canonical",
+      "script": "experiments/scripts/14_lake_generalization.py",
+      "report": "reports/14_lake_generalization.md",
+      "artifacts": [
+        "reports/14_lolo_generalization.png"
+      ],
+      "depends_on": ["10", "13"]
+    },
+    {
+      "id": "15",
+      "slug": "chemical_features",
+      "title": "Chemical feature expansion",
+      "status": "canonical",
+      "script": "experiments/scripts/15_chemical_features.py",
+      "report": "reports/15_chemical_features.md",
+      "artifacts": [
+        "reports/15_feature_importance.png"
+      ],
+      "depends_on": ["10", "14"]
+    },
+    {
+      "id": "16",
+      "slug": "expanding_window",
+      "title": "Expanding window temporal validation",
+      "status": "canonical",
+      "script": "experiments/scripts/16_expanding_window.py",
+      "report": "reports/16_expanding_window.md",
+      "artifacts": [
+        "reports/16_expanding_window_r2.png"
+      ],
+      "depends_on": ["10", "15"]
+    },
+    {
+      "id": "17",
+      "slug": "backward_expanding",
+      "title": "Backward expanding validation",
+      "status": "canonical",
+      "script": "experiments/scripts/17_backward_expanding.py",
+      "report": "reports/17_backward_expanding.md",
+      "artifacts": [
+        "reports/17_backward_expanding_r2.png"
+      ],
+      "depends_on": ["16"]
+    },
+    {
+      "id": "18",
+      "slug": "local_vs_global",
+      "title": "Local versus global modeling",
+      "status": "canonical",
+      "script": "experiments/scripts/18_local_vs_global.py",
+      "report": "reports/18_local_vs_global.md",
+      "artifacts": [
+        "reports/18_local_vs_global_mae.png",
+        "reports/18_local_vs_global_r2.png"
+      ],
+      "depends_on": ["14", "16", "17"]
+    },
+    {
+      "id": "19",
+      "slug": "spatial_autocorrelation",
+      "title": "Spatial autocorrelation and neighborhood features",
+      "status": "canonical",
+      "script": "experiments/scripts/19_spatial_autocorrelation.py",
+      "report": "reports/19_spatial_autocorrelation.md",
+      "artifacts": [
+        "reports/19_spatial_autocorrelation_importances.png"
+      ],
+      "depends_on": ["18"]
+    },
+    {
+      "id": "20",
+      "slug": "xgboost_chemical",
+      "title": "XGBoost with chemical feature support",
+      "status": "canonical",
+      "script": "experiments/scripts/20_xgboost_chemical.py",
+      "report": "reports/20_xgboost_chemical.md",
+      "artifacts": [
+        "reports/20_xgboost_importances.png"
+      ],
+      "depends_on": ["15", "18", "19"]
+    },
+    {
+      "id": "21",
+      "slug": "lightgbm_chemical",
+      "title": "LightGBM with chemical feature support",
+      "status": "canonical",
+      "script": "experiments/scripts/21_lightgbm_chemical.py",
+      "report": "reports/21_lightgbm_chemical.md",
+      "artifacts": [
+        "reports/21_lightgbm_importances.png"
+      ],
+      "depends_on": ["15", "18", "19"]
+    },
+    {
+      "id": "22",
+      "slug": "missforest_chrono",
+      "title": "MissForest chronological baseline",
+      "status": "canonical",
+      "script": "experiments/scripts/22_missforest_chrono.py",
+      "report": "reports/22_missforest_chrono.md",
+      "artifacts": [
+        "reports/22_missforest_importances.png"
+      ],
+      "depends_on": ["15", "18", "19"]
+    },
+    {
+      "id": "23",
+      "slug": "missforest_lolo",
+      "title": "MissForest leave-one-lake-out generalization",
+      "status": "canonical",
+      "script": "experiments/scripts/23_missforest_lolo.py",
+      "report": "reports/23_missforest_lolo.md",
+      "artifacts": [],
+      "depends_on": ["22"]
+    },
+    {
+      "id": "24",
+      "slug": "missforest_elimination",
+      "title": "MissForest backward elimination",
+      "status": "canonical",
+      "script": "experiments/scripts/24_missforest_elimination.py",
+      "report": "reports/24_missforest_elimination.md",
+      "artifacts": [
+        "reports/24_missforest_elimination_curve.png"
+      ],
+      "depends_on": ["22"]
+    },
+    {
+      "id": "25",
+      "slug": "minimum_sample_threshold",
+      "title": "Minimum sample threshold sensitivity",
+      "status": "canonical",
+      "script": "experiments/scripts/25_minimum_sample_threshold.py",
+      "report": "reports/25_minimum_sample_threshold.md",
+      "artifacts": [
+        "reports/25_minimum_sample_threshold.png"
+      ],
+      "depends_on": ["22", "23", "24"]
+    },
+    {
+      "id": "26",
+      "slug": "missforest_chrono_t100",
+      "title": "Dense-lake MissForest benchmark",
+      "status": "canonical",
+      "script": "experiments/scripts/26_missforest_chrono_t100.py",
+      "report": "reports/26_missforest_chrono_t100.md",
+      "artifacts": [
+        "reports/26_missforest_t100_elimination_curve.png",
+        "reports/26_missforest_t100_importances.png"
+      ],
+      "depends_on": ["22", "24", "25"]
+    },
+    {
+      "id": "27",
+      "slug": "mlp_chrono",
+      "title": "MLP chronological baseline",
+      "status": "canonical",
+      "script": "experiments/scripts/27_mlp_chrono.py",
+      "report": "reports/27_mlp_chrono.md",
+      "artifacts": [
+        "reports/27_mlp_training_loss.png"
+      ],
+      "depends_on": ["22", "26"]
+    },
+    {
+      "id": "28",
+      "slug": "tabnet_chrono",
+      "title": "TabNet chronological baseline",
+      "status": "canonical",
+      "script": "experiments/scripts/28_tabnet_chrono.py",
+      "report": "reports/28_tabnet_chrono.md",
+      "artifacts": [
+        "reports/28_tabnet_importances.png",
+        "reports/28_tabnet_training_loss.png"
+      ],
+      "depends_on": ["22", "26"]
+    },
+    {
+      "id": "29",
+      "slug": "ft_transformer_chrono",
+      "title": "FT-Transformer chronological baseline",
+      "status": "canonical",
+      "script": "experiments/scripts/29_ft_transformer_chrono.py",
+      "report": "reports/29_ft_transformer_chrono.md",
+      "artifacts": [
+        "reports/29_ft_transformer_training_loss.png"
+      ],
+      "depends_on": ["22", "26"]
+    },
+    {
+      "id": "30",
+      "slug": "region_coastal_missforest",
+      "title": "Regional MissForest benchmark: coastal",
+      "status": "canonical",
+      "script": "experiments/scripts/30_region_coastal_missforest.py",
+      "report": "reports/30_region_coastal_missforest.md",
+      "artifacts": [],
+      "depends_on": ["22", "23", "26"]
+    },
+    {
+      "id": "31",
+      "slug": "region_inland_missforest",
+      "title": "Regional MissForest benchmark: inland",
+      "status": "canonical",
+      "script": "experiments/scripts/31_region_inland_missforest.py",
+      "report": "reports/31_region_inland_missforest.md",
+      "artifacts": [],
+      "depends_on": ["22", "23", "26"]
+    },
+    {
+      "id": "32",
+      "slug": "region_northern_missforest",
+      "title": "Regional MissForest benchmark: northern",
+      "status": "canonical",
+      "script": "experiments/scripts/32_region_northern_missforest.py",
+      "report": "reports/32_region_northern_missforest.md",
+      "artifacts": [],
+      "depends_on": ["22", "23", "26"]
+    }
+  ]
+}
