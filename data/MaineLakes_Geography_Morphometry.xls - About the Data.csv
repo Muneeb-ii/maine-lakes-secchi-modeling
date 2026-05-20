@@ -1,0 +1,45 @@
+Title,Maine Lakes: Geographic & Morphometric Information
+Data Provider,"Sources: MDEP, MDIFW, GIS coverages.  Compilers: P. Vaux, J. Entwood"
+Provider Contact,
+Provider Website,
+Data Compiler for KB,"Vaux, P. and J. Entwood"
+Date uploaded to KB,December 2010
+Date of most recent revision,1/24/2014 (Name revision for MIDAS 1888 and perimeter revision for MIDAS 5400)
+First Year in Data Set,N/A
+Most Recent Year in Data Set,N/A
+# Years with Data,N/A
+# Sites Sampled,6044 lakes
+"Spatial Data (projection & datum, if applicable)",UTM zone 19. NAD 83
+Abstract,"This data set contains morphometric and geographical information for Maine lakes. Also included is the Maine Department of Environmental Protection (MDEP) trophic state assessment for each surveyed lake. Most data are from MDEP and Maine Department of Inland Fisheries & Wildlife (MDIFW) data files. Lake areas, perimeters and elevations were derived from GIS coverages. Some data are unavailable for some lakes. The data set also contains (a) a general statement about lake water quality; (b) status of documented infestations of invasive aquatic plants; and (c) fisheries management type."
+"NOTE: This is a multiple worksheet Excel file. You are currently viewing About the Data. Select the DATA tab at the bottom of this window to view the data worksheet. The individual fields in the DATA worksheet are described below, in the Data Fields section of this page. For assistance contact: contactus@lakesofmaine.org or 207-783-7733.",
+,
+Data Fields:,Field Description:
+Lake Code (MIDAS),MIDAS lake code (text format)
+Lake Code (numeric),MIDAS lake code (numeric format)
+Lake Name,Lake name(s). Note that alternate names are included in parentheses.
+Area (acres),"Lake area, in acres"
+Perimeter (miles),"Lake perimeter, in miles"
+Depth_Mean (feet),"Mean lake depth, in feet"
+Depth_Max (feet),"Maximum lake depth, in feet"
+Volume (acrefeet),"Lake volume, in acre-feet"
+Direct Drainage Area (sq miles),"Area of direct-drainage watershed, in square miles. The direct-drainage watershed is the land that drains directly into the lake and its tributaries; this excludes sections of the watershed that drain into upstream lakes."
+Total Drainage Area (sq miles),"Total drainage area of the lake, in square miles. This area includes sections of the watershed that drain into lakes and ponds upstream of the subject lake."
+Flushing Rate (times/yr),Number of times that the water in the lake is (theoretically) replaced (by water inputs) during a year.
+Trophic Category,"Trophic category: OLIGOtrophic (low productivity), MESOtrophic (moderate productivity), EUTROphic (high productivity)"
+Dam,1= no functional dam present; 2 = dam has increased lake surface area by >50% of undammed situtation; 3 = dam has increased lake area by <50% of undammed situtation.  Data from MDIFW Lake Survey file.  
+Elevation (feet),"Surface elevation of the lake, in feet"
+Major Drainage,Name of the major drainage in which the lake occurs
+Sub Drainage,Name of the sub-drainage in which the lake occurs
+HUC10 Name,Name of the HUC-10 'watershed'
+HUC10 Code,Code of the HUC-10 'watershed'
+USGS Quad24,USGS topographic map on which the lake appears
+DeLorme Page,Page in the DeLorme gazeteer on which the lake appears
+Town(s),Town(s) in which the lake occurs
+County,County in which the lake occurs
+UTM_X,"UTM-X (easting) coordinate - UTM zone 19, NAD 83 (approximate lake center)"
+UTM_Y,"UTM-Y (northing) coordinate - UTM zone 19, NAD 83 (approximate lake center)"
+Latitude,Latitude (approximate lake center)
+Longitude,Longitude (approximate lake center)
+Water Quality Statement,General (& brief) statement about the lake's water quality - based on DEP's assessment of multiple data parameters. Statement is not available for many lakes.
+Invasive Plant Infestation,"Status of know infestations of invasive aquatic plants. Note that the status ""none known"" applies to lakes that (a) have been surveyed and no invasives documented, and (b) lake that  have not been surveyed. The majority of Maine lakes have not been surveyed as of 2011."
+Fishery Management,Fisheries management type. These data are from Maine Department of Inland Fisheries & Wildlife (obtained 2007).

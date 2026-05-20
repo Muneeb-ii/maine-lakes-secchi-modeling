@@ -1,0 +1,29 @@
+MIDAS,"Unique lake identifier assigned by the state + station number. There can be multiple sampling stations in a given lake and often they are located in distincit basins, so it makes sense to treat them separately for now."
+SAMPDATE,Date on which the measurement was taken.
+SECCHI,Secchi disk transparency in meters. There are sometimes multiple readings on the same day.
+SECCBOT,Did the Secchi disk hit the bottom of the lake? 
+TMAX,The maximum temperature in Celcius from a profile on a given date after data cleaning. See notes below about cleaning procedure (also documented in R code).
+TMIN,The minimum temperature in Celcius from a profile after data cleaning. See notes below about cleaning procedure (also documented in R code).
+DOMAX,The maximum dissolved oxygen in ppm from a profile after data cleaning. See notes below about cleaning procedure (also documented in R code).
+DOMIN,The minimum dissolved oxygen in ppm from a profile after data cleaning. See notes below about cleaning procedure (also documented in R code).
+MLD,"Mixed layer depth in meters, defined as where RLakeAnalyzer found the thermocline. Derived from cleaned temperature profile."
+OXIC,Oxic layer depth in meters defined as where DO > 2 ppm. See notes below about QC.
+SCHMIDT,Schmidt stability in J/m2 computed by RLakeAnalyzer. Derived from cleaned temperature profile.
+TPEC,Total phosphorus in ppb from bottom grab samples. Data points from the same day were averaged.
+TPBG,Total phosphorus in ppb from epicore samples. Data points from the same day were averaged.
+CHLA,Chlorophyll-a in ppb from epicore samples. Data points from the same day were averaged.
+PH,pH from epicore samples. Data points from the same day were averaged.
+COLOR,Color in SPU from epicroe samples. Data points from the same day were averaged.
+CONDUCT,Specific conductivity in uS/cm. Data points from the same day were averaged.
+ALK,Alkalinity in ppm. Data points from the same day were averaged.
+,
+QC on Temperature and Dissolved Oxygen Profiles,
+"1. All data below 1 m was removed. Even if correctly acquired, this data is often more reflective of diurnal variations as opposed to the qualities of the surface layer. Often these data points are suspect because the sensor has not acclimated to the water sufficiently.",
+"2. A density profile was calculated from each temperature profile. If the density profile was not stable, then the profile was removed, as this is a physical impossibility and is the result of an error in recording or transcription, or the result of a sensor that would not stabilize.",
+3. All Schmidt stabilities between -1e-5 through 1e-5 were set to 0. Review of the profiles with these numbers showed they were all isothermal and thus should be 0 exactly.,
+4. All data rows without a valid Schmidt stability were dropped because it indicates there is no bathymetry data for the lake. Note: This can be revisited if we decide to use a stratification metric that does not rely on bathymetry.,
+"5. For each profile, the maximum depth of the profile was extracted. ",
+"6. If no thermocline was found by RLakeAnalyzer, then the MLD was set to the maximum depth of the profile, as the lake is considered well mixed.",
+"7. If the oxic depth is NA, this indicates that the entire water column was above 2 ppm, so OXIC was set to the maximum depth of the profile.",
+"8. But if the oxic depth was NA because there was no good DO data, then it was reverted back to NA.",
+"9. If the oxic depth is less than the mixed layer depth, then DOMAX, DOMIN, and OXIC were all set to NA. This often indicates an error in recording or transcription as only in very peculiar circumstances would you have DO < 2 ppm in the mixed layer.",
