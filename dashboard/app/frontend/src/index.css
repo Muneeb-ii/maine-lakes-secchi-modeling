@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #040712;
+    --bg-secondary: #0b1220;
+    --panel-bg: rgba(11, 18, 32, 0.7);
+    --panel-border: rgba(56, 189, 248, 0.2);
+    --text-primary: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #22d3ee;
+    --radius-lg: 1rem;
+    --shadow-soft: 0 20px 50px rgba(2, 6, 23, 0.4);
+    --motion-fast: 180ms;
+    --motion-normal: 260ms;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    background: radial-gradient(120% 120% at 50% 0%, #0a1429 0%, var(--bg-primary) 60%);
+  }
+}
+
+@layer components {
+  .dashboard-bg {
+    background: radial-gradient(120% 120% at 50% 0%, #0a1429 0%, var(--bg-primary) 60%);
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .gradient-title {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-blue-300 to-violet-300;
+  }
+
+  .action-button {
+    @apply inline-flex items-center gap-2 px-4 h-10 rounded-lg border text-sm font-medium transition;
+    border-color: rgba(71, 85, 105, 0.7);
+    background: rgba(15, 23, 42, 0.72);
+    color: #dbeafe;
+  }
+
+  .action-button:hover:not(:disabled) {
+    border-color: rgba(34, 211, 238, 0.6);
+    background: rgba(8, 51, 68, 0.4);
+  }
+
+  .action-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .info-card {
+    @apply rounded-lg border px-3 py-2;
+    border-color: rgba(71, 85, 105, 0.65);
+    background: rgba(15, 23, 42, 0.72);
+  }
+
+  .info-label {
+    @apply text-[11px] uppercase tracking-[0.12em] text-slate-500;
+  }
+
+  .info-value {
+    @apply text-sm mt-1 text-slate-200 font-medium;
+  }
+
+  .slider-group {
+    @apply pb-4 border-b border-slate-800/70 last:border-b-0 last:pb-0;
+  }
+}
+
+/* Custom Scrollbar for sleek UI */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Base slider styling for webkit */
+input[type=range] {
+  -webkit-appearance: none;
+  background: transparent;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  margin-top: -6px;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.5);
+  transition: transform var(--motion-fast) ease;
+}
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: rgba(148, 163, 184, 0.28);
+  border-radius: 2px;
+}
