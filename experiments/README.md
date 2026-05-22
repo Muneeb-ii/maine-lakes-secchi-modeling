@@ -57,6 +57,7 @@ This folder is the center of the repository. The experiment sequence is preserve
 - `31` Regional MissForest benchmark: inland. Output: `reports/31_region_inland_missforest.md`. This repeated the regional framing for inland lakes.
 - `32` Regional MissForest benchmark: northern. Output: `reports/32_region_northern_missforest.md`. This completed the regional comparison set.
 - `33` CatBoost with chemical feature support. Output: `reports/33_catboost_chemical.md`. This adds a third boosted-tree family to the native-missingness chemistry comparison.
+- `34` Chronological hyperparameter tuning for CatBoost. Output: `reports/34_catboost_tuned.md`. This tests how much additional performance can be gained by tuning CatBoost without adding imputation.
 
 ## How This Feeds the Dashboard
 

@@ -484,6 +484,21 @@
         "18",
         "19"
       ]
+    },
+    {
+      "id": "34",
+      "slug": "catboost_tuned",
+      "title": "Chronological hyperparameter tuning for CatBoost",
+      "status": "canonical",
+      "script": "experiments/scripts/34_catboost_tuned.py",
+      "report": "reports/34_catboost_tuned.md",
+      "artifacts": [
+        "reports/34_catboost_tuned_importances.png",
+        "reports/34_catboost_tuning_search.png"
+      ],
+      "depends_on": [
+        "33"
+      ]
     }
   ]
 }
