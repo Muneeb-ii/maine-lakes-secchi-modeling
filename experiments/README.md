@@ -59,6 +59,7 @@ This folder is the center of the repository. The experiment sequence is preserve
 - `33` CatBoost with chemical feature support. Output: `reports/33_catboost_chemical.md`. This adds a third boosted-tree family to the native-missingness chemistry comparison.
 - `34` Chronological hyperparameter tuning for CatBoost. Output: `reports/34_catboost_tuned.md`. This tests how much additional performance can be gained by tuning CatBoost without adding imputation.
 - `35` Tuned CatBoost leave-one-lake-out evaluation. Output: `reports/35_catboost_tuned_lolo.md`. This applies the tuned CatBoost model to the original seeded 10-lake comparison set and to a reproducible random 100-lake LOLO sample.
+- `36` Numerical chemistry imputation benchmark. Output: `reports/36_imputation_benchmark.md`. This compares multiple imputers on masked observed chemistry values, with `CHLA` included only for imputation-quality evaluation before any downstream CatBoost comparison.
 
 ## How This Feeds the Dashboard
 

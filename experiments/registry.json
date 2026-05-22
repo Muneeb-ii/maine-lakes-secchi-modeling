@@ -513,6 +513,23 @@
       "depends_on": [
         "34"
       ]
+    },
+    {
+      "id": "36",
+      "slug": "imputation_benchmark",
+      "title": "Numerical chemistry imputation benchmark",
+      "status": "canonical",
+      "script": "experiments/scripts/36_imputation_benchmark.py",
+      "report": "reports/36_imputation_benchmark.md",
+      "artifacts": [
+        "reports/36_imputation_overall_rmse.png",
+        "reports/36_imputation_feature_rmse_heatmap.png"
+      ],
+      "depends_on": [
+        "22",
+        "34",
+        "35"
+      ]
     }
   ]
 }
