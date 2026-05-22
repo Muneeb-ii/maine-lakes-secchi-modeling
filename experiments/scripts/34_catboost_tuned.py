@@ -48,7 +48,7 @@ def main():
     df["year"] = df["SAMPDATE"].dt.year
     df["month"] = df["SAMPDATE"].dt.month
     base_features = ["year", "month"] + num_cols
-    chem_features = ["DOMAX", "DOMIN", "TPEC", "TPBG", "CHLA", "PH", "COLOR", "CONDUCT", "ALK"]
+    chem_features = ["DOMAX", "DOMIN", "TPEC", "TPBG", "PH", "COLOR", "CONDUCT", "ALK"]
     valid_chems = [c for c in chem_features if c in df.columns]
 
     subset_cols = [target, "SAMPDATE", "MIDAS"] + num_cols
@@ -98,7 +98,7 @@ def main():
             "eval_metric": "RMSE",
             "verbose": False,
             "allow_writing_files": False,
-            "thread_count": 1,
+            "thread_count": -1,
         }
         model = CatBoostRegressor(**params)
         model.fit(X_tune_train, y_tune_train)
@@ -130,7 +130,7 @@ def main():
         "eval_metric": "RMSE",
         "verbose": False,
         "allow_writing_files": False,
-        "thread_count": 1,
+        "thread_count": -1,
     }
 
     print("\nRefitting tuned CatBoost on the full chronological training window...")
@@ -162,13 +162,13 @@ def main():
     sections = [
         (
             'What We Did (Methodology)',
-            'We kept the same native-missingness CatBoost setup introduced in Experiment 33, but added a chronological hyperparameter search inside the training window. '
+            'We kept the same native-missingness CatBoost setup introduced in Experiment 33, but excluded CHLA from the chemistry inputs before tuning because it provides an overly direct proxy for water clarity. We then added a chronological hyperparameter search inside the training window. '
             'The first 80% of rows remained the outer training slice and the latest 20% remained the untouched test slice. '
             'Inside the outer training slice, we used an 80/20 inner chronological split for tuning so parameter selection did not use the final test period.'
         ),
         (
             'Hyperparameter Search Setup',
-            f"Feature set: {features}\n\n"
+            f"Feature set (CHLA excluded): {features}\n\n"
             'Search grid: '
             f"iterations={param_grid['iterations']}, depth={param_grid['depth']}, learning_rate={param_grid['learning_rate']}, l2_leaf_reg={param_grid['l2_leaf_reg']}\n\n"
             f"Total combinations evaluated: {len(combos)}\n\n"

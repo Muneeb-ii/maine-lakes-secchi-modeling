@@ -47,7 +47,7 @@ def main():
     df["month"] = df["SAMPDATE"].dt.month
     base_features = ["year", "month"] + num_cols
 
-    chem_features = ["DOMAX", "DOMIN", "TPEC", "TPBG", "CHLA", "PH", "COLOR", "CONDUCT", "ALK"]
+    chem_features = ["DOMAX", "DOMIN", "TPEC", "TPBG", "PH", "COLOR", "CONDUCT", "ALK"]
     valid_chems = [c for c in chem_features if c in df.columns]
 
     subset_cols = [target, "SAMPDATE", "MIDAS"] + num_cols
@@ -80,7 +80,7 @@ def main():
         loss_function="RMSE",
         verbose=False,
         allow_writing_files=False,
-        thread_count=1,
+        thread_count=-1,
     )
     model.fit(X_train, y_train)
 
@@ -127,7 +127,7 @@ def main():
                 loss_function="RMSE",
                 verbose=False,
                 allow_writing_files=False,
-                thread_count=1,
+                thread_count=-1,
             )
             cat_lolo.fit(train_lake_df[features], train_lake_df[target])
 
@@ -165,10 +165,10 @@ def main():
     sections = [
         (
             "What We Did (Methodology)",
-            "Following Experiments 20 and 21, we deployed **CatBoost** on the identical chemistry-enriched setup. "
+            "We deployed **CatBoost** on the same chemistry set used in the later non-CHLA experiments. "
             "Like the other boosted-tree baselines, CatBoost can retain rows with missing chemistry instead of forcing "
             "global imputation or row deletion. This lets us preserve the same broad geographic-temporal training base "
-            "while still testing whether chemistry helps when present.\n\n"
+            "while still testing whether chemistry helps when present, while explicitly excluding `CHLA`.\n\n"
             f"We loaded the baseline geographic limits and the chemical subset: `{valid_chems}`. By preserving native missingness, "
             f"CatBoost trained on **{len(model_df):,}** usable rows."
         ),
