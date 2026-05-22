@@ -58,6 +58,7 @@ This folder is the center of the repository. The experiment sequence is preserve
 - `32` Regional MissForest benchmark: northern. Output: `reports/32_region_northern_missforest.md`. This completed the regional comparison set.
 - `33` CatBoost with chemical feature support. Output: `reports/33_catboost_chemical.md`. This adds a third boosted-tree family to the native-missingness chemistry comparison.
 - `34` Chronological hyperparameter tuning for CatBoost. Output: `reports/34_catboost_tuned.md`. This tests how much additional performance can be gained by tuning CatBoost without adding imputation.
+- `35` Tuned CatBoost leave-one-lake-out evaluation. Output: `reports/35_catboost_tuned_lolo.md`. This applies the tuned CatBoost model to the original seeded 10-lake comparison set and to a reproducible random 100-lake LOLO sample.
 
 ## How This Feeds the Dashboard
 

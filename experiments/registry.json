@@ -499,6 +499,20 @@
       "depends_on": [
         "33"
       ]
+    },
+    {
+      "id": "35",
+      "slug": "catboost_tuned_lolo",
+      "title": "Tuned CatBoost leave-one-lake-out evaluation",
+      "status": "canonical",
+      "script": "experiments/scripts/35_catboost_tuned_lolo.py",
+      "report": "reports/35_catboost_tuned_lolo.md",
+      "artifacts": [
+        "reports/35_catboost_tuned_lolo_r2.png"
+      ],
+      "depends_on": [
+        "34"
+      ]
     }
   ]
 }
