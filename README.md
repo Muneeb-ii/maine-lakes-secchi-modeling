@@ -1,6 +1,6 @@
-# Lake Secchi Research and Dashboard
+# Maine Lakes Secchi Depth
 
-This repository is organized around one core task: understand the lake monitoring dataset, iterate on Secchi-depth modeling experiments, and keep a deployment-ready dashboard layer that can consume the final model artifacts once the research path is settled.
+This repository is used for to iterate on Secchi-depth modeling experiments, and keep a deployment-ready dashboard layer that can consume the final model artifacts once the research path is settled.
 
 ## Repository Map
 

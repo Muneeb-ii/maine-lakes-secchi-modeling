@@ -28,7 +28,9 @@
       "script": "experiments/scripts/02_univariate_distributions.py",
       "report": "reports/02_univariate_distributions.md",
       "artifacts": [],
-      "depends_on": ["01"]
+      "depends_on": [
+        "01"
+      ]
     },
     {
       "id": "03",
@@ -38,7 +40,9 @@
       "script": "experiments/scripts/03_correlations_and_redundancy.py",
       "report": "reports/03_correlations_and_redundancy.md",
       "artifacts": [],
-      "depends_on": ["02"]
+      "depends_on": [
+        "02"
+      ]
     },
     {
       "id": "04",
@@ -48,7 +52,9 @@
       "script": "experiments/scripts/04_predictor_secchi_relationships.py",
       "report": "reports/04_predictor_secchi_relationships.md",
       "artifacts": [],
-      "depends_on": ["03"]
+      "depends_on": [
+        "03"
+      ]
     },
     {
       "id": "05",
@@ -58,7 +64,10 @@
       "script": "experiments/scripts/05_feature_necessity_and_sets.py",
       "report": "reports/05_feature_necessity_and_sets.md",
       "artifacts": [],
-      "depends_on": ["03", "04"]
+      "depends_on": [
+        "03",
+        "04"
+      ]
     },
     {
       "id": "06",
@@ -68,7 +77,9 @@
       "script": "experiments/scripts/06_temporal_trends.py",
       "report": "reports/06_temporal_trends.md",
       "artifacts": [],
-      "depends_on": ["01"]
+      "depends_on": [
+        "01"
+      ]
     },
     {
       "id": "07",
@@ -78,7 +89,9 @@
       "script": "experiments/scripts/07_spatial_variance_midas.py",
       "report": "reports/07_spatial_variance_midas.md",
       "artifacts": [],
-      "depends_on": ["01"]
+      "depends_on": [
+        "01"
+      ]
     },
     {
       "id": "08",
@@ -88,7 +101,11 @@
       "script": "experiments/scripts/08_nonlinear_and_interactions.py",
       "report": "reports/08_nonlinear_and_interactions.md",
       "artifacts": [],
-      "depends_on": ["03", "04", "05"]
+      "depends_on": [
+        "03",
+        "04",
+        "05"
+      ]
     },
     {
       "id": "09",
@@ -101,7 +118,9 @@
         "reports/09_depth_histogram.png",
         "reports/09_secchi_boxplot.png"
       ],
-      "depends_on": ["07"]
+      "depends_on": [
+        "07"
+      ]
     },
     {
       "id": "10",
@@ -113,7 +132,11 @@
       "artifacts": [
         "reports/10_baseline_feature_importance.png"
       ],
-      "depends_on": ["05", "06", "08"]
+      "depends_on": [
+        "05",
+        "06",
+        "08"
+      ]
     },
     {
       "id": "11",
@@ -125,7 +148,10 @@
       "artifacts": [
         "reports/11_divergent_feature_importance.png"
       ],
-      "depends_on": ["09", "10"]
+      "depends_on": [
+        "09",
+        "10"
+      ]
     },
     {
       "id": "12",
@@ -138,7 +164,10 @@
         "reports/12_lake_type_feature_importance.png",
         "reports/12_secchi_boxplot.png"
       ],
-      "depends_on": ["09", "10"]
+      "depends_on": [
+        "09",
+        "10"
+      ]
     },
     {
       "id": "13",
@@ -150,7 +179,10 @@
       "artifacts": [
         "reports/13_feature_importance_mod_d.png"
       ],
-      "depends_on": ["11", "12"]
+      "depends_on": [
+        "11",
+        "12"
+      ]
     },
     {
       "id": "14",
@@ -162,7 +194,10 @@
       "artifacts": [
         "reports/14_lolo_generalization.png"
       ],
-      "depends_on": ["10", "13"]
+      "depends_on": [
+        "10",
+        "13"
+      ]
     },
     {
       "id": "15",
@@ -174,7 +209,10 @@
       "artifacts": [
         "reports/15_feature_importance.png"
       ],
-      "depends_on": ["10", "14"]
+      "depends_on": [
+        "10",
+        "14"
+      ]
     },
     {
       "id": "16",
@@ -186,7 +224,10 @@
       "artifacts": [
         "reports/16_expanding_window_r2.png"
       ],
-      "depends_on": ["10", "15"]
+      "depends_on": [
+        "10",
+        "15"
+      ]
     },
     {
       "id": "17",
@@ -198,7 +239,9 @@
       "artifacts": [
         "reports/17_backward_expanding_r2.png"
       ],
-      "depends_on": ["16"]
+      "depends_on": [
+        "16"
+      ]
     },
     {
       "id": "18",
@@ -211,7 +254,11 @@
         "reports/18_local_vs_global_mae.png",
         "reports/18_local_vs_global_r2.png"
       ],
-      "depends_on": ["14", "16", "17"]
+      "depends_on": [
+        "14",
+        "16",
+        "17"
+      ]
     },
     {
       "id": "19",
@@ -223,7 +270,9 @@
       "artifacts": [
         "reports/19_spatial_autocorrelation_importances.png"
       ],
-      "depends_on": ["18"]
+      "depends_on": [
+        "18"
+      ]
     },
     {
       "id": "20",
@@ -235,7 +284,11 @@
       "artifacts": [
         "reports/20_xgboost_importances.png"
       ],
-      "depends_on": ["15", "18", "19"]
+      "depends_on": [
+        "15",
+        "18",
+        "19"
+      ]
     },
     {
       "id": "21",
@@ -247,7 +300,11 @@
       "artifacts": [
         "reports/21_lightgbm_importances.png"
       ],
-      "depends_on": ["15", "18", "19"]
+      "depends_on": [
+        "15",
+        "18",
+        "19"
+      ]
     },
     {
       "id": "22",
@@ -259,7 +316,11 @@
       "artifacts": [
         "reports/22_missforest_importances.png"
       ],
-      "depends_on": ["15", "18", "19"]
+      "depends_on": [
+        "15",
+        "18",
+        "19"
+      ]
     },
     {
       "id": "23",
@@ -269,7 +330,9 @@
       "script": "experiments/scripts/23_missforest_lolo.py",
       "report": "reports/23_missforest_lolo.md",
       "artifacts": [],
-      "depends_on": ["22"]
+      "depends_on": [
+        "22"
+      ]
     },
     {
       "id": "24",
@@ -281,7 +344,9 @@
       "artifacts": [
         "reports/24_missforest_elimination_curve.png"
       ],
-      "depends_on": ["22"]
+      "depends_on": [
+        "22"
+      ]
     },
     {
       "id": "25",
@@ -293,7 +358,11 @@
       "artifacts": [
         "reports/25_minimum_sample_threshold.png"
       ],
-      "depends_on": ["22", "23", "24"]
+      "depends_on": [
+        "22",
+        "23",
+        "24"
+      ]
     },
     {
       "id": "26",
@@ -306,7 +375,11 @@
         "reports/26_missforest_t100_elimination_curve.png",
         "reports/26_missforest_t100_importances.png"
       ],
-      "depends_on": ["22", "24", "25"]
+      "depends_on": [
+        "22",
+        "24",
+        "25"
+      ]
     },
     {
       "id": "27",
@@ -318,7 +391,10 @@
       "artifacts": [
         "reports/27_mlp_training_loss.png"
       ],
-      "depends_on": ["22", "26"]
+      "depends_on": [
+        "22",
+        "26"
+      ]
     },
     {
       "id": "28",
@@ -331,7 +407,10 @@
         "reports/28_tabnet_importances.png",
         "reports/28_tabnet_training_loss.png"
       ],
-      "depends_on": ["22", "26"]
+      "depends_on": [
+        "22",
+        "26"
+      ]
     },
     {
       "id": "29",
@@ -343,7 +422,10 @@
       "artifacts": [
         "reports/29_ft_transformer_training_loss.png"
       ],
-      "depends_on": ["22", "26"]
+      "depends_on": [
+        "22",
+        "26"
+      ]
     },
     {
       "id": "30",
@@ -353,7 +435,11 @@
       "script": "experiments/scripts/30_region_coastal_missforest.py",
       "report": "reports/30_region_coastal_missforest.md",
       "artifacts": [],
-      "depends_on": ["22", "23", "26"]
+      "depends_on": [
+        "22",
+        "23",
+        "26"
+      ]
     },
     {
       "id": "31",
@@ -363,7 +449,11 @@
       "script": "experiments/scripts/31_region_inland_missforest.py",
       "report": "reports/31_region_inland_missforest.md",
       "artifacts": [],
-      "depends_on": ["22", "23", "26"]
+      "depends_on": [
+        "22",
+        "23",
+        "26"
+      ]
     },
     {
       "id": "32",
@@ -373,7 +463,27 @@
       "script": "experiments/scripts/32_region_northern_missforest.py",
       "report": "reports/32_region_northern_missforest.md",
       "artifacts": [],
-      "depends_on": ["22", "23", "26"]
+      "depends_on": [
+        "22",
+        "23",
+        "26"
+      ]
+    },
+    {
+      "id": "33",
+      "slug": "catboost_chemical",
+      "title": "CatBoost with chemical feature support",
+      "status": "canonical",
+      "script": "experiments/scripts/33_catboost_chemical.py",
+      "report": "reports/33_catboost_chemical.md",
+      "artifacts": [
+        "reports/33_catboost_importances.png"
+      ],
+      "depends_on": [
+        "15",
+        "18",
+        "19"
+      ]
     }
   ]
 }

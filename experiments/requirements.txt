@@ -8,6 +8,7 @@ joblib
 tqdm
 xgboost
 lightgbm
+catboost
 torch
 pytorch-tabnet
 tab-transformer-pytorch
