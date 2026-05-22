@@ -530,6 +530,23 @@
         "34",
         "35"
       ]
+    },
+    {
+      "id": "37",
+      "slug": "catboost_imputation",
+      "title": "Tuned CatBoost with MissForest imputation",
+      "status": "canonical",
+      "script": "experiments/scripts/37_catboost_imputation.py",
+      "report": "reports/37_catboost_imputation.md",
+      "artifacts": [
+        "reports/37_catboost_imputation_comparison.png",
+        "reports/37_catboost_imputed_importances.png"
+      ],
+      "depends_on": [
+        "34",
+        "35",
+        "36"
+      ]
     }
   ]
 }
