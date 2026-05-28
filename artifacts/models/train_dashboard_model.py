@@ -1,203 +1,284 @@
-import pandas as pd
-import numpy as np
+import hashlib
 import json
-import joblib
+from datetime import datetime, timezone
 from pathlib import Path
-from sklearn.experimental import enable_iterative_imputer
-from sklearn.impute import IterativeImputer
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
-# Hack to deal with paths if run from artifacts/models or project root.
+import joblib
+import numpy as np
+import pandas as pd
+from catboost import CatBoostRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'experiments', 'scripts')))
-try:
-    from experiment_utils import load_data, PROJECT_ROOT
-except ImportError:
-    PROJECT_ROOT = Path(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-    def load_data():
-        pass # Fallback below if needed
+from experiment_utils import PROJECT_ROOT  # noqa: E402
+
+FEATURES = [
+    "year",
+    "month",
+    "LATITUDE",
+    "LONGITUDE",
+    "AREA_ACRES",
+    "DEPTH_MAX_FEET",
+    "DOMAX",
+    "DOMIN",
+    "TPEC",
+    "TPBG",
+    "PH",
+    "COLOR",
+    "CONDUCT",
+    "ALK",
+]
+
+CATBOOST_PARAMS = {
+    "iterations": 700,
+    "depth": 10,
+    "learning_rate": 0.05,
+    "l2_leaf_reg": 3,
+    "random_seed": 42,
+    "loss_function": "RMSE",
+    "eval_metric": "RMSE",
+    "verbose": False,
+    "allow_writing_files": False,
+    "thread_count": -1,
+}
+
+SUPPORT_POLICY = {
+    "min_observations": 100,
+    "max_pct_missing_chemical_overall": 0.90,
+    "source_experiment": "38",
+    "rationale": "Experiment 38 found the best confirmed LOLO operating policy at obs >= 100 and chemistry missingness <= 0.90.",
+}
+
+PROOF_EXPERIMENTS = [
+    {
+        "id": "34",
+        "report": "reports/34_catboost_tuned.md",
+        "finding": "Tuned no-CHLA native-missing CatBoost reached chronological R2 0.7324, MAE 0.8122, RMSE 1.0903.",
+    },
+    {
+        "id": "35",
+        "report": "reports/35_catboost_tuned_lolo.md",
+        "finding": "Unrestricted tuned CatBoost LOLO remained weak: x10 average R2 -1.3806 and x100 average R2 -2.2441.",
+    },
+    {
+        "id": "37",
+        "report": "reports/37_catboost_imputation.md",
+        "finding": "MissForest imputation made tuned CatBoost worse than native missing-value handling.",
+    },
+    {
+        "id": "38",
+        "report": "reports/38_catboost_lolo_quality_thresholds.md",
+        "finding": "Restricting to obs >= 100 and missingness <= 0.90 improved confirmed x100 LOLO average R2 to -1.084.",
+    },
+]
+
+
+def parse_midas(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    if "MIDAS" in df.columns:
+        has_dash = df["MIDAS"].astype(str).str.contains("-", na=False)
+        if has_dash.any():
+            split_midas = df["MIDAS"].astype(str).str.split("-", expand=True)
+            df["MIDAS"] = split_midas[0]
+    df["MIDAS"] = df["MIDAS"].astype(str).str.upper().str.strip()
+    return df
+
 
 def evaluate_model(y_true, y_pred, depth):
-    if len(y_true) == 0:
-        return {"MAE": 0, "RMSE": 0, "R2": 0, "MAE_Norm": 0, "RMSE_Norm": 0}
-        
     mae = mean_absolute_error(y_true, y_pred)
     mse = mean_squared_error(y_true, y_pred)
     rmse = np.sqrt(mse)
     r2 = r2_score(y_true, y_pred) if len(y_true) > 1 else np.nan
-    
     safe_depth = np.where(pd.Series(depth).to_numpy() > 0, pd.Series(depth).to_numpy(), np.nan)
     pct_error = (pd.Series(y_true).to_numpy() - pd.Series(y_pred).to_numpy()) / safe_depth
-    mae_norm = np.nanmean(np.abs(pct_error))
-    mse_norm = np.nanmean(pct_error ** 2)
-    rmse_norm = np.sqrt(mse_norm)
-    
     return {
-        "MAE": mae, "MSE": mse, "RMSE": rmse, "R2": r2,
-        "MAE_Norm": mae_norm, "RMSE_Norm": rmse_norm
+        "MAE": float(mae),
+        "MSE": float(mse),
+        "RMSE": float(rmse),
+        "R2": float(r2),
+        "MAE_Norm": float(np.nanmean(np.abs(pct_error))),
+        "RMSE_Norm": float(np.sqrt(np.nanmean(pct_error ** 2))),
     }
+
+
+def sha256_for_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def write_json(path: Path, payload) -> None:
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+
 
 def main():
     models_dir = PROJECT_ROOT / "artifacts" / "models"
     models_dir.mkdir(parents=True, exist_ok=True)
-    
-    print("Loading dataset...")
-    # direct csv load fallback if util fails
-    csv_path = PROJECT_ROOT / "data" / "Merged_Dataset.csv"
-    if csv_path.exists():
-        df = pd.read_csv(csv_path, low_memory=False)
-        df["SAMPDATE"] = pd.to_datetime(df["SAMPDATE"])
-    else:
-        df = load_data().frame
 
-    print(f"Total rows in raw dataset: {len(df):,}")
-        
-    target = "SECCHI"
-    num_cols = ["LATITUDE", "LONGITUDE", "AREA_ACRES", "DEPTH_MAX_FEET"]
+    print("Loading dataset...")
+    csv_path = PROJECT_ROOT / "data" / "Merged_Dataset.csv"
+    df = pd.read_csv(csv_path, low_memory=False)
+    df = parse_midas(df)
+    df["SAMPDATE"] = pd.to_datetime(df["SAMPDATE"], errors="coerce", utc=True)
     df["year"] = df["SAMPDATE"].dt.year
     df["month"] = df["SAMPDATE"].dt.month
-    base_features = ["year", "month"] + num_cols
-    
-    # Expanded Feature Suite (No CHLA)
-    chem_features = ["DOMAX", "DOMIN", "MLD", "OXIC", "SCHMIDT", "TPEC", "TPBG", "PH", "COLOR", "CONDUCT", "ALK"]
-    temp_features = ["TMAX", "TMIN"]
-    
-    requested_features = chem_features + temp_features
-    valid_features = [c for c in requested_features if c in df.columns]
-    
-    target_geography_mask = [target, "SAMPDATE", "MIDAS"] + num_cols
-    model_df = df.dropna(subset=target_geography_mask).copy()
-    model_df = model_df.sort_values(by="SAMPDATE").reset_index(drop=True)
-    
-    features = base_features + valid_features
-    
-    print(f"Rows after strict target/geography NA drop: {len(model_df):,}")
-    
-    # --- Missingness Analytics for the Report ---
-    missing_counts = model_df[features].isna().sum()
-    missing_dict = missing_counts[missing_counts > 0].to_dict()
-    
-    # 80/20 Splitting
-    split_idx = int(len(model_df) * 0.8)
-    train_df = model_df.iloc[:split_idx]
-    test_df = model_df.iloc[split_idx:]
-    
-    X_train = train_df[features].copy()
-    y_train = train_df[target].copy()
-    X_test = test_df[features].copy()
-    y_test = test_df[target].copy()
-    depth_test = test_df["DEPTH_MAX_FEET"]
-    
-    print(f"Train Rows: {len(X_train):,}")
-    print(f"Test Rows: {len(X_test):,}")
-    
-    # --- Generate Baseline Metadata JSON ---
-    print("Generating baseline metadata JSON for Dashboard...")
-    # Calculate median baseline for each feature per lake
-    grouped = model_df.groupby("MIDAS")[features].median()
-    baseline_dict = grouped.to_dict(orient="index")
-    # Store global median as fallback
-    baseline_dict["GLOBAL_FALLBACK"] = model_df[features].median().to_dict()
-    
-    with open(models_dir / "baseline_lakes_summary.json", "w") as f:
-        json.dump(baseline_dict, f, indent=4)
-        
-    print("\nFitting MissForest (IterativeImputer with max_iter=10)... THIS WILL TAKE A WHILE.")
-    rf_imputer = RandomForestRegressor(n_estimators=50, max_depth=10, random_state=42, n_jobs=-1)
-    imputer = IterativeImputer(estimator=rf_imputer, max_iter=10, random_state=42)
-    
-    X_train_imputed = pd.DataFrame(imputer.fit_transform(X_train), columns=features, index=X_train.index)
-    X_test_imputed = pd.DataFrame(imputer.transform(X_test), columns=features, index=X_test.index)
-    
-    print("Saving Imputer...")
-    joblib.dump(imputer, models_dir / "imputer.joblib")
-    
-    print("Training Downstream RandomForest Predictor...")
-    predictor = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
-    predictor.fit(X_train_imputed, y_train)
-    
-    print("Saving Predictor...")
-    joblib.dump(predictor, models_dir / "rf_predictor.joblib")
-    
-    y_pred = predictor.predict(X_test_imputed)
-    metrics = evaluate_model(y_test, y_pred, depth_test)
-    
-    # Feature Importances
-    importances = predictor.feature_importances_
-    imp_df = pd.DataFrame({"Feature": features, "Importance": importances}).sort_values(by="Importance", ascending=False)
-    
-    # --- Exhaustive Model Report Generation ---
-    print("\nGenerating Exhaustive Model Report...")
-    report_content = f"""# Dashboard Model Exhaustive Architecture Report
 
-## 1. Pipeline Overview
-This document contains the exact serialization snapshot statistics of the model deployed to the dashboard backend.
+    target = "SECCHI"
+    required = [target, "SAMPDATE", "MIDAS", "LATITUDE", "LONGITUDE", "AREA_ACRES", "DEPTH_MAX_FEET"]
+    model_df = df.dropna(subset=required).copy().sort_values("SAMPDATE").reset_index(drop=True)
 
-- **Generation Date:** Automatically populated on script run.
-- **Data Source Bounds:** `Merged_Dataset.csv` -> Filtered strictly for Target (`SECCHI`), Geographic, and Time constraints.
+    missing_path = PROJECT_ROOT / "data" / "lake_missingness.csv"
+    missingness_df = pd.read_csv(missing_path)
+    missingness_df["MIDAS"] = missingness_df["MIDAS"].astype(str).str.upper().str.strip()
 
-## 2. Train/Test Structure
-- **Validation Philosophy:** Chronological validation (80/20 temporal split) to strictly prevent future-data lookahead bias during MissForest interpolation.
-- **Total Valid Rows Engaged:** {len(model_df):,}
-- **Train Constraints:** First {len(X_train):,} chronologically sorted observations.
-- **Test Constraints:** Subsequent {len(X_test):,} chronologically sorted unobserved forecasting targets.
+    lake_counts = model_df["MIDAS"].value_counts().rename("n_obs").reset_index()
+    lake_counts.columns = ["MIDAS", "n_obs"]
+    support_df = missingness_df[["MIDAS", "pct_missing_chemical_overall"]].merge(lake_counts, on="MIDAS", how="left")
+    support_df["n_obs"] = support_df["n_obs"].fillna(0).astype(int)
+    support_df["supported"] = (
+        (support_df["n_obs"] >= SUPPORT_POLICY["min_observations"])
+        & (support_df["pct_missing_chemical_overall"] <= SUPPORT_POLICY["max_pct_missing_chemical_overall"])
+    )
+    supported_ids = set(support_df.loc[support_df["supported"], "MIDAS"])
+    supported_df = model_df[model_df["MIDAS"].isin(supported_ids)].copy()
 
-## 3. Structural Features & Missingness Topology
-The dashboard UI maps to these active {len(features)} node tensors.
-Below details the raw blank/missing cells strictly passed into MissForest for algorithmic mathematical interpolation:
+    if supported_df.empty:
+        raise RuntimeError("No rows remain after dashboard support policy filtering.")
 
-### Imputation Requirements Breakdown
-| Feature Name | Total `NaN` Blank Rows | Percentage of Total Space |
+    split_idx = int(len(supported_df) * 0.8)
+    train_df = supported_df.iloc[:split_idx].copy()
+    test_df = supported_df.iloc[split_idx:].copy()
+
+    print(f"Total valid modeling rows: {len(model_df):,}")
+    print(f"Supported rows: {len(supported_df):,}")
+    print(f"Supported lakes: {len(supported_ids):,} / {model_df['MIDAS'].nunique():,}")
+
+    model = CatBoostRegressor(**CATBOOST_PARAMS)
+    model.fit(train_df[FEATURES], train_df[target])
+    predictions = model.predict(test_df[FEATURES])
+    metrics = evaluate_model(test_df[target], predictions, test_df["DEPTH_MAX_FEET"])
+
+    predictor_path = models_dir / "catboost_predictor.joblib"
+    joblib.dump(model, predictor_path)
+
+    baseline = supported_df.groupby("MIDAS")[FEATURES].median().to_dict(orient="index")
+    baseline["GLOBAL_FALLBACK"] = supported_df[FEATURES].median().to_dict()
+    write_json(models_dir / "baseline_lakes_summary.json", baseline)
+
+    support_payload = {
+        "policy": SUPPORT_POLICY,
+        "proof_experiments": PROOF_EXPERIMENTS,
+        "counts": {
+            "total_lakes_after_base_filter": int(model_df["MIDAS"].nunique()),
+            "supported_lakes": int(len(supported_ids)),
+            "unsupported_lakes": int(model_df["MIDAS"].nunique() - len(supported_ids)),
+            "total_rows_after_base_filter": int(len(model_df)),
+            "supported_rows": int(len(supported_df)),
+            "unsupported_rows": int(len(model_df) - len(supported_df)),
+        },
+        "supported_lakes": sorted(supported_ids),
+        "lake_quality": support_df.sort_values("MIDAS").to_dict(orient="records"),
+    }
+    write_json(models_dir / "supported_lakes_policy.json", support_payload)
+
+    importances = pd.DataFrame({"Feature": FEATURES, "Importance": model.get_feature_importance()}).sort_values(
+        by="Importance", ascending=False
+    )
+
+    report = f"""# Dashboard Model Report
+
+## Active Model
+
+- Model family: `CatBoostRegressor`
+- Model source: Experiment 34 tuned native-missing CatBoost, promoted with Experiment 38 support policy
+- CHLA policy: excluded from Secchi prediction features
+- Artifact: `catboost_predictor.joblib`
+
+## Support Policy
+
+The dashboard is restricted to lakes with:
+
+- observations after base filtering >= {SUPPORT_POLICY['min_observations']}
+- `pct_missing_chemical_overall` <= {SUPPORT_POLICY['max_pct_missing_chemical_overall']:.2f}
+
+### Coverage
+
+| Metric | Count |
+| :--- | ---: |
+| Total lakes after base filtering | {support_payload['counts']['total_lakes_after_base_filter']:,} |
+| Supported lakes | {support_payload['counts']['supported_lakes']:,} |
+| Unsupported lakes | {support_payload['counts']['unsupported_lakes']:,} |
+| Total rows after base filtering | {support_payload['counts']['total_rows_after_base_filter']:,} |
+| Supported rows | {support_payload['counts']['supported_rows']:,} |
+| Unsupported rows | {support_payload['counts']['unsupported_rows']:,} |
+
+## Proof Trail
+
+| Experiment | Report | Dashboard relevance |
 | :--- | :--- | :--- |
 """
-    for f in features:
-        misses = missing_counts.get(f, 0)
-        pct = (misses / len(model_df)) * 100
-        report_content += f"| `{f}` | {misses:,} | {pct:.2f}% |\n"
-        
-    report_content += f"""
-*(Target `SECCHI` missingness rows were immediately physically stripped prior to this table calculation).*
+    for item in PROOF_EXPERIMENTS:
+        report += f"| {item['id']} | `{item['report']}` | {item['finding']} |\n"
 
-## 4. Hyperparameter Matrix Network
-### A. Iterative Imputer (MissForest Architecture)
-- **Base Estimator:** `RandomForestRegressor`
-- **Internal Estimators per Chain:** 50
-- **Internal Tree Max Depth:** 10
-- **`max_iter` Boundary:** 10
-- **`random_state` Seed:** 42
+    report += f"""
+## Chronological Evaluation On Supported Lakes
 
-### B. Downstream Predictor (Forecasting Mainframe)
-- **Estimator Class:** `RandomForestRegressor`
-- **Total Estimators:** 100
-- **Max Depth:** `None` (Fully expanded geometric splits)
-- **`n_jobs` Parallelism:** -1
+| Metric | Value |
+| :--- | ---: |
+| R2 | {metrics['R2']:.6f} |
+| MAE | {metrics['MAE']:.6f} m |
+| RMSE | {metrics['RMSE']:.6f} m |
+| Normalized MAE | {metrics['MAE_Norm']:.6f} |
+| Normalized RMSE | {metrics['RMSE_Norm']:.6f} |
 
-## 5. Algorithmic Evaluation Suite
-Tested precisely upon the {len(X_test):,} strictly unobserved chronologically isolated observations:
+## Feature Set
 
-- **$R^2$ (Explained Variance Coefficient):** {metrics["R2"]:.6f}
-- **Mean Absolute Error (MAE):** {metrics["MAE"]:.6f} meters
-- **Mean Squared Error (MSE):** {metrics["MSE"]:.6f} meters²
-- **Root Mean Squared Error (RMSE):** {metrics["RMSE"]:.6f} meters
-- **Normalized MAE (by target depth):** {metrics["MAE_Norm"]:.6f}
-- **Normalized RMSE (by target depth):** {metrics["RMSE_Norm"]:.6f}
+{json.dumps(FEATURES, indent=2)}
 
-## 6. Gini Baseline Importance Logic
-The following array indicates precisely how structurally dependent the mathematical forecasts are per field:
+## Feature Importances
 
-| Feature Dimension | Node Gini Importance Factor |
-| :--- | :--- |
+| Feature | Importance |
+| :--- | ---: |
 """
-    for _, row in imp_df.iterrows():
-        report_content += f"| {row['Feature']} | {row['Importance']:.6f} |\n"
-        
-    with open(models_dir / "dashboard_model_report.md", "w") as f:
-        f.write(report_content)
-        
-    print(f"Report universally exported to {models_dir / 'dashboard_model_report.md'}")
-    print("Dashboard Backend Models are successfully synchronized and serialized.")
+    for _, row in importances.iterrows():
+        report += f"| {row['Feature']} | {row['Importance']:.6f} |\n"
+
+    (models_dir / "dashboard_model_report.md").write_text(report, encoding="utf-8")
+
+    artifacts = [
+        {"name": "predictor", "path": "catboost_predictor.joblib", "required": True},
+        {"name": "baseline", "path": "baseline_lakes_summary.json", "required": True},
+        {"name": "lake_names", "path": "lake_names.json", "required": True},
+        {"name": "support_policy", "path": "supported_lakes_policy.json", "required": True},
+        {"name": "model_report", "path": "dashboard_model_report.md", "required": True},
+    ]
+    for artifact in artifacts:
+        artifact["sha256"] = sha256_for_file(models_dir / artifact["path"])
+
+    manifest = {
+        "schema_version": "1.0.0",
+        "model_id": "secchi-catboost-supported-lakes",
+        "model_version": "2026-05-28-exp34-exp38",
+        "trained_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "feature_order": FEATURES,
+        "artifacts": artifacts,
+        "explainability": {"type": "shap_tree", "fallback": "none"},
+        "support_policy": SUPPORT_POLICY,
+        "proof_experiments": PROOF_EXPERIMENTS,
+        "metrics": {"chronological_supported_lakes": metrics},
+        "compatibility": {"python": "3.11", "catboost": "1.2.10", "scikit_learn": "1.6.1"},
+    }
+    write_json(models_dir / "model_manifest.json", manifest)
+
+    print("Dashboard CatBoost artifacts exported.")
+    print(json.dumps({"metrics": metrics, "counts": support_payload["counts"]}, indent=2))
+
 
 if __name__ == "__main__":
     main()

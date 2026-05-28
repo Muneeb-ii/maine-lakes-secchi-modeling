@@ -58,7 +58,6 @@ logs/
 *.log
 
 # Model artifacts
-*.joblib
 *.pkl
 *.pt
 *.onnx

@@ -1,91 +1,83 @@
-# Dashboard Model Exhaustive Architecture Report
+# Dashboard Model Report
 
-## 1. Pipeline Overview
-This document contains the exact serialization snapshot statistics of the model deployed to the dashboard backend.
+## Active Model
 
-- **Generation Date:** Automatically populated on script run.
-- **Data Source Bounds:** `Merged_Dataset.csv` -> Filtered strictly for Target (`SECCHI`), Geographic, and Time constraints.
+- Model family: `CatBoostRegressor`
+- Model source: Experiment 34 tuned native-missing CatBoost, promoted with Experiment 38 support policy
+- CHLA policy: excluded from Secchi prediction features
+- Artifact: `catboost_predictor.joblib`
 
-## 2. Train/Test Structure
-- **Validation Philosophy:** Chronological validation (80/20 temporal split) to strictly prevent future-data lookahead bias during MissForest interpolation.
-- **Total Valid Rows Engaged:** 154,304
-- **Train Constraints:** First 123,443 chronologically sorted observations.
-- **Test Constraints:** Subsequent 30,861 chronologically sorted unobserved forecasting targets.
+## Support Policy
 
-## 3. Structural Features & Missingness Topology
-The dashboard UI maps to these active 19 node tensors.
-Below details the raw blank/missing cells strictly passed into MissForest for algorithmic mathematical interpolation:
+The dashboard is restricted to lakes with:
 
-### Imputation Requirements Breakdown
-| Feature Name | Total `NaN` Blank Rows | Percentage of Total Space |
+- observations after base filtering >= 100
+- `pct_missing_chemical_overall` <= 0.90
+
+### Coverage
+
+| Metric | Count |
+| :--- | ---: |
+| Total lakes after base filtering | 994 |
+| Supported lakes | 187 |
+| Unsupported lakes | 807 |
+| Total rows after base filtering | 154,304 |
+| Supported rows | 87,116 |
+| Unsupported rows | 67,188 |
+
+## Proof Trail
+
+| Experiment | Report | Dashboard relevance |
 | :--- | :--- | :--- |
-| `year` | 0 | 0.00% |
-| `month` | 0 | 0.00% |
-| `LATITUDE` | 0 | 0.00% |
-| `LONGITUDE` | 0 | 0.00% |
-| `AREA_ACRES` | 0 | 0.00% |
-| `DEPTH_MAX_FEET` | 0 | 0.00% |
-| `DOMAX` | 114,139 | 73.97% |
-| `DOMIN` | 114,139 | 73.97% |
-| `MLD` | 110,213 | 71.43% |
-| `OXIC` | 114,139 | 73.97% |
-| `SCHMIDT` | 110,213 | 71.43% |
-| `TPEC` | 127,279 | 82.49% |
-| `TPBG` | 147,365 | 95.50% |
-| `PH` | 137,839 | 89.33% |
-| `COLOR` | 136,240 | 88.29% |
-| `CONDUCT` | 140,133 | 90.82% |
-| `ALK` | 134,085 | 86.90% |
-| `TMAX` | 110,213 | 71.43% |
-| `TMIN` | 110,213 | 71.43% |
+| 34 | `reports/34_catboost_tuned.md` | Tuned no-CHLA native-missing CatBoost reached chronological R2 0.7324, MAE 0.8122, RMSE 1.0903. |
+| 35 | `reports/35_catboost_tuned_lolo.md` | Unrestricted tuned CatBoost LOLO remained weak: x10 average R2 -1.3806 and x100 average R2 -2.2441. |
+| 37 | `reports/37_catboost_imputation.md` | MissForest imputation made tuned CatBoost worse than native missing-value handling. |
+| 38 | `reports/38_catboost_lolo_quality_thresholds.md` | Restricting to obs >= 100 and missingness <= 0.90 improved confirmed x100 LOLO average R2 to -1.084. |
 
-*(Target `SECCHI` missingness rows were immediately physically stripped prior to this table calculation).*
+## Chronological Evaluation On Supported Lakes
 
-## 4. Hyperparameter Matrix Network
-### A. Iterative Imputer (MissForest Architecture)
-- **Base Estimator:** `RandomForestRegressor`
-- **Internal Estimators per Chain:** 50
-- **Internal Tree Max Depth:** 10
-- **`max_iter` Boundary:** 10
-- **`random_state` Seed:** 42
+| Metric | Value |
+| :--- | ---: |
+| R2 | 0.721993 |
+| MAE | 0.802358 m |
+| RMSE | 1.087382 m |
+| Normalized MAE | 0.017751 |
+| Normalized RMSE | 0.025338 |
 
-### B. Downstream Predictor (Forecasting Mainframe)
-- **Estimator Class:** `RandomForestRegressor`
-- **Total Estimators:** 100
-- **Max Depth:** `None` (Fully expanded geometric splits)
-- **`n_jobs` Parallelism:** -1
+## Feature Set
 
-## 5. Algorithmic Evaluation Suite
-Tested precisely upon the 30,861 strictly unobserved chronologically isolated observations:
+[
+  "year",
+  "month",
+  "LATITUDE",
+  "LONGITUDE",
+  "AREA_ACRES",
+  "DEPTH_MAX_FEET",
+  "DOMAX",
+  "DOMIN",
+  "TPEC",
+  "TPBG",
+  "PH",
+  "COLOR",
+  "CONDUCT",
+  "ALK"
+]
 
-- **$R^2$ (Explained Variance Coefficient):** 0.692771
-- **Mean Absolute Error (MAE):** 0.859462 meters
-- **Mean Squared Error (MSE):** 1.364835 meters²
-- **Root Mean Squared Error (RMSE):** 1.168262 meters
-- **Normalized MAE (by target depth):** 0.020261
-- **Normalized RMSE (by target depth):** 0.030532
+## Feature Importances
 
-## 6. Gini Baseline Importance Logic
-The following array indicates precisely how structurally dependent the mathematical forecasts are per field:
-
-| Feature Dimension | Node Gini Importance Factor |
-| :--- | :--- |
-| TPEC | 0.359928 |
-| DEPTH_MAX_FEET | 0.101426 |
-| LONGITUDE | 0.075923 |
-| AREA_ACRES | 0.072777 |
-| OXIC | 0.060692 |
-| LATITUDE | 0.057467 |
-| COLOR | 0.038073 |
-| year | 0.037115 |
-| SCHMIDT | 0.029987 |
-| TMIN | 0.021073 |
-| MLD | 0.019937 |
-| ALK | 0.019873 |
-| PH | 0.018656 |
-| DOMAX | 0.018122 |
-| CONDUCT | 0.017894 |
-| TPBG | 0.015907 |
-| DOMIN | 0.014971 |
-| TMAX | 0.012621 |
-| month | 0.007558 |
+| Feature | Importance |
+| :--- | ---: |
+| DEPTH_MAX_FEET | 29.113977 |
+| LONGITUDE | 21.597720 |
+| LATITUDE | 16.484699 |
+| AREA_ACRES | 15.237715 |
+| year | 6.788923 |
+| month | 4.163235 |
+| TPEC | 2.988308 |
+| DOMAX | 1.350616 |
+| COLOR | 0.941409 |
+| DOMIN | 0.856974 |
+| ALK | 0.200811 |
+| PH | 0.165890 |
+| CONDUCT | 0.060517 |
+| TPBG | 0.049206 |

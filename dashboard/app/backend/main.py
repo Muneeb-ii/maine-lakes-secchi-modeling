@@ -42,18 +42,20 @@ DEFAULT_MODELS_PATH = Path(__file__).resolve().parents[3] / "artifacts" / "model
 models_path = Path(os.getenv("MODEL_ARTIFACTS_PATH", str(DEFAULT_MODELS_PATH))).resolve()
 baseline_data = {}
 lake_names_data = {}
+support_policy_data = {}
 registry = ModelRegistry(models_path=models_path)
 SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
 
 @app.on_event("startup")
 async def load_ml_objects():
-    global baseline_data, lake_names_data
+    global baseline_data, lake_names_data, support_policy_data
     print("Mounting ML memory and model registry...")
 
     registry.load()
 
     baseline_file = models_path / "baseline_lakes_summary.json"
     names_file = models_path / "lake_names.json"
+    support_file = models_path / "supported_lakes_policy.json"
 
     if baseline_file.exists():
         with open(baseline_file, "r") as f:
@@ -62,8 +64,14 @@ async def load_ml_objects():
 
     if names_file.exists():
         with open(names_file, "r") as f:
-            lake_names_data = json.load(f)
+            raw_lake_names = json.load(f)
+        lake_names_data = {str(key).upper(): value for key, value in raw_lake_names.items()}
         print("Loaded lake name mapping dictionary.")
+
+    if support_file.exists():
+        with open(support_file, "r") as f:
+            support_policy_data = json.load(f)
+        print("Loaded supported-lake policy metadata.")
 
 @app.get("/")
 def read_root():
@@ -91,11 +99,30 @@ def get_lake_baseline(midas_id: str):
     
     lake_name = lake_names_data.get(midas_id, "Unknown Ecosystem")
     
-    # Attempt strict match, otherwise return global fallback
+    supported_ids = set(str(item).upper() for item in support_policy_data.get("supported_lakes", []))
+    quality_rows = support_policy_data.get("lake_quality", [])
+    quality = next((row for row in quality_rows if str(row.get("MIDAS", "")).upper() == midas_id), None)
+    policy = support_policy_data.get("policy", {})
+
+    # Attempt strict match, otherwise return global fallback.
     if midas_id in baseline_data:
-        return {"status": "success", "lake_name": lake_name, "baseline": baseline_data[midas_id]}
+        return {
+            "status": "success",
+            "lake_name": lake_name,
+            "baseline": baseline_data[midas_id],
+            "supported": midas_id in supported_ids,
+            "support_policy": policy,
+            "lake_quality": quality,
+        }
     elif "GLOBAL_FALLBACK" in baseline_data:
-        return {"status": "fallback", "lake_name": "Global Fallback Average", "baseline": baseline_data["GLOBAL_FALLBACK"]}
+        return {
+            "status": "fallback",
+            "lake_name": "Global Fallback Average",
+            "baseline": baseline_data["GLOBAL_FALLBACK"],
+            "supported": False,
+            "support_policy": policy,
+            "lake_quality": quality,
+        }
     else:
         raise HTTPException(status_code=404, detail="No baseline mapping available.")
 

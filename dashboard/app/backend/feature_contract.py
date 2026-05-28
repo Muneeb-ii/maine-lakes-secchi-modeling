@@ -12,17 +12,12 @@ CANONICAL_FEATURE_ORDER: List[str] = [
     "DEPTH_MAX_FEET",
     "DOMAX",
     "DOMIN",
-    "MLD",
-    "OXIC",
-    "SCHMIDT",
     "TPEC",
     "TPBG",
     "PH",
     "COLOR",
     "CONDUCT",
     "ALK",
-    "TMAX",
-    "TMIN",
 ]
 
 LOCKED_BASELINE_FEATURES: List[str] = [
@@ -81,30 +76,6 @@ FEATURE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
         "unit": "mg/L",
         "icon": "Beaker",
     },
-    "MLD": {
-        "label": "Mixed Layer Depth",
-        "group": "hydrology",
-        "editable": True,
-        "slider": {"min": 0, "max": 50, "step": 0.1},
-        "unit": "m",
-        "icon": "Droplet",
-    },
-    "OXIC": {
-        "label": "Oxic Volume %",
-        "group": "hydrology",
-        "editable": True,
-        "slider": {"min": 0, "max": 100, "step": 1},
-        "unit": "%",
-        "icon": "Activity",
-    },
-    "SCHMIDT": {
-        "label": "Schmidt Stability",
-        "group": "hydrology",
-        "editable": True,
-        "slider": {"min": 0, "max": 5000, "step": 10},
-        "unit": "",
-        "icon": "Gauge",
-    },
     "TPEC": {
         "label": "Epilimnetic Temp",
         "group": "temperature",
@@ -152,22 +123,6 @@ FEATURE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
         "slider": {"min": 0, "max": 100, "step": 0.1},
         "unit": "mg/L",
         "icon": "Beaker",
-    },
-    "TMAX": {
-        "label": "Max Air Temp",
-        "group": "temperature",
-        "editable": True,
-        "slider": {"min": -10, "max": 40, "step": 0.5},
-        "unit": "C",
-        "icon": "Thermometer",
-    },
-    "TMIN": {
-        "label": "Min Air Temp",
-        "group": "temperature",
-        "editable": True,
-        "slider": {"min": -20, "max": 30, "step": 0.5},
-        "unit": "C",
-        "icon": "Thermometer",
     },
 }
 

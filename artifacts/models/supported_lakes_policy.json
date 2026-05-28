@@ -1,0 +1,6715 @@
+{
+  "policy": {
+    "min_observations": 100,
+    "max_pct_missing_chemical_overall": 0.9,
+    "source_experiment": "38",
+    "rationale": "Experiment 38 found the best confirmed LOLO operating policy at obs >= 100 and chemistry missingness <= 0.90."
+  },
+  "proof_experiments": [
+    {
+      "id": "34",
+      "report": "reports/34_catboost_tuned.md",
+      "finding": "Tuned no-CHLA native-missing CatBoost reached chronological R2 0.7324, MAE 0.8122, RMSE 1.0903."
+    },
+    {
+      "id": "35",
+      "report": "reports/35_catboost_tuned_lolo.md",
+      "finding": "Unrestricted tuned CatBoost LOLO remained weak: x10 average R2 -1.3806 and x100 average R2 -2.2441."
+    },
+    {
+      "id": "37",
+      "report": "reports/37_catboost_imputation.md",
+      "finding": "MissForest imputation made tuned CatBoost worse than native missing-value handling."
+    },
+    {
+      "id": "38",
+      "report": "reports/38_catboost_lolo_quality_thresholds.md",
+      "finding": "Restricting to obs >= 100 and missingness <= 0.90 improved confirmed x100 LOLO average R2 to -1.084."
+    }
+  ],
+  "counts": {
+    "total_lakes_after_base_filter": 994,
+    "supported_lakes": 187,
+    "unsupported_lakes": 807,
+    "total_rows_after_base_filter": 154304,
+    "supported_rows": 87116,
+    "unsupported_rows": 67188
+  },
+  "supported_lakes": [
+    "C0007",
+    "C0078",
+    "C0097",
+    "C0098",
+    "C0103",
+    "C0367",
+    "C0390",
+    "C0848",
+    "C1088",
+    "C1096",
+    "C1100",
+    "C1110",
+    "C1150",
+    "C1258",
+    "C1286",
+    "C1288",
+    "C1672",
+    "C1674",
+    "C1686",
+    "C1728",
+    "C1776",
+    "C1802",
+    "C2146",
+    "C2156",
+    "C2232",
+    "C2336",
+    "C2384",
+    "C2590",
+    "C2608",
+    "C3126",
+    "C3130",
+    "C3132",
+    "C3134",
+    "C3140",
+    "C3174",
+    "C3188",
+    "C3196",
+    "C3198",
+    "C3199",
+    "C3200",
+    "C3201",
+    "C3224",
+    "C3232",
+    "C3234",
+    "C3374",
+    "C3376",
+    "C3382",
+    "C3392",
+    "C3396",
+    "C3408",
+    "C3414",
+    "C3416",
+    "C3418",
+    "C3420",
+    "C3422",
+    "C3424",
+    "C3432",
+    "C3434",
+    "C3444",
+    "C3446",
+    "C3448",
+    "C3452",
+    "C3454",
+    "C3456",
+    "C3458",
+    "C3500",
+    "C3504",
+    "C3524",
+    "C3526",
+    "C3528",
+    "C3534",
+    "C3536",
+    "C3604",
+    "C3616",
+    "C3624",
+    "C3672",
+    "C3688",
+    "C3690",
+    "C3696",
+    "C3700",
+    "C3706",
+    "C3712",
+    "C3714",
+    "C3734",
+    "C3748",
+    "C3750",
+    "C3758",
+    "C3760",
+    "C3762",
+    "C3770",
+    "C3772",
+    "C3780",
+    "C3784",
+    "C3796",
+    "C3802",
+    "C3814",
+    "C3822",
+    "C3824",
+    "C3828",
+    "C3830",
+    "C3832",
+    "C3836",
+    "C3838",
+    "C3920",
+    "C3940",
+    "C3980",
+    "C3992",
+    "C4294",
+    "C4328",
+    "C4336",
+    "C4378",
+    "C4406",
+    "C4444",
+    "C4452",
+    "C4458",
+    "C4606",
+    "C4608",
+    "C4612",
+    "C4614",
+    "C4622",
+    "C4624",
+    "C4630",
+    "C4640",
+    "C4708",
+    "C4730",
+    "C4734",
+    "C4736",
+    "C4738",
+    "C4752",
+    "C4808",
+    "C4822",
+    "C4894",
+    "C5024",
+    "C5040",
+    "C5172",
+    "C5176",
+    "C5182",
+    "C5186",
+    "C5222",
+    "C5236",
+    "C5238",
+    "C5240",
+    "C5242",
+    "C5244",
+    "C5250",
+    "C5254",
+    "C5272",
+    "C5274",
+    "C5280",
+    "C5302",
+    "C5307",
+    "C5310",
+    "C5312",
+    "C5344",
+    "C5349",
+    "C5366",
+    "C5368",
+    "C5382",
+    "C5400",
+    "C5408",
+    "C5416",
+    "C5424",
+    "C5448",
+    "C5458",
+    "C5492",
+    "C5582",
+    "C5654",
+    "C5664",
+    "C5666",
+    "C5702",
+    "C5708",
+    "C5710",
+    "C5780",
+    "C5812",
+    "C5814",
+    "C7437",
+    "C8065",
+    "C9649",
+    "C9685",
+    "C9687",
+    "C9709",
+    "C9715",
+    "C9767",
+    "C9931",
+    "C9943",
+    "C9961",
+    "C9971"
+  ],
+  "lake_quality": [
+    {
+      "MIDAS": "C0001",
+      "pct_missing_chemical_overall": 0.997867803837953,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0002",
+      "pct_missing_chemical_overall": 0.9215686274509804,
+      "n_obs": 51,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0003",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0004",
+      "pct_missing_chemical_overall": 0.95,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0007",
+      "pct_missing_chemical_overall": 0.8679471788715486,
+      "n_obs": 952,
+      "supported": true
+    },
+    {
+      "MIDAS": "C0008",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0009",
+      "pct_missing_chemical_overall": 0.1607142857142857,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0012",
+      "pct_missing_chemical_overall": 0.9655877976190476,
+      "n_obs": 384,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0019",
+      "pct_missing_chemical_overall": 0.3571428571428571,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0034",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0035",
+      "pct_missing_chemical_overall": 0.9891625615763546,
+      "n_obs": 435,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0037",
+      "pct_missing_chemical_overall": 0.9817927170868348,
+      "n_obs": 51,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0041",
+      "pct_missing_chemical_overall": 0.9846022241231822,
+      "n_obs": 334,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0044",
+      "pct_missing_chemical_overall": 0.9318181818181818,
+      "n_obs": 66,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0048",
+      "pct_missing_chemical_overall": 0.9758983347940404,
+      "n_obs": 163,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0050",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0062",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0070",
+      "pct_missing_chemical_overall": 0.9035672612102016,
+      "n_obs": 857,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0071",
+      "pct_missing_chemical_overall": 0.9866071428571428,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0074",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0078",
+      "pct_missing_chemical_overall": 0.8318561001042752,
+      "n_obs": 548,
+      "supported": true
+    },
+    {
+      "MIDAS": "C0080",
+      "pct_missing_chemical_overall": 0.9922165587546494,
+      "n_obs": 1037,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0082",
+      "pct_missing_chemical_overall": 0.9444444444444444,
+      "n_obs": 36,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0083",
+      "pct_missing_chemical_overall": 0.7680890538033395,
+      "n_obs": 77,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0086",
+      "pct_missing_chemical_overall": 0.8690476190476191,
+      "n_obs": 18,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0097",
+      "pct_missing_chemical_overall": 0.6888135142325087,
+      "n_obs": 1074,
+      "supported": true
+    },
+    {
+      "MIDAS": "C0098",
+      "pct_missing_chemical_overall": 0.7879752135320717,
+      "n_obs": 853,
+      "supported": true
+    },
+    {
+      "MIDAS": "C0102",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0103",
+      "pct_missing_chemical_overall": 0.7019400352733686,
+      "n_obs": 567,
+      "supported": true
+    },
+    {
+      "MIDAS": "C0104",
+      "pct_missing_chemical_overall": 0.4642857142857143,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0106",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0108",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0109",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0117",
+      "pct_missing_chemical_overall": 0.6411359724612736,
+      "n_obs": 83,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0119",
+      "pct_missing_chemical_overall": 0.9006444683136412,
+      "n_obs": 133,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0121",
+      "pct_missing_chemical_overall": 0.988095238095238,
+      "n_obs": 588,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0133",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0135",
+      "pct_missing_chemical_overall": 0.5625,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0148",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0150",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0152",
+      "pct_missing_chemical_overall": 0.9751552795031057,
+      "n_obs": 69,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0155",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0157",
+      "pct_missing_chemical_overall": 0.9523809523809524,
+      "n_obs": 117,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0159",
+      "pct_missing_chemical_overall": 0.938095238095238,
+      "n_obs": 30,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0170",
+      "pct_missing_chemical_overall": 0.4357142857142857,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0177",
+      "pct_missing_chemical_overall": 0.987511825922422,
+      "n_obs": 755,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0202",
+      "pct_missing_chemical_overall": 0.3571428571428571,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0224",
+      "pct_missing_chemical_overall": 0.968131868131868,
+      "n_obs": 390,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0227",
+      "pct_missing_chemical_overall": 0.9510106200753684,
+      "n_obs": 417,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0242",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0243",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0245",
+      "pct_missing_chemical_overall": 0.9918367346938776,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0254",
+      "pct_missing_chemical_overall": 0.1071428571428571,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0260",
+      "pct_missing_chemical_overall": 0.7744360902255639,
+      "n_obs": 19,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0262",
+      "pct_missing_chemical_overall": 0.6349206349206349,
+      "n_obs": 18,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0269",
+      "pct_missing_chemical_overall": 0.5887445887445888,
+      "n_obs": 33,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0275",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0277",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0282",
+      "pct_missing_chemical_overall": 0.5357142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0288",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0292",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0294",
+      "pct_missing_chemical_overall": 0.6071428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0296",
+      "pct_missing_chemical_overall": 0.9603590127150337,
+      "n_obs": 191,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0298",
+      "pct_missing_chemical_overall": 0.9468984962406016,
+      "n_obs": 152,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0301",
+      "pct_missing_chemical_overall": 0.9090909090909092,
+      "n_obs": 11,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0314",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0316",
+      "pct_missing_chemical_overall": 0.2428571428571428,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0322",
+      "pct_missing_chemical_overall": 0.8511904761904762,
+      "n_obs": 24,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0324",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 21,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0326",
+      "pct_missing_chemical_overall": 0.9775510204081632,
+      "n_obs": 35,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0328",
+      "pct_missing_chemical_overall": 0.9536679536679536,
+      "n_obs": 37,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0330",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0334",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 35,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0336",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 35,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0339",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0342",
+      "pct_missing_chemical_overall": 0.989344909234412,
+      "n_obs": 181,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0344",
+      "pct_missing_chemical_overall": 0.2321428571428571,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0346",
+      "pct_missing_chemical_overall": 0.625,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0351",
+      "pct_missing_chemical_overall": 0.9514824797843666,
+      "n_obs": 53,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0367",
+      "pct_missing_chemical_overall": 0.6089981447124304,
+      "n_obs": 462,
+      "supported": true
+    },
+    {
+      "MIDAS": "C0368",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0380",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0386",
+      "pct_missing_chemical_overall": 0.76007326007326,
+      "n_obs": 39,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0388",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0390",
+      "pct_missing_chemical_overall": 0.8925886143931256,
+      "n_obs": 399,
+      "supported": true
+    },
+    {
+      "MIDAS": "C0392",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0401",
+      "pct_missing_chemical_overall": 0.9618626211546566,
+      "n_obs": 339,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0403",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0404",
+      "pct_missing_chemical_overall": 0.9696586599241468,
+      "n_obs": 113,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0409",
+      "pct_missing_chemical_overall": 0.6164596273291926,
+      "n_obs": 46,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0410",
+      "pct_missing_chemical_overall": 0.9775510204081632,
+      "n_obs": 105,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0412",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0414",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0416",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0417",
+      "pct_missing_chemical_overall": 0.9739010989010988,
+      "n_obs": 52,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0418",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0420",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0422",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0428",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0430",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0435",
+      "pct_missing_chemical_overall": 0.5517241379310345,
+      "n_obs": 58,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0436",
+      "pct_missing_chemical_overall": 0.9023809523809524,
+      "n_obs": 30,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0438",
+      "pct_missing_chemical_overall": 0.8142857142857143,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0440",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0441",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0442",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0446",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0447",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0452",
+      "pct_missing_chemical_overall": 0.3809523809523809,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0455",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0463",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0465",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0474",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0478",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0482",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0487",
+      "pct_missing_chemical_overall": 0.6904761904761905,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0498",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0503",
+      "pct_missing_chemical_overall": 0.9642857142857144,
+      "n_obs": 104,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0507",
+      "pct_missing_chemical_overall": 0.9333333333333332,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0534",
+      "pct_missing_chemical_overall": 0.1142857142857142,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0568",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0572",
+      "pct_missing_chemical_overall": 0.5952380952380952,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0574",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0576",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0580",
+      "pct_missing_chemical_overall": 0.3035714285714285,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0582",
+      "pct_missing_chemical_overall": 0.4897959183673469,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0584",
+      "pct_missing_chemical_overall": 0.8949579831932774,
+      "n_obs": 17,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0586",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0596",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0602",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0606",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0608",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0614",
+      "pct_missing_chemical_overall": 0.1904761904761904,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0620",
+      "pct_missing_chemical_overall": 0.7714285714285715,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0626",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0636",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0662",
+      "pct_missing_chemical_overall": 0.7955665024630542,
+      "n_obs": 29,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0670",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0684",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0686",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0698",
+      "pct_missing_chemical_overall": 0.5803571428571429,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0700",
+      "pct_missing_chemical_overall": 0.1071428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0708",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0712",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0714",
+      "pct_missing_chemical_overall": 0.7678571428571429,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0716",
+      "pct_missing_chemical_overall": 0.9017857142857144,
+      "n_obs": 32,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0720",
+      "pct_missing_chemical_overall": 0.1309523809523809,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0744",
+      "pct_missing_chemical_overall": 0.9190848214285714,
+      "n_obs": 128,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0746",
+      "pct_missing_chemical_overall": 0.7727272727272727,
+      "n_obs": 11,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0748",
+      "pct_missing_chemical_overall": 0.9642857142857144,
+      "n_obs": 12,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0756",
+      "pct_missing_chemical_overall": 0.9365079365079364,
+      "n_obs": 36,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0758",
+      "pct_missing_chemical_overall": 0.980169971671388,
+      "n_obs": 353,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0760",
+      "pct_missing_chemical_overall": 0.9591460200316289,
+      "n_obs": 271,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0774",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0780",
+      "pct_missing_chemical_overall": 0.3061224489795918,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0782",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0788",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0792",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0800",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0802",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0814",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0836",
+      "pct_missing_chemical_overall": 0.3333333333333333,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0844",
+      "pct_missing_chemical_overall": 0.9807692307692308,
+      "n_obs": 26,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0848",
+      "pct_missing_chemical_overall": 0.8837812352663837,
+      "n_obs": 303,
+      "supported": true
+    },
+    {
+      "MIDAS": "C0864",
+      "pct_missing_chemical_overall": 0.9071428571428573,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0894",
+      "pct_missing_chemical_overall": 0.9848424806815932,
+      "n_obs": 721,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0916",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0922",
+      "pct_missing_chemical_overall": 0.961344537815126,
+      "n_obs": 85,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0942",
+      "pct_missing_chemical_overall": 0.8452380952380952,
+      "n_obs": 12,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0954",
+      "pct_missing_chemical_overall": 0.2619047619047619,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0956",
+      "pct_missing_chemical_overall": 0.9671389216843762,
+      "n_obs": 363,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0960",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0966",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0982",
+      "pct_missing_chemical_overall": 0.9891774891774892,
+      "n_obs": 66,
+      "supported": false
+    },
+    {
+      "MIDAS": "C0984",
+      "pct_missing_chemical_overall": 0.3214285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1006",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1014",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1018",
+      "pct_missing_chemical_overall": 0.9201680672268908,
+      "n_obs": 34,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1034",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1036",
+      "pct_missing_chemical_overall": 0.9075091575091576,
+      "n_obs": 234,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1050",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1063",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 426,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1064",
+      "pct_missing_chemical_overall": 0.9657738095238096,
+      "n_obs": 48,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1068",
+      "pct_missing_chemical_overall": 0.9169435215946844,
+      "n_obs": 43,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1070",
+      "pct_missing_chemical_overall": 0.9880403774412992,
+      "n_obs": 651,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1078",
+      "pct_missing_chemical_overall": 0.8877551020408163,
+      "n_obs": 14,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1084",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1086",
+      "pct_missing_chemical_overall": 0.8285714285714286,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1088",
+      "pct_missing_chemical_overall": 0.1762349799732977,
+      "n_obs": 107,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1096",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 103,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1100",
+      "pct_missing_chemical_overall": 0.1415465268676277,
+      "n_obs": 109,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1104",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1106",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1110",
+      "pct_missing_chemical_overall": 0.1341789052069426,
+      "n_obs": 107,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1116",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1124",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1138",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1144",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1148",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1150",
+      "pct_missing_chemical_overall": 0.2635281385281385,
+      "n_obs": 132,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1170",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1172",
+      "pct_missing_chemical_overall": 0.8780487804878049,
+      "n_obs": 41,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1196",
+      "pct_missing_chemical_overall": 0.9006968641114983,
+      "n_obs": 41,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1200",
+      "pct_missing_chemical_overall": 0.865546218487395,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1207",
+      "pct_missing_chemical_overall": 0.9,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1210",
+      "pct_missing_chemical_overall": 0.9672211350293544,
+      "n_obs": 292,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1214",
+      "pct_missing_chemical_overall": 0.5192307692307693,
+      "n_obs": 26,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1224",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1226",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1228",
+      "pct_missing_chemical_overall": 0.9710714285714286,
+      "n_obs": 200,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1230",
+      "pct_missing_chemical_overall": 0.8493506493506493,
+      "n_obs": 55,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1236",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1240",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1254",
+      "pct_missing_chemical_overall": 0.2428571428571428,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1258",
+      "pct_missing_chemical_overall": 0.698547215496368,
+      "n_obs": 177,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1260",
+      "pct_missing_chemical_overall": 0.7285714285714285,
+      "n_obs": 20,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1262",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1264",
+      "pct_missing_chemical_overall": 0.8724489795918368,
+      "n_obs": 14,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1280",
+      "pct_missing_chemical_overall": 0.8482142857142857,
+      "n_obs": 16,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1282",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1284",
+      "pct_missing_chemical_overall": 0.7473297730307076,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1286",
+      "pct_missing_chemical_overall": 0.6618578465869106,
+      "n_obs": 203,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1288",
+      "pct_missing_chemical_overall": 0.7655152224824356,
+      "n_obs": 244,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1290",
+      "pct_missing_chemical_overall": 0.9747899159663864,
+      "n_obs": 476,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1298",
+      "pct_missing_chemical_overall": 0.8428571428571429,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1302",
+      "pct_missing_chemical_overall": 0.974025974025974,
+      "n_obs": 77,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1304",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1332",
+      "pct_missing_chemical_overall": 0.0357142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1348",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1352",
+      "pct_missing_chemical_overall": 0.8788819875776398,
+      "n_obs": 23,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1358",
+      "pct_missing_chemical_overall": 0.964616402116402,
+      "n_obs": 216,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1362",
+      "pct_missing_chemical_overall": 0.9706349206349206,
+      "n_obs": 90,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1364",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1368",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1374",
+      "pct_missing_chemical_overall": 0.9914285714285714,
+      "n_obs": 50,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1404",
+      "pct_missing_chemical_overall": 0.9200892857142856,
+      "n_obs": 160,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1410",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1418",
+      "pct_missing_chemical_overall": 0.932175622542595,
+      "n_obs": 436,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1424",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1428",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 13,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1442",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1444",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1452",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1470",
+      "pct_missing_chemical_overall": 0.9893390191897654,
+      "n_obs": 67,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1506",
+      "pct_missing_chemical_overall": 0.5204081632653061,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1508",
+      "pct_missing_chemical_overall": 0.3809523809523809,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1510",
+      "pct_missing_chemical_overall": 0.4285714285714285,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1512",
+      "pct_missing_chemical_overall": 0.1571428571428571,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1514",
+      "pct_missing_chemical_overall": 0.3333333333333333,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1516",
+      "pct_missing_chemical_overall": 0.25,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1521",
+      "pct_missing_chemical_overall": 0.3142857142857143,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1524",
+      "pct_missing_chemical_overall": 0.1904761904761904,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1526",
+      "pct_missing_chemical_overall": 0.2285714285714285,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1528",
+      "pct_missing_chemical_overall": 0.2936507936507936,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1530",
+      "pct_missing_chemical_overall": 0.0952380952380952,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1554",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1560",
+      "pct_missing_chemical_overall": 0.6071428571428571,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1564",
+      "pct_missing_chemical_overall": 0.6785714285714286,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1592",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1598",
+      "pct_missing_chemical_overall": 0.6571428571428571,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1602",
+      "pct_missing_chemical_overall": 0.9583333333333334,
+      "n_obs": 312,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1610",
+      "pct_missing_chemical_overall": 0.8015873015873016,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1614",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1628",
+      "pct_missing_chemical_overall": 0.336734693877551,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1634",
+      "pct_missing_chemical_overall": 0.9098214285714286,
+      "n_obs": 80,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1654",
+      "pct_missing_chemical_overall": 0.4642857142857143,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1665",
+      "pct_missing_chemical_overall": 0.775,
+      "n_obs": 40,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1666",
+      "pct_missing_chemical_overall": 0.9400417101147028,
+      "n_obs": 137,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1672",
+      "pct_missing_chemical_overall": 0.6728571428571428,
+      "n_obs": 100,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1674",
+      "pct_missing_chemical_overall": 0.8326250408630271,
+      "n_obs": 437,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1680",
+      "pct_missing_chemical_overall": 0.9547038327526132,
+      "n_obs": 164,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1682",
+      "pct_missing_chemical_overall": 0.9358003442340792,
+      "n_obs": 830,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1686",
+      "pct_missing_chemical_overall": 0.8791434438251686,
+      "n_obs": 487,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1702",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1728",
+      "pct_missing_chemical_overall": 0.7971281296023565,
+      "n_obs": 388,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1730",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1734",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1736",
+      "pct_missing_chemical_overall": 0.9503523382447148,
+      "n_obs": 446,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1742",
+      "pct_missing_chemical_overall": 0.5357142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1744",
+      "pct_missing_chemical_overall": 0.9538690476190476,
+      "n_obs": 144,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1748",
+      "pct_missing_chemical_overall": 0.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1750",
+      "pct_missing_chemical_overall": 0.9554242749731472,
+      "n_obs": 133,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1756",
+      "pct_missing_chemical_overall": 0.9413919413919414,
+      "n_obs": 39,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1776",
+      "pct_missing_chemical_overall": 0.834841628959276,
+      "n_obs": 221,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1802",
+      "pct_missing_chemical_overall": 0.6882536530004256,
+      "n_obs": 1007,
+      "supported": true
+    },
+    {
+      "MIDAS": "C1808",
+      "pct_missing_chemical_overall": 0.6883116883116883,
+      "n_obs": 11,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1820",
+      "pct_missing_chemical_overall": 0.5465367965367965,
+      "n_obs": 66,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1870",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1888",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 13,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1892",
+      "pct_missing_chemical_overall": 0.986125385405961,
+      "n_obs": 139,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1896",
+      "pct_missing_chemical_overall": 0.9680170575692963,
+      "n_obs": 134,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1906",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1914",
+      "pct_missing_chemical_overall": 0.1071428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1916",
+      "pct_missing_chemical_overall": 0.1071428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1918",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1920",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1938",
+      "pct_missing_chemical_overall": 0.2619047619047619,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C1958",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2004",
+      "pct_missing_chemical_overall": 0.9386160714285714,
+      "n_obs": 64,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2016",
+      "pct_missing_chemical_overall": 0.3775510204081632,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2018",
+      "pct_missing_chemical_overall": 0.9761904761904762,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2020",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2022",
+      "pct_missing_chemical_overall": 0.875,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2026",
+      "pct_missing_chemical_overall": 0.625,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2028",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2030",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2032",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2052",
+      "pct_missing_chemical_overall": 0.9047619047619048,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2054",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2064",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2084",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2102",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2104",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2118",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2140",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2144",
+      "pct_missing_chemical_overall": 0.9628571428571427,
+      "n_obs": 25,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2146",
+      "pct_missing_chemical_overall": 0.86004217185029,
+      "n_obs": 542,
+      "supported": true
+    },
+    {
+      "MIDAS": "C2156",
+      "pct_missing_chemical_overall": 0.839622641509434,
+      "n_obs": 159,
+      "supported": true
+    },
+    {
+      "MIDAS": "C2158",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2160",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2178",
+      "pct_missing_chemical_overall": 0.9821428571428572,
+      "n_obs": 52,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2190",
+      "pct_missing_chemical_overall": 0.9518518518518518,
+      "n_obs": 135,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2196",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2198",
+      "pct_missing_chemical_overall": 0.9520795660036168,
+      "n_obs": 158,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2202",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 50,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2214",
+      "pct_missing_chemical_overall": 0.6116071428571429,
+      "n_obs": 16,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2216",
+      "pct_missing_chemical_overall": 0.9504264392324094,
+      "n_obs": 536,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2218",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2220",
+      "pct_missing_chemical_overall": 0.9029304029304028,
+      "n_obs": 78,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2222",
+      "pct_missing_chemical_overall": 0.9098214285714286,
+      "n_obs": 80,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2226",
+      "pct_missing_chemical_overall": 0.6883116883116883,
+      "n_obs": 33,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2228",
+      "pct_missing_chemical_overall": 0.8785714285714286,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2230",
+      "pct_missing_chemical_overall": 0.5044642857142857,
+      "n_obs": 16,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2232",
+      "pct_missing_chemical_overall": 0.8272577996715927,
+      "n_obs": 435,
+      "supported": true
+    },
+    {
+      "MIDAS": "C2242",
+      "pct_missing_chemical_overall": 0.9742063492063492,
+      "n_obs": 216,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2250",
+      "pct_missing_chemical_overall": 0.9545454545454546,
+      "n_obs": 66,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2254",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2262",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2264",
+      "pct_missing_chemical_overall": 0.9532186352213416,
+      "n_obs": 739,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2270",
+      "pct_missing_chemical_overall": 0.9717837411207576,
+      "n_obs": 362,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2274",
+      "pct_missing_chemical_overall": 0.881336405529954,
+      "n_obs": 62,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2276",
+      "pct_missing_chemical_overall": 0.9051948051948052,
+      "n_obs": 55,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2278",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2284",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2286",
+      "pct_missing_chemical_overall": 0.9301412872841444,
+      "n_obs": 455,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2294",
+      "pct_missing_chemical_overall": 0.9384920634920636,
+      "n_obs": 324,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2308",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2336",
+      "pct_missing_chemical_overall": 0.7698635634028892,
+      "n_obs": 356,
+      "supported": true
+    },
+    {
+      "MIDAS": "C2350",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2374",
+      "pct_missing_chemical_overall": 0.9678899082568808,
+      "n_obs": 218,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2384",
+      "pct_missing_chemical_overall": 0.8799441600744532,
+      "n_obs": 307,
+      "supported": true
+    },
+    {
+      "MIDAS": "C2398",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2400",
+      "pct_missing_chemical_overall": 0.9642857142857144,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2402",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2406",
+      "pct_missing_chemical_overall": 0.8333333333333334,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2414",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2416",
+      "pct_missing_chemical_overall": 0.5428571428571428,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2424",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2428",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2432",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2436",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2438",
+      "pct_missing_chemical_overall": 0.3928571428571428,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2454",
+      "pct_missing_chemical_overall": 0.3333333333333333,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2456",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2458",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2474",
+      "pct_missing_chemical_overall": 0.1292517006802721,
+      "n_obs": 21,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2480",
+      "pct_missing_chemical_overall": 0.1614906832298136,
+      "n_obs": 23,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2488",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2494",
+      "pct_missing_chemical_overall": 0.4285714285714285,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2516",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2520",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2536",
+      "pct_missing_chemical_overall": 0.5848214285714286,
+      "n_obs": 16,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2538",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 20,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2544",
+      "pct_missing_chemical_overall": 0.9896401308615048,
+      "n_obs": 262,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2566",
+      "pct_missing_chemical_overall": 0.2172619047619047,
+      "n_obs": 24,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2580",
+      "pct_missing_chemical_overall": 0.9227799227799228,
+      "n_obs": 37,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2590",
+      "pct_missing_chemical_overall": 0.8722358722358723,
+      "n_obs": 407,
+      "supported": true
+    },
+    {
+      "MIDAS": "C2592",
+      "pct_missing_chemical_overall": 0.7817460317460317,
+      "n_obs": 54,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2604",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2608",
+      "pct_missing_chemical_overall": 0.5935374149659864,
+      "n_obs": 168,
+      "supported": true
+    },
+    {
+      "MIDAS": "C2612",
+      "pct_missing_chemical_overall": 0.8850446428571429,
+      "n_obs": 64,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2614",
+      "pct_missing_chemical_overall": 0.9811446317657496,
+      "n_obs": 322,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2620",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2626",
+      "pct_missing_chemical_overall": 0.6904761904761905,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2630",
+      "pct_missing_chemical_overall": 0.6095238095238096,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2642",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 11,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2650",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2652",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2682",
+      "pct_missing_chemical_overall": 0.8733766233766234,
+      "n_obs": 22,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2698",
+      "pct_missing_chemical_overall": 0.8950892857142857,
+      "n_obs": 32,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2700",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2702",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2704",
+      "pct_missing_chemical_overall": 0.9515738498789348,
+      "n_obs": 59,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2710",
+      "pct_missing_chemical_overall": 0.98992673992674,
+      "n_obs": 312,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2712",
+      "pct_missing_chemical_overall": 0.1714285714285714,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2718",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2724",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2726",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2730",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2752",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2756",
+      "pct_missing_chemical_overall": 0.1071428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2758",
+      "pct_missing_chemical_overall": 0.1071428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2766",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2782",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2800",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2814",
+      "pct_missing_chemical_overall": 0.3809523809523809,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2822",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2838",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2840",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2842",
+      "pct_missing_chemical_overall": 0.2448979591836734,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2856",
+      "pct_missing_chemical_overall": 0.986810064935065,
+      "n_obs": 352,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2858",
+      "pct_missing_chemical_overall": 0.9886532738095238,
+      "n_obs": 384,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2866",
+      "pct_missing_chemical_overall": 0.3571428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2882",
+      "pct_missing_chemical_overall": 0.967391304347826,
+      "n_obs": 230,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2900",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2901",
+      "pct_missing_chemical_overall": 0.9679802955665024,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2920",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2922",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2926",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2930",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2936",
+      "pct_missing_chemical_overall": 0.8,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2938",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2944",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2948",
+      "pct_missing_chemical_overall": 0.8757763975155279,
+      "n_obs": 23,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2954",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C2996",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3004",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3011",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3038",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3040",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3056",
+      "pct_missing_chemical_overall": 0.940766550522648,
+      "n_obs": 41,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3062",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3080",
+      "pct_missing_chemical_overall": 0.3571428571428571,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3084",
+      "pct_missing_chemical_overall": 0.573469387755102,
+      "n_obs": 70,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3102",
+      "pct_missing_chemical_overall": 0.9368770764119602,
+      "n_obs": 43,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3104",
+      "pct_missing_chemical_overall": 0.1071428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3124",
+      "pct_missing_chemical_overall": 0.4613899613899614,
+      "n_obs": 37,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3126",
+      "pct_missing_chemical_overall": 0.3804029304029304,
+      "n_obs": 390,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3128",
+      "pct_missing_chemical_overall": 0.1974789915966386,
+      "n_obs": 34,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3130",
+      "pct_missing_chemical_overall": 0.5075826508947529,
+      "n_obs": 471,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3132",
+      "pct_missing_chemical_overall": 0.607484076433121,
+      "n_obs": 628,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3134",
+      "pct_missing_chemical_overall": 0.6863331235577932,
+      "n_obs": 1362,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3136",
+      "pct_missing_chemical_overall": 0.9834586466165414,
+      "n_obs": 475,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3138",
+      "pct_missing_chemical_overall": 0.0178571428571428,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3140",
+      "pct_missing_chemical_overall": 0.4939467312348668,
+      "n_obs": 177,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3158",
+      "pct_missing_chemical_overall": 0.9625850340136054,
+      "n_obs": 210,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3160",
+      "pct_missing_chemical_overall": 0.9496598639455782,
+      "n_obs": 105,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3164",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3170",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 33,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3172",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 37,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3174",
+      "pct_missing_chemical_overall": 0.7449308755760369,
+      "n_obs": 310,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3176",
+      "pct_missing_chemical_overall": 0.8613445378151261,
+      "n_obs": 34,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3178",
+      "pct_missing_chemical_overall": 0.92807881773399,
+      "n_obs": 145,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3180",
+      "pct_missing_chemical_overall": 0.9098214285714286,
+      "n_obs": 80,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3182",
+      "pct_missing_chemical_overall": 0.9847161572052402,
+      "n_obs": 229,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3186",
+      "pct_missing_chemical_overall": 0.9845132743362832,
+      "n_obs": 226,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3188",
+      "pct_missing_chemical_overall": 0.7032108516483516,
+      "n_obs": 832,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3196",
+      "pct_missing_chemical_overall": 0.5338058887677208,
+      "n_obs": 262,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3198",
+      "pct_missing_chemical_overall": 0.3776190476190476,
+      "n_obs": 150,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3199",
+      "pct_missing_chemical_overall": 0.3877551020408163,
+      "n_obs": 371,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3200",
+      "pct_missing_chemical_overall": 0.8602372356884992,
+      "n_obs": 277,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3201",
+      "pct_missing_chemical_overall": 0.3879242304656669,
+      "n_obs": 362,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3206",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3212",
+      "pct_missing_chemical_overall": 0.3458646616541353,
+      "n_obs": 57,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3216",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3220",
+      "pct_missing_chemical_overall": 0.1836734693877551,
+      "n_obs": 49,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3222",
+      "pct_missing_chemical_overall": 0.7495590828924162,
+      "n_obs": 81,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3224",
+      "pct_missing_chemical_overall": 0.7361213915618061,
+      "n_obs": 193,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3226",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3228",
+      "pct_missing_chemical_overall": 0.8333333333333334,
+      "n_obs": 18,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3230",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3232",
+      "pct_missing_chemical_overall": 0.5931372549019608,
+      "n_obs": 612,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3234",
+      "pct_missing_chemical_overall": 0.6875537218497507,
+      "n_obs": 831,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3236",
+      "pct_missing_chemical_overall": 0.5639097744360902,
+      "n_obs": 19,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3240",
+      "pct_missing_chemical_overall": 0.9557522123893806,
+      "n_obs": 113,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3252",
+      "pct_missing_chemical_overall": 0.6710758377425045,
+      "n_obs": 81,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3254",
+      "pct_missing_chemical_overall": 0.9629629629629628,
+      "n_obs": 243,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3262",
+      "pct_missing_chemical_overall": 0.94406512605042,
+      "n_obs": 272,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3264",
+      "pct_missing_chemical_overall": 0.1142857142857142,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3272",
+      "pct_missing_chemical_overall": 0.8714285714285714,
+      "n_obs": 20,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3274",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3276",
+      "pct_missing_chemical_overall": 0.3571428571428571,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3278",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3282",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3290",
+      "pct_missing_chemical_overall": 0.9741641337386018,
+      "n_obs": 188,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3300",
+      "pct_missing_chemical_overall": 0.9825680272108844,
+      "n_obs": 840,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3302",
+      "pct_missing_chemical_overall": 0.9490764277241146,
+      "n_obs": 843,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3308",
+      "pct_missing_chemical_overall": 0.9628851540616248,
+      "n_obs": 204,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3312",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3316",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3328",
+      "pct_missing_chemical_overall": 0.9381868131868132,
+      "n_obs": 52,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3330",
+      "pct_missing_chemical_overall": 0.7,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3332",
+      "pct_missing_chemical_overall": 0.5535714285714286,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3340",
+      "pct_missing_chemical_overall": 0.2261904761904762,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3352",
+      "pct_missing_chemical_overall": 0.949248120300752,
+      "n_obs": 38,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3354",
+      "pct_missing_chemical_overall": 0.1547619047619047,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3370",
+      "pct_missing_chemical_overall": 0.3013392857142857,
+      "n_obs": 32,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3374",
+      "pct_missing_chemical_overall": 0.514010989010989,
+      "n_obs": 520,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3376",
+      "pct_missing_chemical_overall": 0.7676419965576592,
+      "n_obs": 498,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3382",
+      "pct_missing_chemical_overall": 0.6279680809653562,
+      "n_obs": 734,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3388",
+      "pct_missing_chemical_overall": 0.9357484620642516,
+      "n_obs": 209,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3390",
+      "pct_missing_chemical_overall": 0.9325396825396826,
+      "n_obs": 252,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3392",
+      "pct_missing_chemical_overall": 0.8369518019973947,
+      "n_obs": 658,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3394",
+      "pct_missing_chemical_overall": 0.8988095238095238,
+      "n_obs": 24,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3396",
+      "pct_missing_chemical_overall": 0.5122145512480085,
+      "n_obs": 538,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3398",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3408",
+      "pct_missing_chemical_overall": 0.7837386018237082,
+      "n_obs": 470,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3410",
+      "pct_missing_chemical_overall": 0.819047619047619,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3414",
+      "pct_missing_chemical_overall": 0.572992700729927,
+      "n_obs": 274,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3416",
+      "pct_missing_chemical_overall": 0.6286096768024478,
+      "n_obs": 747,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3417",
+      "pct_missing_chemical_overall": 0.9693877551020408,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3418",
+      "pct_missing_chemical_overall": 0.5941255006675568,
+      "n_obs": 642,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3420",
+      "pct_missing_chemical_overall": 0.6059718969555035,
+      "n_obs": 610,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3422",
+      "pct_missing_chemical_overall": 0.7502289377289377,
+      "n_obs": 312,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3424",
+      "pct_missing_chemical_overall": 0.4020766201217329,
+      "n_obs": 399,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3432",
+      "pct_missing_chemical_overall": 0.5302840434419381,
+      "n_obs": 342,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3434",
+      "pct_missing_chemical_overall": 0.6950354609929078,
+      "n_obs": 564,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3438",
+      "pct_missing_chemical_overall": 0.6642857142857143,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3440",
+      "pct_missing_chemical_overall": 0.9199555308504724,
+      "n_obs": 257,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3444",
+      "pct_missing_chemical_overall": 0.6839901477832512,
+      "n_obs": 580,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3446",
+      "pct_missing_chemical_overall": 0.847167487684729,
+      "n_obs": 580,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3448",
+      "pct_missing_chemical_overall": 0.3986283037805286,
+      "n_obs": 427,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3452",
+      "pct_missing_chemical_overall": 0.5548340548340548,
+      "n_obs": 594,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3454",
+      "pct_missing_chemical_overall": 0.5233082706766917,
+      "n_obs": 570,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3456",
+      "pct_missing_chemical_overall": 0.5991519895629485,
+      "n_obs": 657,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3458",
+      "pct_missing_chemical_overall": 0.7123125493291239,
+      "n_obs": 181,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3460",
+      "pct_missing_chemical_overall": 0.9567623659633344,
+      "n_obs": 413,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3464",
+      "pct_missing_chemical_overall": 0.9482173174872666,
+      "n_obs": 589,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3466",
+      "pct_missing_chemical_overall": 0.935515873015873,
+      "n_obs": 72,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3470",
+      "pct_missing_chemical_overall": 0.173469387755102,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3472",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3476",
+      "pct_missing_chemical_overall": 0.9,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3478",
+      "pct_missing_chemical_overall": 0.9505494505494504,
+      "n_obs": 260,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3480",
+      "pct_missing_chemical_overall": 0.975647034848176,
+      "n_obs": 701,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3486",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3492",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3494",
+      "pct_missing_chemical_overall": 0.8214285714285714,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3500",
+      "pct_missing_chemical_overall": 0.5761475761475762,
+      "n_obs": 333,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3502",
+      "pct_missing_chemical_overall": 0.918546365914787,
+      "n_obs": 57,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3504",
+      "pct_missing_chemical_overall": 0.6415976970133141,
+      "n_obs": 397,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3512",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3520",
+      "pct_missing_chemical_overall": 0.9766647694934548,
+      "n_obs": 502,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3524",
+      "pct_missing_chemical_overall": 0.6954425942156004,
+      "n_obs": 163,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3526",
+      "pct_missing_chemical_overall": 0.6972049689440993,
+      "n_obs": 276,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3528",
+      "pct_missing_chemical_overall": 0.8733609385783299,
+      "n_obs": 207,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3532",
+      "pct_missing_chemical_overall": 0.8409090909090909,
+      "n_obs": 66,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3534",
+      "pct_missing_chemical_overall": 0.5871898054996647,
+      "n_obs": 213,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3536",
+      "pct_missing_chemical_overall": 0.5038819875776398,
+      "n_obs": 184,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3562",
+      "pct_missing_chemical_overall": 0.9516220830961868,
+      "n_obs": 251,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3564",
+      "pct_missing_chemical_overall": 0.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3566",
+      "pct_missing_chemical_overall": 0.1785714285714285,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3568",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3582",
+      "pct_missing_chemical_overall": 0.8775510204081632,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3584",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3585",
+      "pct_missing_chemical_overall": 0.8452380952380952,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3594",
+      "pct_missing_chemical_overall": 0.9220989366620436,
+      "n_obs": 618,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3598",
+      "pct_missing_chemical_overall": 0.9943181818181818,
+      "n_obs": 88,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3600",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3604",
+      "pct_missing_chemical_overall": 0.7013366750208856,
+      "n_obs": 342,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3606",
+      "pct_missing_chemical_overall": 0.9155844155844156,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3608",
+      "pct_missing_chemical_overall": 0.9758890898131404,
+      "n_obs": 474,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3610",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3612",
+      "pct_missing_chemical_overall": 0.9200310559006212,
+      "n_obs": 92,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3614",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3616",
+      "pct_missing_chemical_overall": 0.3111305872042068,
+      "n_obs": 163,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3624",
+      "pct_missing_chemical_overall": 0.8003442340791739,
+      "n_obs": 581,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3626",
+      "pct_missing_chemical_overall": 0.9256360078277888,
+      "n_obs": 365,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3636",
+      "pct_missing_chemical_overall": 0.25,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3648",
+      "pct_missing_chemical_overall": 0.4285714285714285,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3666",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3670",
+      "pct_missing_chemical_overall": 0.8333333333333334,
+      "n_obs": 18,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3672",
+      "pct_missing_chemical_overall": 0.5657142857142857,
+      "n_obs": 475,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3680",
+      "pct_missing_chemical_overall": 0.6314285714285715,
+      "n_obs": 50,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3682",
+      "pct_missing_chemical_overall": 0.904002603319232,
+      "n_obs": 439,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3686",
+      "pct_missing_chemical_overall": 0.8673469387755102,
+      "n_obs": 28,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3688",
+      "pct_missing_chemical_overall": 0.7389678384442783,
+      "n_obs": 191,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3690",
+      "pct_missing_chemical_overall": 0.872356884992264,
+      "n_obs": 277,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3692",
+      "pct_missing_chemical_overall": 0.8425655976676385,
+      "n_obs": 49,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3694",
+      "pct_missing_chemical_overall": 0.9838543012141564,
+      "n_obs": 553,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3696",
+      "pct_missing_chemical_overall": 0.8418743418743418,
+      "n_obs": 814,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3698",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3700",
+      "pct_missing_chemical_overall": 0.6256971256971257,
+      "n_obs": 333,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3702",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3706",
+      "pct_missing_chemical_overall": 0.8990729034976822,
+      "n_obs": 339,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3708",
+      "pct_missing_chemical_overall": 0.9662946428571428,
+      "n_obs": 320,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3712",
+      "pct_missing_chemical_overall": 0.7099679249938318,
+      "n_obs": 579,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3714",
+      "pct_missing_chemical_overall": 0.7997624212374754,
+      "n_obs": 1383,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3716",
+      "pct_missing_chemical_overall": 0.9095928226363008,
+      "n_obs": 207,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3718",
+      "pct_missing_chemical_overall": 0.8504983388704319,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3724",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3728",
+      "pct_missing_chemical_overall": 0.9661796536796536,
+      "n_obs": 264,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3730",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3732",
+      "pct_missing_chemical_overall": 0.2619047619047619,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3734",
+      "pct_missing_chemical_overall": 0.7223796033994334,
+      "n_obs": 1059,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3744",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3746",
+      "pct_missing_chemical_overall": 0.9856680536292188,
+      "n_obs": 309,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3748",
+      "pct_missing_chemical_overall": 0.6600178292846,
+      "n_obs": 641,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3750",
+      "pct_missing_chemical_overall": 0.738758456028651,
+      "n_obs": 718,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3752",
+      "pct_missing_chemical_overall": 0.7362637362637363,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3756",
+      "pct_missing_chemical_overall": 0.99438202247191,
+      "n_obs": 178,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3758",
+      "pct_missing_chemical_overall": 0.59828856667459,
+      "n_obs": 601,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3760",
+      "pct_missing_chemical_overall": 0.8801110550227158,
+      "n_obs": 283,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3762",
+      "pct_missing_chemical_overall": 0.8954433497536946,
+      "n_obs": 580,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3764",
+      "pct_missing_chemical_overall": 0.1071428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3768",
+      "pct_missing_chemical_overall": 0.9834656084656084,
+      "n_obs": 216,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3770",
+      "pct_missing_chemical_overall": 0.8232758620689655,
+      "n_obs": 116,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3772",
+      "pct_missing_chemical_overall": 0.8952811893988365,
+      "n_obs": 221,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3776",
+      "pct_missing_chemical_overall": 0.8622448979591837,
+      "n_obs": 42,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3780",
+      "pct_missing_chemical_overall": 0.334975369458128,
+      "n_obs": 116,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3784",
+      "pct_missing_chemical_overall": 0.8922231614539307,
+      "n_obs": 338,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3786",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3788",
+      "pct_missing_chemical_overall": 0.9588891583798204,
+      "n_obs": 589,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3790",
+      "pct_missing_chemical_overall": 0.3968253968253968,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3796",
+      "pct_missing_chemical_overall": 0.6942080907598149,
+      "n_obs": 957,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3798",
+      "pct_missing_chemical_overall": 0.7907268170426065,
+      "n_obs": 57,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3800",
+      "pct_missing_chemical_overall": 0.957624716553288,
+      "n_obs": 504,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3802",
+      "pct_missing_chemical_overall": 0.7746572313135781,
+      "n_obs": 323,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3803",
+      "pct_missing_chemical_overall": 0.9943609022556392,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3806",
+      "pct_missing_chemical_overall": 0.988095238095238,
+      "n_obs": 396,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3814",
+      "pct_missing_chemical_overall": 0.5961256823325789,
+      "n_obs": 1073,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3816",
+      "pct_missing_chemical_overall": 0.9634849455477258,
+      "n_obs": 223,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3818",
+      "pct_missing_chemical_overall": 0.9763101220387652,
+      "n_obs": 398,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3822",
+      "pct_missing_chemical_overall": 0.8821864111498258,
+      "n_obs": 328,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3824",
+      "pct_missing_chemical_overall": 0.8432214415820973,
+      "n_obs": 549,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3826",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3828",
+      "pct_missing_chemical_overall": 0.5434680451127819,
+      "n_obs": 304,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3830",
+      "pct_missing_chemical_overall": 0.553921568627451,
+      "n_obs": 408,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3832",
+      "pct_missing_chemical_overall": 0.6965915440491711,
+      "n_obs": 767,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3836",
+      "pct_missing_chemical_overall": 0.7315430047988187,
+      "n_obs": 774,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3838",
+      "pct_missing_chemical_overall": 0.7834325396825397,
+      "n_obs": 720,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3840",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3850",
+      "pct_missing_chemical_overall": 0.8333333333333334,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3856",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3860",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3862",
+      "pct_missing_chemical_overall": 0.9786836200448766,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3872",
+      "pct_missing_chemical_overall": 0.4285714285714285,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3874",
+      "pct_missing_chemical_overall": 0.8928571428571429,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3876",
+      "pct_missing_chemical_overall": 0.631578947368421,
+      "n_obs": 19,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3884",
+      "pct_missing_chemical_overall": 0.917391304347826,
+      "n_obs": 115,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3890",
+      "pct_missing_chemical_overall": 0.8701298701298701,
+      "n_obs": 11,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3894",
+      "pct_missing_chemical_overall": 0.9879860200961118,
+      "n_obs": 327,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3898",
+      "pct_missing_chemical_overall": 0.965865992414665,
+      "n_obs": 339,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3908",
+      "pct_missing_chemical_overall": 0.9611650485436892,
+      "n_obs": 103,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3916",
+      "pct_missing_chemical_overall": 0.9408672798948752,
+      "n_obs": 761,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3920",
+      "pct_missing_chemical_overall": 0.8160830492717694,
+      "n_obs": 461,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3922",
+      "pct_missing_chemical_overall": 0.9492401215805472,
+      "n_obs": 235,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3924",
+      "pct_missing_chemical_overall": 0.9565217391304348,
+      "n_obs": 69,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3926",
+      "pct_missing_chemical_overall": 0.9793650793650792,
+      "n_obs": 45,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3931",
+      "pct_missing_chemical_overall": 0.8452380952380952,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3936",
+      "pct_missing_chemical_overall": 0.9137466307277629,
+      "n_obs": 53,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3940",
+      "pct_missing_chemical_overall": 0.4755102040816326,
+      "n_obs": 105,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3942",
+      "pct_missing_chemical_overall": 0.9585174275895926,
+      "n_obs": 291,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3954",
+      "pct_missing_chemical_overall": 0.1208791208791208,
+      "n_obs": 13,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3964",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3966",
+      "pct_missing_chemical_overall": 0.872822299651568,
+      "n_obs": 41,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3976",
+      "pct_missing_chemical_overall": 0.7892857142857143,
+      "n_obs": 20,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3980",
+      "pct_missing_chemical_overall": 0.776844070961718,
+      "n_obs": 153,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3984",
+      "pct_missing_chemical_overall": 0.9230769230769232,
+      "n_obs": 13,
+      "supported": false
+    },
+    {
+      "MIDAS": "C3992",
+      "pct_missing_chemical_overall": 0.7315605590062112,
+      "n_obs": 368,
+      "supported": true
+    },
+    {
+      "MIDAS": "C3998",
+      "pct_missing_chemical_overall": 0.9614197530864198,
+      "n_obs": 324,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4012",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4024",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4048",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4050",
+      "pct_missing_chemical_overall": 0.860248447204969,
+      "n_obs": 23,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4076",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4086",
+      "pct_missing_chemical_overall": 0.8864027538726333,
+      "n_obs": 83,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4088",
+      "pct_missing_chemical_overall": 0.3571428571428571,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4090",
+      "pct_missing_chemical_overall": 0.9488272921108742,
+      "n_obs": 67,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4092",
+      "pct_missing_chemical_overall": 0.8888888888888888,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4120",
+      "pct_missing_chemical_overall": 0.5952380952380952,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4126",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 22,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4128",
+      "pct_missing_chemical_overall": 0.9910542251582714,
+      "n_obs": 519,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4132",
+      "pct_missing_chemical_overall": 0.2321428571428571,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4156",
+      "pct_missing_chemical_overall": 0.1785714285714285,
+      "n_obs": 32,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4180",
+      "pct_missing_chemical_overall": 0.2619047619047619,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4192",
+      "pct_missing_chemical_overall": 0.7448979591836735,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4194",
+      "pct_missing_chemical_overall": 0.9642857142857144,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4196",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4206",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4208",
+      "pct_missing_chemical_overall": 0.9047619047619048,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4210",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4212",
+      "pct_missing_chemical_overall": 0.7261904761904762,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4214",
+      "pct_missing_chemical_overall": 0.6607142857142857,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4222",
+      "pct_missing_chemical_overall": 0.5758928571428571,
+      "n_obs": 16,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4224",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4252",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4260",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4264",
+      "pct_missing_chemical_overall": 0.3214285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4268",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4272",
+      "pct_missing_chemical_overall": 0.9333791208791208,
+      "n_obs": 104,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4274",
+      "pct_missing_chemical_overall": 0.9673721340388008,
+      "n_obs": 243,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4276",
+      "pct_missing_chemical_overall": 0.9508928571428572,
+      "n_obs": 48,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4278",
+      "pct_missing_chemical_overall": 0.9838709677419356,
+      "n_obs": 217,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4282",
+      "pct_missing_chemical_overall": 0.6942355889724311,
+      "n_obs": 57,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4284",
+      "pct_missing_chemical_overall": 0.9282142857142858,
+      "n_obs": 200,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4288",
+      "pct_missing_chemical_overall": 0.3571428571428571,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4290",
+      "pct_missing_chemical_overall": 0.5555555555555556,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4292",
+      "pct_missing_chemical_overall": 0.4495798319327731,
+      "n_obs": 68,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4294",
+      "pct_missing_chemical_overall": 0.8511440940012368,
+      "n_obs": 1155,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4296",
+      "pct_missing_chemical_overall": 0.2023809523809523,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4300",
+      "pct_missing_chemical_overall": 0.9794948397609996,
+      "n_obs": 526,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4302",
+      "pct_missing_chemical_overall": 0.2053571428571428,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4306",
+      "pct_missing_chemical_overall": 0.9032738095238096,
+      "n_obs": 48,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4308",
+      "pct_missing_chemical_overall": 0.369047619047619,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4316",
+      "pct_missing_chemical_overall": 0.8293650793650794,
+      "n_obs": 36,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4318",
+      "pct_missing_chemical_overall": 0.5974025974025974,
+      "n_obs": 22,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4321",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4322",
+      "pct_missing_chemical_overall": 0.6147186147186147,
+      "n_obs": 33,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4326",
+      "pct_missing_chemical_overall": 0.7428571428571429,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4328",
+      "pct_missing_chemical_overall": 0.8719313812481514,
+      "n_obs": 483,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4330",
+      "pct_missing_chemical_overall": 0.1666666666666666,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4332",
+      "pct_missing_chemical_overall": 0.9011136712749616,
+      "n_obs": 372,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4336",
+      "pct_missing_chemical_overall": 0.6775233795549823,
+      "n_obs": 443,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4338",
+      "pct_missing_chemical_overall": 0.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4340",
+      "pct_missing_chemical_overall": 0.9117833386126069,
+      "n_obs": 451,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4342",
+      "pct_missing_chemical_overall": 0.8296703296703297,
+      "n_obs": 13,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4344",
+      "pct_missing_chemical_overall": 0.9734432234432234,
+      "n_obs": 390,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4346",
+      "pct_missing_chemical_overall": 0.8348214285714286,
+      "n_obs": 16,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4350",
+      "pct_missing_chemical_overall": 0.9705882352941176,
+      "n_obs": 221,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4352",
+      "pct_missing_chemical_overall": 0.9664786967418546,
+      "n_obs": 228,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4354",
+      "pct_missing_chemical_overall": 0.2678571428571428,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4370",
+      "pct_missing_chemical_overall": 0.5178571428571429,
+      "n_obs": 12,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4378",
+      "pct_missing_chemical_overall": 0.7701149425287356,
+      "n_obs": 261,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4388",
+      "pct_missing_chemical_overall": 0.6666666666666666,
+      "n_obs": 18,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4396",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4406",
+      "pct_missing_chemical_overall": 0.8026315789473685,
+      "n_obs": 190,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4412",
+      "pct_missing_chemical_overall": 0.9512987012987012,
+      "n_obs": 132,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4414",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4418",
+      "pct_missing_chemical_overall": 0.3142857142857143,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4420",
+      "pct_missing_chemical_overall": 0.8,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4422",
+      "pct_missing_chemical_overall": 0.5952380952380952,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4424",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4432",
+      "pct_missing_chemical_overall": 0.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4434",
+      "pct_missing_chemical_overall": 0.9431216931216932,
+      "n_obs": 162,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4436",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4438",
+      "pct_missing_chemical_overall": 0.8174603174603174,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4444",
+      "pct_missing_chemical_overall": 0.7550066755674232,
+      "n_obs": 535,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4446",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4448",
+      "pct_missing_chemical_overall": 0.9476421636615812,
+      "n_obs": 206,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4450",
+      "pct_missing_chemical_overall": 0.8821428571428571,
+      "n_obs": 40,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4452",
+      "pct_missing_chemical_overall": 0.6567593480345159,
+      "n_obs": 298,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4454",
+      "pct_missing_chemical_overall": 0.9744897959183674,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4456",
+      "pct_missing_chemical_overall": 0.9375,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4458",
+      "pct_missing_chemical_overall": 0.4668914776210913,
+      "n_obs": 233,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4482",
+      "pct_missing_chemical_overall": 0.9544334975369458,
+      "n_obs": 116,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4492",
+      "pct_missing_chemical_overall": 0.8233082706766918,
+      "n_obs": 19,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4494",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4496",
+      "pct_missing_chemical_overall": 0.4285714285714285,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4498",
+      "pct_missing_chemical_overall": 0.9601503759398496,
+      "n_obs": 95,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4514",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4522",
+      "pct_missing_chemical_overall": 0.8333333333333334,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4524",
+      "pct_missing_chemical_overall": 0.9177489177489178,
+      "n_obs": 66,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4530",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4538",
+      "pct_missing_chemical_overall": 0.9513546798029556,
+      "n_obs": 116,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4540",
+      "pct_missing_chemical_overall": 0.5484261501210653,
+      "n_obs": 59,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4548",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4588",
+      "pct_missing_chemical_overall": 0.5965250965250966,
+      "n_obs": 37,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4593",
+      "pct_missing_chemical_overall": 0.9995822890559732,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4598",
+      "pct_missing_chemical_overall": 0.8809523809523809,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4604",
+      "pct_missing_chemical_overall": 0.4761904761904761,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4606",
+      "pct_missing_chemical_overall": 0.6958740017746229,
+      "n_obs": 322,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4608",
+      "pct_missing_chemical_overall": 0.6297095761381476,
+      "n_obs": 364,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4610",
+      "pct_missing_chemical_overall": 0.6540930979133226,
+      "n_obs": 89,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4612",
+      "pct_missing_chemical_overall": 0.5153846153846153,
+      "n_obs": 260,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4614",
+      "pct_missing_chemical_overall": 0.7262644188110027,
+      "n_obs": 161,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4618",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4620",
+      "pct_missing_chemical_overall": 0.5364741641337386,
+      "n_obs": 47,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4622",
+      "pct_missing_chemical_overall": 0.763600782778865,
+      "n_obs": 365,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4624",
+      "pct_missing_chemical_overall": 0.6533957845433255,
+      "n_obs": 366,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4626",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4628",
+      "pct_missing_chemical_overall": 0.7055555555555556,
+      "n_obs": 90,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4630",
+      "pct_missing_chemical_overall": 0.5971606033717834,
+      "n_obs": 322,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4640",
+      "pct_missing_chemical_overall": 0.7555440948942754,
+      "n_obs": 277,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4646",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4652",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4660",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 12,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4662",
+      "pct_missing_chemical_overall": 0.7380952380952381,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4668",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4678",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4688",
+      "pct_missing_chemical_overall": 0.2619047619047619,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4694",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4696",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4698",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4700",
+      "pct_missing_chemical_overall": 0.819047619047619,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4702",
+      "pct_missing_chemical_overall": 0.8218210361067504,
+      "n_obs": 91,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4704",
+      "pct_missing_chemical_overall": 0.1975446428571428,
+      "n_obs": 64,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4708",
+      "pct_missing_chemical_overall": 0.2938196555217832,
+      "n_obs": 141,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4722",
+      "pct_missing_chemical_overall": 0.9913127413127412,
+      "n_obs": 74,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4730",
+      "pct_missing_chemical_overall": 0.3684210526315789,
+      "n_obs": 152,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4734",
+      "pct_missing_chemical_overall": 0.6043956043956044,
+      "n_obs": 104,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4736",
+      "pct_missing_chemical_overall": 0.6120576671035387,
+      "n_obs": 109,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4738",
+      "pct_missing_chemical_overall": 0.6190476190476191,
+      "n_obs": 105,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4746",
+      "pct_missing_chemical_overall": 0.4714285714285714,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4752",
+      "pct_missing_chemical_overall": 0.6133004926108374,
+      "n_obs": 116,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4756",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4766",
+      "pct_missing_chemical_overall": 0.8469387755102041,
+      "n_obs": 35,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4778",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4782",
+      "pct_missing_chemical_overall": 0.25,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4784",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4786",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4788",
+      "pct_missing_chemical_overall": 0.1964285714285714,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4790",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4792",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4798",
+      "pct_missing_chemical_overall": 0.9725812085225288,
+      "n_obs": 409,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4800",
+      "pct_missing_chemical_overall": 0.972139893301719,
+      "n_obs": 241,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4802",
+      "pct_missing_chemical_overall": 0.957983193277311,
+      "n_obs": 204,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4806",
+      "pct_missing_chemical_overall": 0.9539170506912442,
+      "n_obs": 279,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4808",
+      "pct_missing_chemical_overall": 0.8713574982231699,
+      "n_obs": 201,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4810",
+      "pct_missing_chemical_overall": 0.9700751879699248,
+      "n_obs": 475,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4812",
+      "pct_missing_chemical_overall": 0.8246753246753247,
+      "n_obs": 22,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4814",
+      "pct_missing_chemical_overall": 0.8538961038961039,
+      "n_obs": 22,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4816",
+      "pct_missing_chemical_overall": 0.8103448275862069,
+      "n_obs": 29,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4820",
+      "pct_missing_chemical_overall": 0.8029556650246306,
+      "n_obs": 29,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4821",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4822",
+      "pct_missing_chemical_overall": 0.6255411255411255,
+      "n_obs": 297,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4823",
+      "pct_missing_chemical_overall": 0.9642857142857144,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4832",
+      "pct_missing_chemical_overall": 0.9659635666347076,
+      "n_obs": 298,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4834",
+      "pct_missing_chemical_overall": 0.956268221574344,
+      "n_obs": 98,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4836",
+      "pct_missing_chemical_overall": 0.7761904761904762,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4838",
+      "pct_missing_chemical_overall": 0.8872180451127819,
+      "n_obs": 19,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4844",
+      "pct_missing_chemical_overall": 0.8452380952380952,
+      "n_obs": 12,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4846",
+      "pct_missing_chemical_overall": 0.9555137844611528,
+      "n_obs": 342,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4848",
+      "pct_missing_chemical_overall": 0.9703504043126684,
+      "n_obs": 371,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4850",
+      "pct_missing_chemical_overall": 0.9028273809523808,
+      "n_obs": 480,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4852",
+      "pct_missing_chemical_overall": 0.95369406867846,
+      "n_obs": 961,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4857",
+      "pct_missing_chemical_overall": 0.9617940199335548,
+      "n_obs": 258,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4870",
+      "pct_missing_chemical_overall": 0.9222065063649222,
+      "n_obs": 101,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4872",
+      "pct_missing_chemical_overall": 0.9609634551495017,
+      "n_obs": 86,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4880",
+      "pct_missing_chemical_overall": 0.8607142857142858,
+      "n_obs": 20,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4884",
+      "pct_missing_chemical_overall": 0.9774774774774776,
+      "n_obs": 111,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4886",
+      "pct_missing_chemical_overall": 0.975976937860346,
+      "n_obs": 223,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4892",
+      "pct_missing_chemical_overall": 0.8809523809523809,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4894",
+      "pct_missing_chemical_overall": 0.7769886363636364,
+      "n_obs": 352,
+      "supported": true
+    },
+    {
+      "MIDAS": "C4896",
+      "pct_missing_chemical_overall": 0.9108233924934536,
+      "n_obs": 491,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4900",
+      "pct_missing_chemical_overall": 0.5253164556962026,
+      "n_obs": 79,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4906",
+      "pct_missing_chemical_overall": 0.9149659863945578,
+      "n_obs": 21,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4908",
+      "pct_missing_chemical_overall": 0.9806659505907628,
+      "n_obs": 133,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4910",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C4918",
+      "pct_missing_chemical_overall": 0.9489795918367347,
+      "n_obs": 14,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5008",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5010",
+      "pct_missing_chemical_overall": 0.773109243697479,
+      "n_obs": 17,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5014",
+      "pct_missing_chemical_overall": 0.9835164835164836,
+      "n_obs": 13,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5016",
+      "pct_missing_chemical_overall": 0.8613445378151261,
+      "n_obs": 34,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5020",
+      "pct_missing_chemical_overall": 0.7714285714285715,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5024",
+      "pct_missing_chemical_overall": 0.6707656116338752,
+      "n_obs": 668,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5032",
+      "pct_missing_chemical_overall": 0.0285714285714285,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5034",
+      "pct_missing_chemical_overall": 0.9401544401544402,
+      "n_obs": 74,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5036",
+      "pct_missing_chemical_overall": 0.8673469387755102,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5038",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5040",
+      "pct_missing_chemical_overall": 0.576271186440678,
+      "n_obs": 590,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5042",
+      "pct_missing_chemical_overall": 0.934065934065934,
+      "n_obs": 91,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5054",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5058",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5062",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5064",
+      "pct_missing_chemical_overall": 0.7901785714285714,
+      "n_obs": 16,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5090",
+      "pct_missing_chemical_overall": 0.5357142857142857,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5104",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5110",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5114",
+      "pct_missing_chemical_overall": 0.9642857142857144,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5120",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5122",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5124",
+      "pct_missing_chemical_overall": 0.4642857142857143,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5128",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5134",
+      "pct_missing_chemical_overall": 0.5,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5136",
+      "pct_missing_chemical_overall": 0.8095238095238095,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5138",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5140",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5142",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5148",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5172",
+      "pct_missing_chemical_overall": 0.848987108655617,
+      "n_obs": 543,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5174",
+      "pct_missing_chemical_overall": 0.948051948051948,
+      "n_obs": 176,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5176",
+      "pct_missing_chemical_overall": 0.6366233766233766,
+      "n_obs": 275,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5182",
+      "pct_missing_chemical_overall": 0.7631475667189953,
+      "n_obs": 364,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5184",
+      "pct_missing_chemical_overall": 0.9299191374663072,
+      "n_obs": 159,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5186",
+      "pct_missing_chemical_overall": 0.8105016133763567,
+      "n_obs": 487,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5190",
+      "pct_missing_chemical_overall": 0.9699555763385552,
+      "n_obs": 611,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5198",
+      "pct_missing_chemical_overall": 0.9759344598054276,
+      "n_obs": 279,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5200",
+      "pct_missing_chemical_overall": 0.7882653061224489,
+      "n_obs": 28,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5202",
+      "pct_missing_chemical_overall": 0.9943396226415094,
+      "n_obs": 530,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5204",
+      "pct_missing_chemical_overall": 0.9853581321725366,
+      "n_obs": 361,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5206",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 9,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5208",
+      "pct_missing_chemical_overall": 0.9564164648910412,
+      "n_obs": 59,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5214",
+      "pct_missing_chemical_overall": 0.9664252797893352,
+      "n_obs": 217,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5216",
+      "pct_missing_chemical_overall": 0.699294532627866,
+      "n_obs": 81,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5218",
+      "pct_missing_chemical_overall": 0.6428571428571429,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5222",
+      "pct_missing_chemical_overall": 0.6222527472527473,
+      "n_obs": 208,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5226",
+      "pct_missing_chemical_overall": 0.9584221748400852,
+      "n_obs": 67,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5232",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5236",
+      "pct_missing_chemical_overall": 0.8180592991913747,
+      "n_obs": 1643,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5238",
+      "pct_missing_chemical_overall": 0.7174714956405097,
+      "n_obs": 426,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5240",
+      "pct_missing_chemical_overall": 0.8081797235023042,
+      "n_obs": 868,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5242",
+      "pct_missing_chemical_overall": 0.664079822616408,
+      "n_obs": 451,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5244",
+      "pct_missing_chemical_overall": 0.6751212234240955,
+      "n_obs": 383,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5246",
+      "pct_missing_chemical_overall": 0.3409090909090909,
+      "n_obs": 22,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5250",
+      "pct_missing_chemical_overall": 0.6243261455525606,
+      "n_obs": 212,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5252",
+      "pct_missing_chemical_overall": 0.9808102345415778,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5254",
+      "pct_missing_chemical_overall": 0.6317763382202523,
+      "n_obs": 838,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5262",
+      "pct_missing_chemical_overall": 0.7,
+      "n_obs": 15,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5265",
+      "pct_missing_chemical_overall": 0.2983193277310924,
+      "n_obs": 17,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5268",
+      "pct_missing_chemical_overall": 0.9710042432814712,
+      "n_obs": 101,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5270",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5272",
+      "pct_missing_chemical_overall": 0.7150614091790563,
+      "n_obs": 1105,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5274",
+      "pct_missing_chemical_overall": 0.8334814485669851,
+      "n_obs": 643,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5276",
+      "pct_missing_chemical_overall": 0.9770408163265306,
+      "n_obs": 28,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5280",
+      "pct_missing_chemical_overall": 0.8037705788635157,
+      "n_obs": 269,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5282",
+      "pct_missing_chemical_overall": 0.9630541871921182,
+      "n_obs": 232,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5284",
+      "pct_missing_chemical_overall": 0.2857142857142857,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5286",
+      "pct_missing_chemical_overall": 0.3928571428571428,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5290",
+      "pct_missing_chemical_overall": 0.5092165898617511,
+      "n_obs": 31,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5294",
+      "pct_missing_chemical_overall": 0.9481641468682506,
+      "n_obs": 463,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5296",
+      "pct_missing_chemical_overall": 0.6908023483365949,
+      "n_obs": 73,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5298",
+      "pct_missing_chemical_overall": 0.4285714285714285,
+      "n_obs": 14,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5300",
+      "pct_missing_chemical_overall": 0.3373015873015873,
+      "n_obs": 18,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5302",
+      "pct_missing_chemical_overall": 0.5302743614001892,
+      "n_obs": 151,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5304",
+      "pct_missing_chemical_overall": 0.4837662337662338,
+      "n_obs": 22,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5307",
+      "pct_missing_chemical_overall": 0.7434422921711057,
+      "n_obs": 708,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5310",
+      "pct_missing_chemical_overall": 0.8678955453149002,
+      "n_obs": 279,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5312",
+      "pct_missing_chemical_overall": 0.8241662518666003,
+      "n_obs": 1148,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5316",
+      "pct_missing_chemical_overall": 0.7101648351648352,
+      "n_obs": 52,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5328",
+      "pct_missing_chemical_overall": 0.6483516483516484,
+      "n_obs": 13,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5330",
+      "pct_missing_chemical_overall": 0.9306290417401528,
+      "n_obs": 243,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5332",
+      "pct_missing_chemical_overall": 0.6190476190476191,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5334",
+      "pct_missing_chemical_overall": 0.3392857142857143,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5336",
+      "pct_missing_chemical_overall": 0.5357142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5338",
+      "pct_missing_chemical_overall": 0.983381271971876,
+      "n_obs": 447,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5340",
+      "pct_missing_chemical_overall": 0.8809523809523809,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5344",
+      "pct_missing_chemical_overall": 0.6165614840313636,
+      "n_obs": 747,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5348",
+      "pct_missing_chemical_overall": 0.9672818791946308,
+      "n_obs": 596,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5349",
+      "pct_missing_chemical_overall": 0.7596153846153846,
+      "n_obs": 1352,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5352",
+      "pct_missing_chemical_overall": 0.9425175842832888,
+      "n_obs": 589,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5354",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5358",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5364",
+      "pct_missing_chemical_overall": 0.9554890921885996,
+      "n_obs": 406,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5366",
+      "pct_missing_chemical_overall": 0.3226247436773752,
+      "n_obs": 209,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5368",
+      "pct_missing_chemical_overall": 0.5522857142857143,
+      "n_obs": 250,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5372",
+      "pct_missing_chemical_overall": 0.9759825327510916,
+      "n_obs": 458,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5374",
+      "pct_missing_chemical_overall": 0.3342857142857143,
+      "n_obs": 25,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5378",
+      "pct_missing_chemical_overall": 0.9909456740442656,
+      "n_obs": 71,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5382",
+      "pct_missing_chemical_overall": 0.6455273698264352,
+      "n_obs": 749,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5384",
+      "pct_missing_chemical_overall": 0.3428571428571428,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5386",
+      "pct_missing_chemical_overall": 0.9424410540915396,
+      "n_obs": 103,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5394",
+      "pct_missing_chemical_overall": 0.9357142857142856,
+      "n_obs": 20,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5400",
+      "pct_missing_chemical_overall": 0.6430486403676752,
+      "n_obs": 1492,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5402",
+      "pct_missing_chemical_overall": 0.8452380952380952,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5404",
+      "pct_missing_chemical_overall": 0.9300911854103344,
+      "n_obs": 47,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5406",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5408",
+      "pct_missing_chemical_overall": 0.7601957585644372,
+      "n_obs": 613,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5410",
+      "pct_missing_chemical_overall": 0.9779017857142858,
+      "n_obs": 320,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5416",
+      "pct_missing_chemical_overall": 0.5901766346451813,
+      "n_obs": 461,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5418",
+      "pct_missing_chemical_overall": 0.0178571428571428,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5420",
+      "pct_missing_chemical_overall": 0.0,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5424",
+      "pct_missing_chemical_overall": 0.6327088212334114,
+      "n_obs": 183,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5430",
+      "pct_missing_chemical_overall": 0.9938056523422376,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5432",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5434",
+      "pct_missing_chemical_overall": 0.7142857142857143,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5444",
+      "pct_missing_chemical_overall": 0.9065934065934066,
+      "n_obs": 52,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5448",
+      "pct_missing_chemical_overall": 0.5518804816411477,
+      "n_obs": 1922,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5456",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5458",
+      "pct_missing_chemical_overall": 0.8322033898305085,
+      "n_obs": 295,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5460",
+      "pct_missing_chemical_overall": 0.9591836734693876,
+      "n_obs": 35,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5462",
+      "pct_missing_chemical_overall": 0.9155844155844156,
+      "n_obs": 11,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5464",
+      "pct_missing_chemical_overall": 0.9533995416348358,
+      "n_obs": 187,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5470",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5474",
+      "pct_missing_chemical_overall": 0.8793103448275862,
+      "n_obs": 29,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5476",
+      "pct_missing_chemical_overall": 0.7771428571428571,
+      "n_obs": 25,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5478",
+      "pct_missing_chemical_overall": 0.4285714285714285,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5480",
+      "pct_missing_chemical_overall": 0.7896825396825397,
+      "n_obs": 36,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5490",
+      "pct_missing_chemical_overall": 0.9770833333333332,
+      "n_obs": 240,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5492",
+      "pct_missing_chemical_overall": 0.6527562111801242,
+      "n_obs": 368,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5496",
+      "pct_missing_chemical_overall": 0.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5500",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5526",
+      "pct_missing_chemical_overall": 0.9375,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5528",
+      "pct_missing_chemical_overall": 0.8428571428571429,
+      "n_obs": 10,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5536",
+      "pct_missing_chemical_overall": 0.9551020408163264,
+      "n_obs": 105,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5538",
+      "pct_missing_chemical_overall": 0.7455357142857143,
+      "n_obs": 48,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5540",
+      "pct_missing_chemical_overall": 0.9230055658627088,
+      "n_obs": 77,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5544",
+      "pct_missing_chemical_overall": 0.9059766763848396,
+      "n_obs": 98,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5548",
+      "pct_missing_chemical_overall": 0.9539170506912442,
+      "n_obs": 31,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5550",
+      "pct_missing_chemical_overall": 0.7732558139534884,
+      "n_obs": 86,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5562",
+      "pct_missing_chemical_overall": 0.9907834101382488,
+      "n_obs": 62,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5572",
+      "pct_missing_chemical_overall": 0.962283044058745,
+      "n_obs": 214,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5582",
+      "pct_missing_chemical_overall": 0.4890756302521008,
+      "n_obs": 255,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5584",
+      "pct_missing_chemical_overall": 0.9485134155184916,
+      "n_obs": 197,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5594",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5596",
+      "pct_missing_chemical_overall": 0.9694323144104804,
+      "n_obs": 229,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5598",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5648",
+      "pct_missing_chemical_overall": 0.5357142857142857,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5650",
+      "pct_missing_chemical_overall": 0.5178571428571429,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5652",
+      "pct_missing_chemical_overall": 0.9803921568627452,
+      "n_obs": 51,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5654",
+      "pct_missing_chemical_overall": 0.7794729542302358,
+      "n_obs": 206,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5658",
+      "pct_missing_chemical_overall": 0.889751552795031,
+      "n_obs": 92,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5662",
+      "pct_missing_chemical_overall": 0.9534883720930232,
+      "n_obs": 43,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5664",
+      "pct_missing_chemical_overall": 0.8249444855662472,
+      "n_obs": 386,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5666",
+      "pct_missing_chemical_overall": 0.8912213740458015,
+      "n_obs": 524,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5668",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5676",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5682",
+      "pct_missing_chemical_overall": 0.7114285714285714,
+      "n_obs": 25,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5684",
+      "pct_missing_chemical_overall": 0.1857142857142857,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5686",
+      "pct_missing_chemical_overall": 0.9340336134453782,
+      "n_obs": 170,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5690",
+      "pct_missing_chemical_overall": 0.1607142857142857,
+      "n_obs": 8,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5692",
+      "pct_missing_chemical_overall": 0.2285714285714285,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5694",
+      "pct_missing_chemical_overall": 0.0178571428571428,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5696",
+      "pct_missing_chemical_overall": 0.3571428571428571,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5702",
+      "pct_missing_chemical_overall": 0.7879410757108599,
+      "n_obs": 417,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5704",
+      "pct_missing_chemical_overall": 0.9572167806320458,
+      "n_obs": 773,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5706",
+      "pct_missing_chemical_overall": 0.6814868804664723,
+      "n_obs": 98,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5708",
+      "pct_missing_chemical_overall": 0.7560175054704595,
+      "n_obs": 457,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5710",
+      "pct_missing_chemical_overall": 0.8054945054945055,
+      "n_obs": 455,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5712",
+      "pct_missing_chemical_overall": 0.9414248990084466,
+      "n_obs": 389,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5716",
+      "pct_missing_chemical_overall": 0.9375,
+      "n_obs": 24,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5722",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5724",
+      "pct_missing_chemical_overall": 0.7428571428571429,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5732",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5746",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5747",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5754",
+      "pct_missing_chemical_overall": 0.9595238095238096,
+      "n_obs": 150,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5780",
+      "pct_missing_chemical_overall": 0.7007412830603094,
+      "n_obs": 1561,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5786",
+      "pct_missing_chemical_overall": 0.9819230017588432,
+      "n_obs": 731,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5788",
+      "pct_missing_chemical_overall": 0.4387755102040816,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5790",
+      "pct_missing_chemical_overall": 0.5760869565217391,
+      "n_obs": 46,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5808",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C5812",
+      "pct_missing_chemical_overall": 0.7151639344262295,
+      "n_obs": 244,
+      "supported": true
+    },
+    {
+      "MIDAS": "C5814",
+      "pct_missing_chemical_overall": 0.8252122554448136,
+      "n_obs": 387,
+      "supported": true
+    },
+    {
+      "MIDAS": "C6350",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C6436",
+      "pct_missing_chemical_overall": 0.7315270935960592,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C6536",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C7122",
+      "pct_missing_chemical_overall": 0.8766233766233766,
+      "n_obs": 22,
+      "supported": false
+    },
+    {
+      "MIDAS": "C7407",
+      "pct_missing_chemical_overall": 0.187122736418511,
+      "n_obs": 71,
+      "supported": false
+    },
+    {
+      "MIDAS": "C7437",
+      "pct_missing_chemical_overall": 0.7420249653259362,
+      "n_obs": 206,
+      "supported": true
+    },
+    {
+      "MIDAS": "C7665",
+      "pct_missing_chemical_overall": 0.9924812030075189,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C7779",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8065",
+      "pct_missing_chemical_overall": 0.4354918437963421,
+      "n_obs": 289,
+      "supported": true
+    },
+    {
+      "MIDAS": "C8087",
+      "pct_missing_chemical_overall": 0.9970238095238096,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8115",
+      "pct_missing_chemical_overall": 0.8736263736263736,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8133",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8135",
+      "pct_missing_chemical_overall": 0.6785714285714286,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8159",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8255",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8335",
+      "pct_missing_chemical_overall": 0.8571428571428571,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8385",
+      "pct_missing_chemical_overall": 0.1380952380952381,
+      "n_obs": 30,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8473",
+      "pct_missing_chemical_overall": 0.9523809523809524,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8567",
+      "pct_missing_chemical_overall": 0.9111969111969112,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8577",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8601",
+      "pct_missing_chemical_overall": 0.7857142857142857,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C8603",
+      "pct_missing_chemical_overall": 0.75,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9503",
+      "pct_missing_chemical_overall": 0.5714285714285714,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9525",
+      "pct_missing_chemical_overall": 0.9464285714285714,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9526",
+      "pct_missing_chemical_overall": 0.9285714285714286,
+      "n_obs": 0,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9616",
+      "pct_missing_chemical_overall": 0.5428571428571428,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9641",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 5,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9649",
+      "pct_missing_chemical_overall": 0.2574750830564784,
+      "n_obs": 129,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9651",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 6,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9655",
+      "pct_missing_chemical_overall": 0.5374149659863946,
+      "n_obs": 63,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9657",
+      "pct_missing_chemical_overall": 0.5964285714285714,
+      "n_obs": 40,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9661",
+      "pct_missing_chemical_overall": 0.9206182472989196,
+      "n_obs": 476,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9683",
+      "pct_missing_chemical_overall": 0.9681832643970728,
+      "n_obs": 449,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9685",
+      "pct_missing_chemical_overall": 0.4463505926388022,
+      "n_obs": 458,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9687",
+      "pct_missing_chemical_overall": 0.5926640926640927,
+      "n_obs": 111,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9695",
+      "pct_missing_chemical_overall": 0.9183673469387756,
+      "n_obs": 42,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9701",
+      "pct_missing_chemical_overall": 0.9104539775093712,
+      "n_obs": 343,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9705",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 18,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9709",
+      "pct_missing_chemical_overall": 0.8097055616139586,
+      "n_obs": 131,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9713",
+      "pct_missing_chemical_overall": 0.0714285714285714,
+      "n_obs": 3,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9715",
+      "pct_missing_chemical_overall": 0.8334124347413384,
+      "n_obs": 301,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9757",
+      "pct_missing_chemical_overall": 0.9924506387921022,
+      "n_obs": 123,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9763",
+      "pct_missing_chemical_overall": 0.9155844155844156,
+      "n_obs": 11,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9767",
+      "pct_missing_chemical_overall": 0.6932773109243697,
+      "n_obs": 102,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9779",
+      "pct_missing_chemical_overall": 0.525974025974026,
+      "n_obs": 44,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9785",
+      "pct_missing_chemical_overall": 0.1428571428571428,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9787",
+      "pct_missing_chemical_overall": 0.984375,
+      "n_obs": 288,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9789",
+      "pct_missing_chemical_overall": 0.8775510204081632,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9791",
+      "pct_missing_chemical_overall": 0.7678571428571429,
+      "n_obs": 4,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9811",
+      "pct_missing_chemical_overall": 0.2040816326530612,
+      "n_obs": 7,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9861",
+      "pct_missing_chemical_overall": 0.2142857142857142,
+      "n_obs": 2,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9875",
+      "pct_missing_chemical_overall": 0.978280340349306,
+      "n_obs": 319,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9911",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9913",
+      "pct_missing_chemical_overall": 1.0,
+      "n_obs": 1,
+      "supported": false
+    },
+    {
+      "MIDAS": "C9931",
+      "pct_missing_chemical_overall": 0.7542372881355932,
+      "n_obs": 472,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9943",
+      "pct_missing_chemical_overall": 0.743262580491295,
+      "n_obs": 599,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9961",
+      "pct_missing_chemical_overall": 0.800305576776165,
+      "n_obs": 1870,
+      "supported": true
+    },
+    {
+      "MIDAS": "C9971",
+      "pct_missing_chemical_overall": 0.7138798701298701,
+      "n_obs": 352,
+      "supported": true
+    }
+  ]
+}

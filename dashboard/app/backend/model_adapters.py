@@ -4,8 +4,6 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from sklearn.experimental import enable_iterative_imputer  # noqa: F401
-
 from feature_contract import CANONICAL_FEATURE_ORDER
 from model_interface import (
     ExplainabilityResult,
@@ -21,7 +19,7 @@ except ImportError:
     SHAP_AVAILABLE = False
 
 
-class PlaceholderLakeModelAdapter:
+class LakeModelAdapter:
     def __init__(
         self,
         models_path: Path,
@@ -36,15 +34,13 @@ class PlaceholderLakeModelAdapter:
         self.feature_order = feature_order
         self._models_path = models_path
 
-        self._imputer = None
         self._predictor = None
         self._explainer = None
 
         self._load_artifacts()
 
     def _load_artifacts(self) -> None:
-        self._imputer = joblib.load(self._models_path / "imputer.joblib")
-        self._predictor = joblib.load(self._models_path / "rf_predictor.joblib")
+        self._predictor = joblib.load(self._models_path / "catboost_predictor.joblib")
 
         if SHAP_AVAILABLE and self.explainability_type.startswith("shap"):
             try:
@@ -54,7 +50,7 @@ class PlaceholderLakeModelAdapter:
 
     def health(self) -> Dict[str, object]:
         return {
-            "ready": self._imputer is not None and self._predictor is not None,
+            "ready": self._predictor is not None,
             "explainability_available": self._explainer is not None,
         }
 
@@ -69,11 +65,9 @@ class PlaceholderLakeModelAdapter:
         }
 
     def predict(self, features: Dict[str, float]) -> PredictionResult:
-        input_data = {name: [features.get(name, 0.0)] for name in self.feature_order}
-        df_raw = pd.DataFrame(input_data)
-        df_imputed_array = self._imputer.transform(df_raw)
-        df_imputed = pd.DataFrame(df_imputed_array, columns=self.feature_order)
-        prediction = float(self._predictor.predict(df_imputed)[0])
+        input_data = {name: [features.get(name, np.nan)] for name in self.feature_order}
+        df_features = pd.DataFrame(input_data, columns=self.feature_order)
+        prediction = float(self._predictor.predict(df_features)[0])
 
         if self._explainer is None:
             explainability = ExplainabilityResult(
@@ -83,7 +77,7 @@ class PlaceholderLakeModelAdapter:
             )
             return PredictionResult(prediction_meters=prediction, explainability=explainability)
 
-        shap_values = self._explainer.shap_values(df_imputed)
+        shap_values = self._explainer.shap_values(df_features)
         base_expected_value = float(
             self._explainer.expected_value[0]
             if isinstance(self._explainer.expected_value, (list, np.ndarray))
@@ -97,7 +91,7 @@ class PlaceholderLakeModelAdapter:
                 WaterfallEntry(
                     feature=feature_name,
                     contribution=float(contributions[idx]),
-                    rendered_value=float(df_imputed.iloc[0][feature_name]),
+                    rendered_value=float(df_features.iloc[0][feature_name]),
                 )
             )
 
@@ -125,8 +119,8 @@ def build_default_placeholder_adapter(
     model_id: str,
     model_version: str,
     explainability_type: str,
-) -> PlaceholderLakeModelAdapter:
-    return PlaceholderLakeModelAdapter(
+) -> LakeModelAdapter:
+    return LakeModelAdapter(
         models_path=models_path,
         model_id=model_id,
         model_version=model_version,
