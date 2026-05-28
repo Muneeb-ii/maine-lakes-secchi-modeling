@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: maine-lakes-secchi-dashboard
+    runtime: docker
+    plan: free
+    dockerfilePath: ./dashboard/render.Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: MODEL_ARTIFACTS_PATH
+        value: /app/artifacts/models
+      - key: PORT
+        value: 10000

@@ -48,6 +48,26 @@ Why these experiments matter:
 
 The detailed artifact-level report is `artifacts/models/dashboard_model_report.md`, and the machine-readable support metadata is `artifacts/models/supported_lakes_policy.json`.
 
+
+## Render Deployment
+
+The Render deployment uses one free Docker web service so the frontend and backend ship together:
+
+- `render.yaml` defines the Render Blueprint service.
+- `dashboard/render.Dockerfile` builds the React frontend with `VITE_API_URL=/api`, installs the FastAPI backend, and copies the committed model artifacts into the image.
+- `dashboard/nginx.render.conf.template` serves the static frontend and proxies `/api/*` to FastAPI on `127.0.0.1:8000`.
+- `dashboard/start-render.sh` starts both Uvicorn and Nginx inside the Render container.
+- Render health checks use `/api/`, which is proxied to the FastAPI root endpoint.
+
+Recommended Render setup:
+
+1. Create a new Blueprint from this GitHub repo and select `render.yaml`.
+2. Keep `autoDeployTrigger: checksPass` so Render deploys only after GitHub Actions passes.
+3. Use the generated `https://<service>.onrender.com` URL first; add a custom domain later if needed.
+4. To update the deployed model, regenerate and commit the files under `artifacts/models/`, including `model_manifest.json` and `catboost_predictor.joblib`.
+
+The GitHub Actions workflow at `.github/workflows/dashboard-ci.yml` runs backend tests, frontend contract/build checks, report validation, and Docker image build checks before Render deploys.
+
 ## Artifact Contract
 
 - The backend loads its active model from `MODEL_ARTIFACTS_PATH`.
