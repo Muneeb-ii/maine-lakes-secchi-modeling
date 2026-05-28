@@ -61,6 +61,7 @@ This folder is the center of the repository. The experiment sequence is preserve
 - `35` Tuned CatBoost leave-one-lake-out evaluation. Output: `reports/35_catboost_tuned_lolo.md`. This applies the tuned CatBoost model to the original seeded 10-lake comparison set and to a reproducible random 100-lake LOLO sample.
 - `36` Numerical chemistry imputation benchmark. Output: `reports/36_imputation_benchmark.md`. This compares multiple imputers on masked observed chemistry values, with `CHLA` included only for imputation-quality evaluation before any downstream CatBoost comparison.
 - `37` Tuned CatBoost with MissForest imputation. Output: `reports/37_catboost_imputation.md`. This applies the winning imputer from Experiment 36 to the no-CHLA CatBoost setup and compares it directly against the native-missing CatBoost baselines from Experiments 34 and 35.
+- `38` LOLO quality thresholds for tuned CatBoost. Output: `reports/38_catboost_lolo_quality_thresholds.md`. This tests whether leave-one-lake-out performance becomes materially more stable when evaluation is restricted to lakes with stronger observation support and lower chemistry missingness.
 
 ## How This Feeds the Dashboard
 

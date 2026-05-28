@@ -547,6 +547,22 @@
         "35",
         "36"
       ]
+    },
+    {
+      "id": "38",
+      "slug": "catboost_lolo_quality_thresholds",
+      "title": "LOLO quality thresholds for tuned CatBoost",
+      "status": "canonical",
+      "script": "experiments/scripts/38_catboost_lolo_quality_thresholds.py",
+      "report": "reports/38_catboost_lolo_quality_thresholds.md",
+      "artifacts": [
+        "reports/38_catboost_lolo_quality_thresholds.png"
+      ],
+      "depends_on": [
+        "25",
+        "34",
+        "35"
+      ]
     }
   ]
 }
