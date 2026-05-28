@@ -168,6 +168,7 @@ export default function App() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            midas_id: lakeId,
             features: payloadFeatures,
             requested_outputs: ["prediction", "explainability"],
           }),
@@ -199,7 +200,7 @@ export default function App() {
     }, 220);
 
     return () => clearTimeout(timeoutId);
-  }, [features, baseline, featureConfig]);
+  }, [features, baseline, featureConfig, lakeId]);
 
   useEffect(() => {
     localStorage.setItem(RECENT_LAKES_KEY, JSON.stringify(recentLakes.slice(0, 6)));

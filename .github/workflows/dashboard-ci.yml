@@ -18,6 +18,12 @@ jobs:
           cache-dependency-path: dashboard/app/backend/requirements.txt
       - name: Install backend dependencies
         run: pip install -r dashboard/app/backend/requirements.txt
+      - name: Audit backend dependencies
+        env:
+          XDG_CACHE_HOME: /tmp/pip-audit-cache
+        run: |
+          pip install pip-audit
+          pip-audit -r dashboard/app/backend/requirements.txt
       - name: Run backend tests
         working-directory: dashboard/app/backend
         env:

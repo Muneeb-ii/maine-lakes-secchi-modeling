@@ -56,7 +56,12 @@ class ModelRegistry:
         metadata["health"] = self._active_model.health()
         return metadata
 
-    def predict(self, features: Dict[str, float], model_id: Optional[str] = None) -> PredictionResult:
+    def predict(
+        self,
+        features: Dict[str, float],
+        model_id: Optional[str] = None,
+        include_explainability: bool = True,
+    ) -> PredictionResult:
         if self._active_model is None:
             raise RuntimeError("No active model is loaded.")
 
@@ -65,4 +70,4 @@ class ModelRegistry:
                 f"Requested model_id '{model_id}' is unavailable. Active model: '{self._active_model.model_id}'."
             )
 
-        return self._active_model.predict(features)
+        return self._active_model.predict(features, include_explainability=include_explainability)

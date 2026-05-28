@@ -64,12 +64,12 @@ class LakeModelAdapter:
             "feature_count": len(self.feature_order),
         }
 
-    def predict(self, features: Dict[str, float]) -> PredictionResult:
+    def predict(self, features: Dict[str, float], include_explainability: bool = True) -> PredictionResult:
         input_data = {name: [features.get(name, np.nan)] for name in self.feature_order}
         df_features = pd.DataFrame(input_data, columns=self.feature_order)
         prediction = float(self._predictor.predict(df_features)[0])
 
-        if self._explainer is None:
+        if self._explainer is None or not include_explainability:
             explainability = ExplainabilityResult(
                 base_value=prediction,
                 waterfall=[],

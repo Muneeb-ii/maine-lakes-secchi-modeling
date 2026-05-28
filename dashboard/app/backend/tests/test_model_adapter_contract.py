@@ -17,7 +17,7 @@ class GoodAdapter:
     def metadata(self):
         return {"model_id": self.model_id}
 
-    def predict(self, features):
+    def predict(self, features, include_explainability=True):
         return PredictionResult(
             prediction_meters=1.0,
             explainability=ExplainabilityResult(

@@ -31,7 +31,7 @@ class ModelAdapter(Protocol):
     def metadata(self) -> Dict[str, object]:
         ...
 
-    def predict(self, features: Dict[str, float]) -> PredictionResult:
+    def predict(self, features: Dict[str, float], include_explainability: bool = True) -> PredictionResult:
         ...
 
 

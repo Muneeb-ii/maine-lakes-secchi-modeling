@@ -1,11 +1,12 @@
 import json
+import math
 import os
+import time
+from collections import defaultdict, deque
 from pathlib import Path
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Query
-from typing import Dict
-
 from contracts import (
     ExplainabilityResponse,
     LakeSearchItem,
@@ -16,24 +17,35 @@ from contracts import (
     ScenarioPayload,
     WaterfallItemResponse,
 )
-from feature_contract import CANONICAL_FEATURE_ORDER, get_feature_config_response
+from feature_contract import (
+    CANONICAL_FEATURE_ORDER,
+    FEATURE_DEFINITIONS,
+    LOCKED_BASELINE_FEATURES,
+    get_feature_config_response,
+)
 from model_registry import ModelRegistry
 
 
 app = FastAPI(title="Lake Predictive Engine API")
 
-def _allowed_origins() -> list[str]:
+def _dashboard_debug() -> bool:
+    return os.getenv("DASHBOARD_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _allowed_origins() -> tuple[list[str], bool]:
     raw_origins = os.getenv("API_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
     if raw_origins.strip() == "*":
-        return ["*"]
-    return [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+        return ["*"], False
+    return [origin.strip() for origin in raw_origins.split(",") if origin.strip()], True
 
+
+allowed_origins, allow_cors_credentials = _allowed_origins()
 
 # Setup CORS for local development with explicit production override support.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_allowed_origins(),
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=allow_cors_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -45,6 +57,82 @@ lake_names_data = {}
 support_policy_data = {}
 registry = ModelRegistry(models_path=models_path)
 SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
+RATE_LIMIT_WINDOW_SECONDS = 60
+PREDICT_RATE_LIMIT_PER_MINUTE = int(os.getenv("PREDICT_RATE_LIMIT_PER_MINUTE", "60"))
+_predict_request_times = defaultdict(deque)
+
+
+def _public_startup_errors() -> list[str]:
+    return registry.startup_errors() if _dashboard_debug() else []
+
+
+def _client_ip(request: Request) -> str:
+    forwarded_for = request.headers.get("x-forwarded-for", "")
+    if forwarded_for:
+        return forwarded_for.split(",", 1)[0].strip() or "unknown"
+    return request.client.host if request.client else "unknown"
+
+
+def _enforce_rate_limit(request: Request) -> None:
+    if PREDICT_RATE_LIMIT_PER_MINUTE <= 0:
+        return
+    now = time.monotonic()
+    key = _client_ip(request)
+    request_times = _predict_request_times[key]
+    while request_times and now - request_times[0] > RATE_LIMIT_WINDOW_SECONDS:
+        request_times.popleft()
+    if len(request_times) >= PREDICT_RATE_LIMIT_PER_MINUTE:
+        raise HTTPException(status_code=429, detail="Prediction rate limit exceeded. Try again shortly.")
+    request_times.append(now)
+
+
+def _normalize_midas_id(midas_id: str) -> str:
+    normalized = str(midas_id or "").upper().strip()
+    if not normalized or len(normalized) > 32:
+        raise HTTPException(status_code=400, detail="Invalid MIDAS ID.")
+    return normalized
+
+
+def _locked_baseline_for_prediction(midas_id: str) -> dict:
+    if midas_id not in baseline_data or midas_id == "GLOBAL_FALLBACK":
+        raise HTTPException(status_code=400, detail="Predictions require a supported lake MIDAS ID with baseline data.")
+    baseline = baseline_data[midas_id]
+    missing_locked = [name for name in LOCKED_BASELINE_FEATURES if name not in baseline]
+    if missing_locked:
+        raise HTTPException(status_code=500, detail="Prediction baseline is incomplete." if _dashboard_debug() else "Prediction service is unavailable.")
+    return baseline
+
+
+def _validate_editable_feature(feature_name: str, value: float) -> None:
+    if not math.isfinite(value):
+        raise HTTPException(status_code=400, detail=f"Feature {feature_name} must be finite.")
+    slider = FEATURE_DEFINITIONS.get(feature_name, {}).get("slider")
+    if not slider:
+        return
+    min_value = slider.get("min")
+    max_value = slider.get("max")
+    if min_value is not None and value < float(min_value):
+        raise HTTPException(status_code=400, detail=f"Feature {feature_name} is below the allowed minimum.")
+    if max_value is not None and value > float(max_value):
+        raise HTTPException(status_code=400, detail=f"Feature {feature_name} is above the allowed maximum.")
+
+
+def _prediction_features(payload: ScenarioPayload) -> dict:
+    midas_id = _normalize_midas_id(payload.midas_id)
+    baseline = _locked_baseline_for_prediction(midas_id)
+    normalized_features = {}
+    for feature_name in CANONICAL_FEATURE_ORDER:
+        if feature_name in LOCKED_BASELINE_FEATURES:
+            normalized_features[feature_name] = float(baseline[feature_name])
+            continue
+        raw_value = payload.features.get(feature_name, baseline.get(feature_name, 0.0))
+        try:
+            value = float(raw_value)
+        except (TypeError, ValueError):
+            raise HTTPException(status_code=400, detail=f"Feature {feature_name} must be numeric.")
+        _validate_editable_feature(feature_name, value)
+        normalized_features[feature_name] = value
+    return normalized_features
 
 @app.on_event("startup")
 async def load_ml_objects():
@@ -80,7 +168,7 @@ def read_root():
         models_loaded=registry.is_ready(),
         schema_version="1.0.0",
         active_model=registry.active_model_metadata(),
-        startup_errors=registry.startup_errors(),
+        startup_errors=_public_startup_errors(),
     )
     return response.model_dump()
 
@@ -89,13 +177,13 @@ def read_root():
 def get_feature_config():
     config = get_feature_config_response()
     config["active_model"] = registry.active_model_metadata()
-    config["startup_errors"] = registry.startup_errors()
+    config["startup_errors"] = _public_startup_errors()
     return config
 
 @app.get("/lake/{midas_id}")
 def get_lake_baseline(midas_id: str):
     """Retrieves the median baseline structure of a specific lake to initialize UI sliders."""
-    midas_id = str(midas_id).upper().strip()
+    midas_id = _normalize_midas_id(midas_id)
     
     lake_name = lake_names_data.get(midas_id, "Unknown Ecosystem")
     
@@ -128,7 +216,7 @@ def get_lake_baseline(midas_id: str):
 
 
 @app.get("/lakes/search")
-def search_lakes(q: str = Query(..., min_length=1), limit: int = Query(8, ge=1, le=25)):
+def search_lakes(q: str = Query(..., min_length=1, max_length=80), limit: int = Query(8, ge=1, le=25)):
     query = q.strip().upper()
     if not query:
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
@@ -153,13 +241,13 @@ def search_lakes(q: str = Query(..., min_length=1), limit: int = Query(8, ge=1, 
     return response.model_dump()
 
 @app.post("/predict_scenario")
-def predict_scenario(payload: ScenarioPayload):
+def predict_scenario(payload: ScenarioPayload, request: Request):
     if not registry.is_ready():
         raise HTTPException(
             status_code=503,
             detail={
                 "message": "Models are unavailable.",
-                "startup_errors": registry.startup_errors(),
+                "startup_errors": _public_startup_errors(),
             },
         )
 
@@ -176,12 +264,14 @@ def predict_scenario(payload: ScenarioPayload):
                 },
             )
 
-        normalized_features: Dict[str, float] = {}
-        for feature_name in CANONICAL_FEATURE_ORDER:
-            normalized_features[feature_name] = float(payload.features.get(feature_name, 0.0))
+        _enforce_rate_limit(request)
+        normalized_features = _prediction_features(payload)
 
+        include_explainability = "explainability" in requested_outputs
         prediction_result = registry.predict(
-            features=normalized_features, model_id=payload.model_id
+            features=normalized_features,
+            model_id=payload.model_id,
+            include_explainability=include_explainability,
         )
         active_metadata = registry.active_model_metadata() or {}
 
@@ -212,4 +302,7 @@ def predict_scenario(payload: ScenarioPayload):
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        if _dashboard_debug():
+            raise HTTPException(status_code=500, detail=str(exc))
+        print(f"Prediction failed: {exc}")
+        raise HTTPException(status_code=500, detail="Prediction service failed.")
