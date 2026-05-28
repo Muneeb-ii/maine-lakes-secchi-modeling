@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:contracts": "node --test src/lib/contracts.test.mjs"
+    "test:contracts": "node --test src/lib/contracts.test.mjs src/lib/trajectory.test.mjs"
   },
   "dependencies": {
     "framer-motion": "^10.16.4",
