@@ -65,3 +65,7 @@ logs/
 *.keras
 *.hdf5
 *.h5
+
+# Agent config
+CONTEXT.md
+DESIGN.md
