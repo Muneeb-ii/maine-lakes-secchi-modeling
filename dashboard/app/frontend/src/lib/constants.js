@@ -6,10 +6,7 @@ export const TRAJECTORY_MAX_STEPS = 30;
 export const TRAJECTORY_DEDUPE_METERS = 0.02;
 export const TRAJECTORY_RESET_CONFIRM_THRESHOLD = 5;
 
-export const PARAMETER_GROUPS = [
-  { key: "chemistry", label: "Chemistry" },
-  { key: "temperature", label: "Temperature" },
-];
+export const PARAMETER_GROUPS = [{ key: "chemistry", label: "Chemistry" }];
 
 export const CLARITY_BANDS = [
   { max: 2, label: "Turbid", description: "Under 2 m — limited visibility" },

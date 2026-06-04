@@ -29,7 +29,7 @@ export function ParameterPanel({ featureConfig, features, baseline, onFeatureCha
         <SectionHelp content={HELP_CONTENT.parameters} />
       </h2>
       <p className="mt-2 text-xs text-slate-400 mb-4">
-        Adjust water chemistry and temperature to explore clarity outcomes.
+        Adjust water chemistry to explore clarity outcomes.
       </p>
       <div className="space-y-6">
         {grouped.map((group) => (

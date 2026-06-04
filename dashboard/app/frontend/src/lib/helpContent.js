@@ -5,7 +5,7 @@ export const HELP_CONTENT = {
   },
   parameters: {
     title: "Parameters",
-    body: "Adjust water chemistry and temperature to explore how conditions affect predicted Secchi depth. Lake location and size stay tied to the lake you selected.",
+    body: "Adjust water chemistry to explore how conditions affect predicted Secchi depth. Lake location and size stay tied to the lake you selected.",
   },
   prediction: {
     title: "Predicted Secchi depth",

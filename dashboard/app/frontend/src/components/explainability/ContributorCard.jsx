@@ -1,15 +1,16 @@
 import { Minus, Plus } from "lucide-react";
 import { formatSignedMeters, formatValueWithUnit } from "../../lib/formatters";
 
-export function ContributorCard({ item, unit = "" }) {
+export function ContributorCard({ item, label, unit = "" }) {
   const isPositive = item.contribution >= 0;
   const Icon = isPositive ? Plus : Minus;
   const colorClass = isPositive ? "text-delta-up" : "text-delta-down";
+  const displayLabel = label || item.feature;
 
   return (
     <div className="info-card">
       <div className="flex justify-between items-center gap-3">
-        <span className="text-sm text-slate-200">{item.feature}</span>
+        <span className="text-sm text-slate-200">{displayLabel}</span>
         <span className={`inline-flex items-center gap-1 text-sm font-medium ${colorClass}`}>
           <Icon className="w-3.5 h-3.5" aria-hidden />
           {formatSignedMeters(item.contribution)}

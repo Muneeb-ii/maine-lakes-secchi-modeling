@@ -61,6 +61,7 @@ export function ExplainabilityPanel({ forecast, featureConfig }) {
               >
                 <ContributorCard
                   item={item}
+                  label={featureConfig?.features?.[item.feature]?.label}
                   unit={featureConfig?.features?.[item.feature]?.unit}
                 />
               </motion.li>
@@ -91,7 +92,7 @@ export function ExplainabilityPanel({ forecast, featureConfig }) {
                       key={`${item.feature}-${index}`}
                       className="text-xs text-slate-300 flex justify-between gap-4 py-1 border-b border-slate-800/50 last:border-0"
                     >
-                      <span>{item.feature}</span>
+                      <span>{featureConfig?.features?.[item.feature]?.label || item.feature}</span>
                       <span
                         className={isPositive ? "text-delta-up" : "text-delta-down"}
                         aria-label={isPositive ? "positive contribution" : "negative contribution"}
