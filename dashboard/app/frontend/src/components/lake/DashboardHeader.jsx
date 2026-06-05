@@ -13,9 +13,9 @@ export function DashboardHeader({ lakeId, lakeName, lakeSupport, searchProps }) 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <h1 className="display-title text-3xl lg:text-4xl">{DASHBOARD_TITLE}</h1>
-          <p className="text-slate-300 mt-2 text-sm lg:text-base">{DASHBOARD_TAGLINE}</p>
-          <p className="mt-3 text-sm text-slate-200">{formatLakeContext(lakeName, lakeId)}</p>
-          <p className="mt-2 text-xs text-slate-500">{MODEL_FOOTNOTE}</p>
+          <p className="text-slate-700 mt-2 text-base lg:text-lg">{DASHBOARD_TAGLINE}</p>
+          <p className="mt-3 text-base text-slate-900">{formatLakeContext(lakeName, lakeId)}</p>
+          <p className="mt-2 text-sm text-slate-600">{MODEL_FOOTNOTE}</p>
         </div>
         <div className="w-full lg:max-w-md shrink-0 space-y-3">
           <LakeSearchCombobox {...searchProps} />

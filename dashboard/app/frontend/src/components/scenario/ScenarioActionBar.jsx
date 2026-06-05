@@ -1,5 +1,12 @@
 import { Bookmark, Layers, RotateCcw } from "lucide-react";
-import { SECTION_LABELS } from "../../lib/copy";
+import {
+  SCENARIO_COMPARE_LABEL,
+  SCENARIO_COMPARE_PLACEHOLDER,
+  SCENARIO_RESET,
+  SCENARIO_SAVE,
+  SECTION_LABELS,
+  formatSavedScenarioOption,
+} from "../../lib/copy";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { SectionHelp } from "../ui/SectionHelp";
 
@@ -20,7 +27,7 @@ export function ScenarioActionBar({
       <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:items-center">
         <button type="button" className="action-button col-span-1" onClick={onReset}>
           <RotateCcw className="w-4 h-4" aria-hidden />
-          Reset
+          {SCENARIO_RESET}
         </button>
         <button
           type="button"
@@ -29,24 +36,27 @@ export function ScenarioActionBar({
           disabled={!canSave}
         >
           <Bookmark className="w-4 h-4" aria-hidden />
-          Save scenario
+          {SCENARIO_SAVE}
         </button>
         <div className="col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[200px] sm:max-w-sm flex items-center gap-2">
-          <Layers className="w-4 h-4 text-slate-400 shrink-0" aria-hidden />
+          <Layers className="w-4 h-4 text-slate-600 shrink-0" aria-hidden />
           <label htmlFor="compare-scenario" className="sr-only">
-            Compare saved scenario
+            {SCENARIO_COMPARE_LABEL}
           </label>
           <select
             id="compare-scenario"
             value={compareScenarioId}
             onChange={(event) => onCompareChange(event.target.value)}
-            className="w-full h-11 rounded-lg bg-slate-900/70 border border-slate-700/70 px-3 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
+            className="w-full h-12 rounded-lg bg-white border border-slate-300 px-3 text-base text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
           >
-            <option value="">Compare scenario…</option>
+            <option value="">{SCENARIO_COMPARE_PLACEHOLDER}</option>
             {savedScenarios.map((scenario) => (
               <option key={scenario.id} value={scenario.id}>
-                {scenario.lakeId} — {scenario.lakeName} —{" "}
-                {new Date(scenario.timestamp).toLocaleString()}
+                {formatSavedScenarioOption(
+                  scenario.lakeId,
+                  scenario.lakeName,
+                  scenario.timestamp
+                )}
               </option>
             ))}
           </select>

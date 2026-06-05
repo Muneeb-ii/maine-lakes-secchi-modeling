@@ -1,6 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Minus, Plus } from "lucide-react";
-import { METRIC_LABELS, SECTION_LABELS, SECCHI_DIRECTION_NOTE } from "../../lib/copy";
+import {
+  METRIC_LABELS,
+  PREDICTION_UPDATING,
+  SECTION_LABELS,
+  SECCHI_DIRECTION_NOTE,
+} from "../../lib/copy";
 import { formatMeters, formatSignedMeters, getClarityBand } from "../../lib/formatters";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { useReducedMotion } from "../../lib/useReducedMotion";
@@ -8,17 +13,17 @@ import { SectionHelp } from "../ui/SectionHelp";
 
 function DeltaValue({ value }) {
   if (typeof value !== "number" || Number.isNaN(value)) {
-    return <span className="text-2xl font-medium text-slate-400">--</span>;
+    return <span className="text-2xl font-medium text-slate-600">--</span>;
   }
   const isPositive = value > 0;
   const isNegative = value < 0;
   const Icon = isPositive ? Plus : isNegative ? Minus : null;
-  const colorClass = isPositive ? "text-delta-up" : isNegative ? "text-delta-down" : "text-slate-300";
+  const colorClass = isPositive ? "text-delta-up" : isNegative ? "text-delta-down" : "text-slate-700";
 
   return (
     <span className={`inline-flex items-center gap-1 text-2xl font-medium ${colorClass}`}>
       {Icon && <Icon className="w-5 h-5" aria-hidden />}
-      {formatSignedMeters(value)}
+      {formatSignedMeters(value, { absolute: true })}
     </span>
   );
 }
@@ -37,7 +42,7 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
     <div className="panel p-6 border-l-4 border-l-lake-accent/50">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
         <div className="min-w-0">
-          <h2 className="section-heading text-slate-400">
+          <h2 className="section-heading text-slate-700">
             {SECTION_LABELS.prediction}
             <SectionHelp content={HELP_CONTENT.prediction} placement="bottom" />
           </h2>
@@ -60,18 +65,18 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
               </motion.span>
             </AnimatePresence>
           </div>
-          <p className="mt-2 text-sm text-slate-300">{SECCHI_DIRECTION_NOTE}</p>
+          <p className="mt-2 text-base text-slate-700">{SECCHI_DIRECTION_NOTE}</p>
           {clarityBand && forecast && (
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-lake-accent/15 text-teal-200 border border-lake-accent/30">
+              <span className="text-sm font-medium px-2.5 py-1 rounded-full bg-lake-accent/10 text-lake-accent border border-lake-accent/30">
                 {clarityBand.label}
               </span>
-              <span className="text-xs text-slate-500">{clarityBand.description}</span>
+              <span className="text-sm text-slate-600">{clarityBand.description}</span>
             </div>
           )}
         </div>
 
-        <div className="flex flex-wrap gap-6 sm:gap-8 text-slate-300">
+        <div className="flex flex-wrap gap-6 sm:gap-8 text-slate-700">
           <div>
             <div className="info-label">{METRIC_LABELS.modelBaseline}</div>
             <div className="text-2xl font-medium mt-1 tabular-nums">
@@ -88,12 +93,12 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
       </div>
 
       {isPredicting && (
-        <p className="mt-4 text-xs text-slate-500" role="status">
-          Updating prediction…
+        <p className="mt-4 text-sm text-slate-600" role="status">
+          {PREDICTION_UPDATING}
         </p>
       )}
       {predictionError && (
-        <p className="mt-4 text-sm text-red-300" role="alert">
+        <p className="mt-4 text-base text-delta-down" role="alert">
           {predictionError}
         </p>
       )}

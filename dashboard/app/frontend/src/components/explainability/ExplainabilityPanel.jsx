@@ -2,7 +2,16 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Gauge } from "lucide-react";
 import { formatSignedMeters } from "../../lib/formatters";
-import { SECTION_LABELS } from "../../lib/copy";
+import {
+  ARIA_CONTRIBUTION_CLEARER,
+  ARIA_CONTRIBUTION_MURKIER,
+  EXPLAINABILITY_HIDE_ALL,
+  EXPLAINABILITY_INTRO,
+  EXPLAINABILITY_MISSING,
+  EXPLAINABILITY_SHOW_ALL,
+  SECTION_LABELS,
+} from "../../lib/copy";
+import { getFriendlyFeatureLabel } from "../../lib/featureLabels";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { useReducedMotion } from "../../lib/useReducedMotion";
 import { SectionHelp } from "../ui/SectionHelp";
@@ -40,9 +49,7 @@ export function ExplainabilityPanel({ forecast, featureConfig }) {
         {SECTION_LABELS.explainability}
         <SectionHelp content={HELP_CONTENT.explainability} />
       </h2>
-      <p className="mt-2 text-xs text-slate-400">
-        Top drivers behind the current Secchi depth prediction.
-      </p>
+      <p className="mt-2 text-sm text-slate-600">{EXPLAINABILITY_INTRO}</p>
 
       {waterfall.length ? (
         <>
@@ -70,11 +77,11 @@ export function ExplainabilityPanel({ forecast, featureConfig }) {
 
           <button
             type="button"
-            className="mt-4 text-sm text-lake-accent hover:text-teal-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent rounded px-1"
+            className="mt-4 text-base text-lake-accent hover:text-blue-700 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent rounded px-1"
             onClick={() => setExpanded((previous) => !previous)}
             aria-expanded={expanded}
           >
-            {expanded ? "Hide technical breakdown" : "Show technical breakdown"}
+            {expanded ? EXPLAINABILITY_HIDE_ALL : EXPLAINABILITY_SHOW_ALL}
           </button>
 
           <AnimatePresence>
@@ -90,12 +97,19 @@ export function ExplainabilityPanel({ forecast, featureConfig }) {
                   return (
                     <div
                       key={`${item.feature}-${index}`}
-                      className="text-xs text-slate-300 flex justify-between gap-4 py-1 border-b border-slate-800/50 last:border-0"
+                      className="text-sm text-slate-700 flex justify-between gap-4 py-1 border-b border-slate-200 last:border-0"
                     >
-                      <span>{featureConfig?.features?.[item.feature]?.label || item.feature}</span>
+                      <span>
+                        {getFriendlyFeatureLabel(
+                          item.feature,
+                          featureConfig?.features?.[item.feature]?.label
+                        )}
+                      </span>
                       <span
                         className={isPositive ? "text-delta-up" : "text-delta-down"}
-                        aria-label={isPositive ? "positive contribution" : "negative contribution"}
+                        aria-label={
+                          isPositive ? ARIA_CONTRIBUTION_CLEARER : ARIA_CONTRIBUTION_MURKIER
+                        }
                       >
                         {formatSignedMeters(item.contribution)}
                       </span>
@@ -107,8 +121,8 @@ export function ExplainabilityPanel({ forecast, featureConfig }) {
           </AnimatePresence>
         </>
       ) : (
-        <p className="mt-4 text-sm text-amber-200/90">
-          Driver details were not provided for this prediction.
+        <p className="mt-4 text-base text-lake-amber">
+          {EXPLAINABILITY_MISSING}
         </p>
       )}
     </div>

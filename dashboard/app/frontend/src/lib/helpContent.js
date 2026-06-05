@@ -1,27 +1,26 @@
 export const HELP_CONTENT = {
   lakeProfile: {
-    title: "Lake profile",
-    body: "Geographic fields for the lake you selected. These values are fixed for the scenario and cannot be changed with sliders.",
+    title: "About this lake",
+    body: "Latitude, longitude, area, and maximum depth for the lake you picked. They stay the same while you explore different water conditions.",
   },
   parameters: {
-    title: "Parameters",
-    body: "Adjust water chemistry to explore how conditions affect predicted Secchi depth. Lake location and size stay tied to the lake you selected.",
+    title: "Water conditions",
+    body: "Change chemistry and related measurements to see how Secchi depth might respond. Location and lake size stay tied to your selection.",
   },
   prediction: {
     title: "Predicted Secchi depth",
-    body: "Predicted Secchi depth for your current slider settings. The baseline prediction uses the lake’s default profile; your scenario shows how far you have moved from that starting point.",
+    body: "The depth the model expects for your current slider settings. “Typical for this lake” is the estimate using that lake’s usual profile; the difference shows how far your scenario moved from that starting point.",
   },
   trajectory: {
-    title: "Scenario trajectory",
-    body: "Each meaningful slider change adds a step on this chart so you can see how clarity shifts during your session. " +
-      "A step is recorded when predicted Secchi changes by at least 0.02 m; tiny movements may not appear.",
+    title: "Changes you tried",
+    body: "Each meaningful slider change adds a point so you can see how clarity shifted as you explored. Small changes under 0.02 m may not add a new point.",
   },
   explainability: {
-    title: "Prediction drivers",
-    body: "The model’s top contributors for the current prediction. Positive values tend to push Secchi up (clearer); negative values tend to push it down.",
+    title: "What influenced this prediction",
+    body: "Which measurements most pushed the estimate toward clearer or murkier water. Green-leaning values tend toward clearer; orange-red toward murkier.",
   },
   scenarioActions: {
-    title: "Scenario actions",
-    body: "Reset sliders to the lake baseline, save a scenario to compare later in this browser session, or overlay a saved scenario on the trajectory chart.",
+    title: "Save & compare",
+    body: "Restore sliders to the lake’s usual values, save a scenario to revisit later in this browser, or compare a saved scenario on the changes chart.",
   },
 };

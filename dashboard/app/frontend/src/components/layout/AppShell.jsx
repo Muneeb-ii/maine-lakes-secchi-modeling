@@ -29,48 +29,52 @@ export function AppShell({
   parametersSection,
   resultsSection,
   driversSection,
+  footer,
 }) {
   const reducedMotion = useReducedMotion();
 
   return (
-    <div className="dashboard-bg min-h-screen text-slate-100">
-      <div className="max-w-[1600px] mx-auto p-6 lg:p-8 space-y-6">
-        {header}
+    <div className="dashboard-bg flex min-h-screen flex-col text-slate-900">
+      <main className="flex-1">
+        <div className="max-w-[1600px] mx-auto p-6 lg:p-8 space-y-6">
+          {header}
 
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-          <MotionSection
-            id="lake"
-            reducedMotion={reducedMotion}
-            className="order-1 xl:order-2 xl:col-span-4 xl:col-start-9"
-          >
-            {lakeSection}
-          </MotionSection>
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+            <MotionSection
+              id="lake"
+              reducedMotion={reducedMotion}
+              className="order-1 xl:order-2 xl:col-span-4 xl:col-start-9"
+            >
+              {lakeSection}
+            </MotionSection>
 
-          <MotionSection
-            id="parameters"
-            reducedMotion={reducedMotion}
-            className="order-2 xl:order-3 xl:col-span-4 xl:col-start-9"
-          >
-            {parametersSection}
-          </MotionSection>
+            <MotionSection
+              id="parameters"
+              reducedMotion={reducedMotion}
+              className="order-2 xl:order-3 xl:col-span-4 xl:col-start-9"
+            >
+              {parametersSection}
+            </MotionSection>
 
-          <MotionSection
-            id="results"
-            reducedMotion={reducedMotion}
-            className="order-3 xl:order-1 xl:col-span-8 xl:col-start-1 xl:row-start-1 xl:row-span-3 space-y-6 min-w-0"
-          >
-            {resultsSection}
-          </MotionSection>
+            <MotionSection
+              id="results"
+              reducedMotion={reducedMotion}
+              className="order-3 xl:order-1 xl:col-span-8 xl:col-start-1 xl:row-start-1 xl:row-span-3 space-y-6 min-w-0"
+            >
+              {resultsSection}
+            </MotionSection>
 
-          <MotionSection
-            id="drivers"
-            reducedMotion={reducedMotion}
-            className="order-4 xl:order-4 xl:col-span-4 xl:col-start-9"
-          >
-            {driversSection}
-          </MotionSection>
+            <MotionSection
+              id="drivers"
+              reducedMotion={reducedMotion}
+              className="order-4 xl:order-4 xl:col-span-4 xl:col-start-9"
+            >
+              {driversSection}
+            </MotionSection>
+          </div>
         </div>
-      </div>
+      </main>
+      {footer}
     </div>
   );
 }

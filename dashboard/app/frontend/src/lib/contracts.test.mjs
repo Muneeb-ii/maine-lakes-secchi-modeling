@@ -37,7 +37,7 @@ test("parsePredictionResponse supports versioned payload", () => {
 });
 
 test("validateFeatureConfig rejects invalid contract", () => {
-  assert.throws(() => validateFeatureConfig({}), /canonical_feature_order/);
+  assert.throws(() => validateFeatureConfig({}), /Water condition settings are incomplete/);
 });
 
 test("parseLakeSearchResponse normalizes list", () => {

@@ -20,15 +20,15 @@ export function LakeSupportNote({ lakeSupport }) {
   const Icon = variant === "caution" ? AlertTriangle : Info;
   const borderClass =
     variant === "caution"
-      ? "border-amber-500/35 bg-amber-950/20"
+      ? "border-lake-amber/60 bg-lake-amber/10"
       : "border-lake-accent/30 bg-lake-accent/5";
 
   return (
     <div
-      className={`flex gap-2.5 rounded-lg border px-3 py-2.5 text-xs text-slate-300 leading-relaxed ${borderClass}`}
+      className={`flex gap-2.5 rounded-lg border px-3 py-2.5 text-sm text-slate-700 leading-relaxed ${borderClass}`}
       role="status"
     >
-      <Icon className="w-4 h-4 shrink-0 mt-0.5 text-slate-400" aria-hidden />
+      <Icon className="w-4 h-4 shrink-0 mt-0.5 text-slate-600" aria-hidden />
       <p>{message}</p>
     </div>
   );

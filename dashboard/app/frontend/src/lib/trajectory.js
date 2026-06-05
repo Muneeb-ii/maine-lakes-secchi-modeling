@@ -1,3 +1,9 @@
+import {
+  TRAJECTORY_STEP_LABEL_ADJUSTMENT,
+  TRAJECTORY_STEP_LABEL_MULTI,
+  TRAJECTORY_STEP_LABEL_START,
+} from "./copy.js";
+
 const TRAJECTORY_MAX_STEPS = 30;
 const TRAJECTORY_DEDUPE_METERS = 0.02;
 const TRAJECTORY_RESET_CONFIRM_THRESHOLD = 5;
@@ -46,13 +52,13 @@ export function buildTrajectoryPoint({
     typeof previousPrediction === "number" ? prediction - previousPrediction : null;
 
   const primaryChange = changedFeatures[0];
-  let label = "Adjustment";
+  let label = TRAJECTORY_STEP_LABEL_ADJUSTMENT;
   if (isStarting) {
-    label = "Starting scenario";
+    label = TRAJECTORY_STEP_LABEL_START;
   } else if (primaryChange) {
     label = primaryChange.label;
   } else if (changedFeatures.length > 1) {
-    label = `${changedFeatures.length} parameters`;
+    label = TRAJECTORY_STEP_LABEL_MULTI(changedFeatures.length);
   }
 
   return {

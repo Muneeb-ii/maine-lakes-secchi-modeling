@@ -15,7 +15,7 @@ export function LakeProfileCard({ baseline }) {
         {SECTION_LABELS.lakeProfile}
         <SectionHelp content={HELP_CONTENT.lakeProfile} />
       </div>
-      <p className="mt-3 text-xs text-slate-400">{LAKE_PROFILE_INTRO}</p>
+      <p className="mt-3 text-sm text-slate-600">{LAKE_PROFILE_INTRO}</p>
       {baseline && (
         <div className="grid grid-cols-2 gap-3 mt-4">
           <div className="info-card">

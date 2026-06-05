@@ -1,5 +1,5 @@
 import { Sparkles } from "lucide-react";
-import { SECTION_LABELS } from "../../lib/copy";
+import { PARAMETER_PANEL_INTRO, SECTION_LABELS } from "../../lib/copy";
 import { PARAMETER_GROUPS } from "../../lib/constants";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { SectionHelp } from "../ui/SectionHelp";
@@ -28,13 +28,13 @@ export function ParameterPanel({ featureConfig, features, baseline, onFeatureCha
         {SECTION_LABELS.parameters}
         <SectionHelp content={HELP_CONTENT.parameters} />
       </h2>
-      <p className="mt-2 text-xs text-slate-400 mb-4">
-        Adjust water chemistry to explore clarity outcomes.
+      <p className="mt-2 text-sm text-slate-600 mb-4">
+        {PARAMETER_PANEL_INTRO}
       </p>
       <div className="space-y-6">
         {grouped.map((group) => (
           <div key={group.key}>
-            <h3 className="text-xs font-semibold text-slate-500 mb-4">
+            <h3 className="text-sm font-semibold text-slate-600 mb-4">
               {group.label}
             </h3>
             <div className="space-y-5">
