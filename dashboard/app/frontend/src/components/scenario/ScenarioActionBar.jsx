@@ -24,21 +24,21 @@ export function ScenarioActionBar({
         {SECTION_LABELS.scenarioActions}
         <SectionHelp content={HELP_CONTENT.scenarioActions} />
       </div>
-      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 sm:items-center">
-        <button type="button" className="action-button col-span-1" onClick={onReset}>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
+        <button type="button" className="action-button w-full sm:w-auto" onClick={onReset}>
           <RotateCcw className="w-4 h-4" aria-hidden />
           {SCENARIO_RESET}
         </button>
         <button
           type="button"
-          className="action-button col-span-1"
+          className="action-button w-full sm:w-auto"
           onClick={onSave}
           disabled={!canSave}
         >
           <Bookmark className="w-4 h-4" aria-hidden />
           {SCENARIO_SAVE}
         </button>
-        <div className="col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[200px] sm:max-w-sm flex items-center gap-2">
+        <div className="flex w-full items-center gap-2 sm:col-span-2 lg:min-w-[220px] lg:flex-1">
           <Layers className="w-4 h-4 text-slate-600 shrink-0" aria-hidden />
           <label htmlFor="compare-scenario" className="sr-only">
             {SCENARIO_COMPARE_LABEL}
@@ -47,7 +47,7 @@ export function ScenarioActionBar({
             id="compare-scenario"
             value={compareScenarioId}
             onChange={(event) => onCompareChange(event.target.value)}
-            className="w-full h-12 rounded-lg bg-white border border-slate-300 px-3 text-base text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
+            className="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
           >
             <option value="">{SCENARIO_COMPARE_PLACEHOLDER}</option>
             {savedScenarios.map((scenario) => (

@@ -1,7 +1,8 @@
 import colbyLogo from "../../assets/logos/colbyseal.png";
 import lakesLogo from "../../assets/logos/7lakesalliance.png";
 import usgsLogo from "../../assets/logos/usgs.png";
-import { FOOTER_DEVELOPERS, FOOTER_PARTNERS_LABEL } from "../../lib/copy";
+import { FOOTER_LINKS } from "../../lib/infoPagesCopy";
+import { ROUTES, navigateTo } from "../../lib/routes";
 
 const partnerLogos = [
   { label: "Colby College", src: colbyLogo, href: "https://www.colby.edu/" },
@@ -9,19 +10,33 @@ const partnerLogos = [
   { label: "Sponsored by USGS funding", src: usgsLogo, href: "https://www.usgs.gov/" },
 ];
 
+const footerLinks = [
+  { label: FOOTER_LINKS.contributors, path: ROUTES.contributors },
+  { label: FOOTER_LINKS.modeling, path: ROUTES.modeling },
+];
+
+function FooterNavLink({ path, children }) {
+  return (
+    <a
+      href={path}
+      onClick={(event) => {
+        event.preventDefault();
+        navigateTo(path);
+      }}
+      className="text-base font-semibold text-lake-accent transition hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lake-accent"
+    >
+      {children}
+    </a>
+  );
+}
+
 export function AppFooter() {
   return (
     <footer className="border-t border-lake-border bg-white">
-      <div className="mx-auto max-w-[1600px] px-6 py-8 lg:px-8">
-        <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-lake-accent">
-              {FOOTER_PARTNERS_LABEL}
-            </p>
-            <p className="mt-2 text-base leading-7 text-slate-700">{FOOTER_DEVELOPERS}</p>
-          </div>
+      <div className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div
-            className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[520px]"
+            className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 lg:min-w-[520px]"
             aria-label="Project partners"
           >
             {partnerLogos.map((logo) => (
@@ -43,6 +58,17 @@ export function AppFooter() {
               </a>
             ))}
           </div>
+
+          <nav
+            aria-label="Footer"
+            className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 lg:justify-end"
+          >
+            {footerLinks.map((link) => (
+              <FooterNavLink key={link.path} path={link.path}>
+                {link.label}
+              </FooterNavLink>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>

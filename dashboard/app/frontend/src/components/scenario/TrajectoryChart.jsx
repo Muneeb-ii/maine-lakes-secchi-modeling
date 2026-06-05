@@ -98,21 +98,21 @@ export function TrajectoryChart({
   };
 
   return (
-    <div className="panel p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+    <div className="panel flex h-full flex-col p-4 sm:p-5">
+      <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
         <h2 className="section-heading">
           <Activity className="w-4 h-4" aria-hidden />
           {SECTION_LABELS.trajectory}
           <SectionHelp content={HELP_CONTENT.trajectory} />
         </h2>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
           <span className="text-sm text-slate-600">
             {formatTrajectorySteps(chartData.length, TRAJECTORY_MAX_STEPS)}
           </span>
           {chartData.length > 0 && (
             <button
               type="button"
-              className="action-button h-10 px-3 text-sm"
+              className="action-button h-12 px-3 text-sm sm:ml-auto"
               onClick={handleClear}
             >
               <RotateCcw className="w-3.5 h-3.5" aria-hidden />
@@ -123,14 +123,14 @@ export function TrajectoryChart({
       </div>
 
       {latestChange && (
-        <div className="mb-4 rounded-lg border border-lake-accent/25 bg-lake-accent/8 px-4 py-3">
+        <div className="mb-3 rounded-lg border border-lake-accent/25 bg-lake-accent/8 px-3 py-2">
           <p className="info-label mb-1">{METRIC_LABELS.latestChange}</p>
           <p className="text-base text-lake-accent font-medium">{latestChange}</p>
         </div>
       )}
 
       {chartData.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4 text-sm">
+        <div className="mb-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
           <div className="info-card">
             <div className="info-label">{METRIC_LABELS.steps}</div>
             <div className="info-value">{summary.stepCount}</div>
@@ -141,7 +141,7 @@ export function TrajectoryChart({
               {formatMeters(summary.min)} to {formatMeters(summary.max)}
             </div>
           </div>
-          <div className="info-card col-span-2 sm:col-span-1">
+          <div className="info-card">
             <div className="info-label">{METRIC_LABELS.latestVsBaseline}</div>
             <div className="info-value">{formatSignedMeters(summary.latestDeltaFromBaseline)}</div>
           </div>
@@ -152,7 +152,7 @@ export function TrajectoryChart({
         {chartSummary}
       </p>
 
-      <div className="h-[220px] md:h-[280px] lg:h-[320px]">
+      <div className="h-[240px] sm:h-[260px] xl:h-[240px]">
         {chartData.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center px-4 gap-2 text-base text-slate-600 border border-dashed border-slate-300 rounded-lg">
             <p>{TRAJECTORY_EMPTY_PROMPT}</p>
@@ -160,26 +160,28 @@ export function TrajectoryChart({
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <ComposedChart data={chartData} margin={{ top: 28, right: 12, left: 4, bottom: 28 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
               <XAxis
                 dataKey="step"
                 tick={{ fill: "#4B5563", fontSize: 13 }}
                 label={{
                   value: TRAJECTORY_AXIS_SESSION,
-                  position: "insideBottom",
-                  offset: -2,
+                  position: "bottom",
+                  offset: 12,
                   fill: "#4B5563",
                   fontSize: 12,
                 }}
               />
               <YAxis
+                width={36}
                 domain={yDomain}
-                tick={{ fill: "#4B5563", fontSize: 13 }}
+                tick={{ fill: "#4B5563", fontSize: 12 }}
                 label={{
                   value: TRAJECTORY_AXIS_SECCHI,
                   angle: -90,
-                  position: "insideLeft",
+                  position: "left",
+                  offset: 6,
                   fill: "#4B5563",
                   fontSize: 12,
                 }}
@@ -188,7 +190,7 @@ export function TrajectoryChart({
               <Legend
                 verticalAlign="top"
                 align="right"
-                wrapperStyle={{ fontSize: 13, paddingBottom: 8 }}
+                wrapperStyle={{ fontSize: 11, lineHeight: "14px", paddingBottom: 6 }}
                 formatter={(value) => TRAJECTORY_LEGEND[value] || value}
               />
               <ReferenceLine
@@ -212,6 +214,13 @@ export function TrajectoryChart({
                   strokeDasharray="5 5"
                   ifOverflow="extendDomain"
                   name="baselineRef"
+                  label={{
+                    value: `${formatMeters(baseline)} typical`,
+                    position: "insideLeft",
+                    fill: "#A16207",
+                    fontSize: 12,
+                    fontWeight: 600,
+                  }}
                 />
               )}
               {typeof compareValue === "number" && (

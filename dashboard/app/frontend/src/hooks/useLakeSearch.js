@@ -12,7 +12,7 @@ function readRecentLakes() {
 }
 
 export function useLakeSearch() {
-  const [searchQuery, setSearchQuery] = useState("C3420");
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchError, setSearchError] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);

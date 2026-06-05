@@ -23,6 +23,54 @@ test("buildPayloadFeatures prioritizes baseline locked values", () => {
   assert.equal(payload.TPEC, 15);
 });
 
+test("buildPayloadFeatures sends excluded editable features as null", () => {
+  const payload = buildPayloadFeatures(
+    { TPEC: 15, TPBG: 30 },
+    { LATITUDE: 44.11, TPEC: null, TPBG: null },
+    {
+      canonical_feature_order: ["LATITUDE", "TPEC", "TPBG"],
+      locked_baseline_features: ["LATITUDE"],
+      editable_features: ["TPEC", "TPBG"],
+    },
+    ["TPEC"]
+  );
+
+  assert.equal(payload.TPEC, 15);
+  assert.equal(payload.TPBG, null);
+});
+
+test("buildPayloadFeatures preserves missing editable baseline as null", () => {
+  const payload = buildPayloadFeatures(
+    {},
+    { TPEC: null },
+    {
+      canonical_feature_order: ["TPEC"],
+      locked_baseline_features: [],
+      editable_features: ["TPEC"],
+    },
+    ["TPEC"]
+  );
+
+  assert.equal(payload.TPEC, null);
+});
+
+test("buildPayloadFeatures does not coerce null chemistry to zero", () => {
+  const payload = buildPayloadFeatures(
+    { TPBG: 12, TPEC: 8 },
+    { TPBG: null, TPEC: null },
+    {
+      canonical_feature_order: ["TPBG", "TPEC"],
+      locked_baseline_features: [],
+      editable_features: ["TPBG", "TPEC"],
+    },
+    ["TPBG", "TPEC"]
+  );
+
+  assert.equal(payload.TPBG, 12);
+  assert.equal(payload.TPEC, 8);
+  assert.notEqual(payload.TPBG, 0);
+});
+
 test("parsePredictionResponse supports versioned payload", () => {
   const parsed = parsePredictionResponse({
     schema_version: "1.0.0",

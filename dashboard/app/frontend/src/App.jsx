@@ -1,9 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-import { FlaskConical, Home } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FlaskConical } from "lucide-react";
 import { AppFooter } from "./components/layout/AppFooter";
 import { AppShell } from "./components/layout/AppShell";
 import { BootScreen } from "./components/layout/BootScreen";
+import { ContributorsPage } from "./components/layout/ContributorsPage";
+import { InfoPageNav } from "./components/layout/InfoPageNav";
 import { LandingPage } from "./components/layout/LandingPage";
+import { ModelingProcessPage } from "./components/layout/ModelingProcessPage";
+import { PageFrame } from "./components/layout/PageFrame";
 import { DashboardHeader } from "./components/lake/DashboardHeader";
 import { LakeProfileCard } from "./components/lake/LakeProfileCard";
 import { ExplainabilityPanel } from "./components/explainability/ExplainabilityPanel";
@@ -19,10 +23,25 @@ import { useScenarioPrediction } from "./hooks/useScenarioPrediction";
 import {
   LANDING_DESTINATIONS,
   LANDING_TRENDS_PAGE_NOTE,
-  NAV_HOME,
   UNKNOWN_LAKE_NAME,
+  parseLakeSearchInput,
 } from "./lib/copy";
+import { PAGE_CONTAINER } from "./lib/layoutClasses";
+import { stepSearchSuggestion } from "./lib/playgroundGuards";
 import { ROUTES, navigateTo } from "./lib/routes";
+
+const SLIDER_IDLE_COMMIT_MS = 700;
+
+function finiteEditableFeatures(featureConfig, values) {
+  return (featureConfig?.editable_features || []).filter((key) => Number.isFinite(Number(values?.[key])));
+}
+
+function defaultValueForFeature(featureConfig, key) {
+  const slider = featureConfig?.features?.[key]?.slider || {};
+  const min = Number(slider.min ?? 0);
+  const max = Number(slider.max ?? 100);
+  return (min + max) / 2;
+}
 
 function useCurrentPath() {
   const [path, setPath] = useState(() => window.location.pathname);
@@ -36,27 +55,11 @@ function useCurrentPath() {
   return path;
 }
 
-function PageFrame({ children }) {
-  return (
-    <div className="dashboard-bg flex min-h-screen flex-col text-slate-900">
-      <main className="flex-1">{children}</main>
-      <AppFooter />
-    </div>
-  );
-}
-
 function TrendsPage() {
   return (
     <PageFrame>
-      <section className="mx-auto flex min-h-[calc(100vh-96px)] max-w-4xl flex-col justify-center px-6 py-12 lg:px-8">
-        <button
-          type="button"
-          onClick={() => navigateTo(ROUTES.landing)}
-          className="action-button mb-8 w-fit"
-        >
-          <Home className="h-4 w-4" aria-hidden />
-          {NAV_HOME}
-        </button>
+      <section className={`${PAGE_CONTAINER} flex min-h-[calc(100vh-96px)] flex-col justify-center py-12`}>
+        <InfoPageNav />
         <div className="panel p-8">
           <p className="text-base font-semibold uppercase tracking-wide text-lake-accent">
             {LANDING_DESTINATIONS.trends.title}
@@ -86,13 +89,24 @@ function PlaygroundPage() {
   const [lakeName, setLakeName] = useState("");
   const [baseline, setBaseline] = useState(null);
   const [features, setFeatures] = useState({});
+  const [includedFeatures, setIncludedFeatures] = useState([]);
+  const [featureCommitVersion, setFeatureCommitVersion] = useState(0);
   const [lakeSupport, setLakeSupport] = useState(null);
+  const featureCommitTimerRef = useRef(null);
 
-  const handleLakeLoaded = useCallback((normalized, name, lakeBaseline, support) => {
+  const handleLakeLoaded = useCallback((normalized, name, lakeBaseline, support, config) => {
+    if (featureCommitTimerRef.current) {
+      window.clearTimeout(featureCommitTimerRef.current);
+      featureCommitTimerRef.current = null;
+    }
     setLakeId(normalized);
     setLakeName(name === UNKNOWN_LAKE_NAME ? "" : name);
     setBaseline(lakeBaseline);
     setFeatures(lakeBaseline);
+    if (config) {
+      setIncludedFeatures(finiteEditableFeatures(config, lakeBaseline));
+    }
+    setFeatureCommitVersion(0);
     setLakeSupport(support);
     return { normalized, name };
   }, []);
@@ -111,7 +125,14 @@ function PlaygroundPage() {
     latestChange,
     resetChart,
     clearForecast,
-  } = useScenarioPrediction({ lakeId, baseline, features, featureConfig });
+  } = useScenarioPrediction({
+    lakeId,
+    baseline,
+    features,
+    featureConfig,
+    includedFeatures,
+    featureCommitVersion,
+  });
 
   const {
     savedScenarios,
@@ -129,10 +150,10 @@ function PlaygroundPage() {
   const selectLake = async (midasId, nameHint) => {
     try {
       setPredictionError("");
-      const result = await loadLakeBaseline(midasId, nameHint);
+      const result = await loadLakeBaseline(midasId, nameHint, featureConfig);
       if (!result) return;
       const { normalized, name, lakeSupport: support } = result;
-      lakeSearch.setSearchQuery(normalized);
+      lakeSearch.setSearchQuery("");
       lakeSearch.setSearchFocused(false);
       lakeSearch.setActiveSuggestion(-1);
       lakeSearch.pushRecentLake(normalized, name);
@@ -150,18 +171,21 @@ function PlaygroundPage() {
     if (event.key === "ArrowDown") {
       event.preventDefault();
       lakeSearch.setActiveSuggestion((previous) =>
-        Math.min(previous + 1, Math.max(lakeSearch.searchResults.length - 1, 0))
+        stepSearchSuggestion(previous, "down", lakeSearch.searchResults.length)
       );
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      lakeSearch.setActiveSuggestion((previous) => Math.max(previous - 1, 0));
+      lakeSearch.setActiveSuggestion((previous) =>
+        stepSearchSuggestion(previous, "up", lakeSearch.searchResults.length)
+      );
     } else if (event.key === "Enter") {
       event.preventDefault();
       if (lakeSearch.activeSuggestion >= 0 && lakeSearch.searchResults[lakeSearch.activeSuggestion]) {
         const match = lakeSearch.searchResults[lakeSearch.activeSuggestion];
         await selectLake(match.midasId, match.lakeName);
       } else {
-        await selectLake(lakeSearch.searchQuery);
+        const { midasId, nameHint } = parseLakeSearchInput(lakeSearch.searchQuery);
+        await selectLake(midasId || lakeSearch.searchQuery, nameHint);
       }
     } else if (event.key === "Escape") {
       lakeSearch.setSearchFocused(false);
@@ -171,12 +195,67 @@ function PlaygroundPage() {
 
   const handleFeatureChange = (key, value) => {
     setFeatures((previous) => ({ ...previous, [key]: Number(value) }));
+    if (featureCommitTimerRef.current) {
+      window.clearTimeout(featureCommitTimerRef.current);
+    }
+    featureCommitTimerRef.current = window.setTimeout(() => {
+      setFeatureCommitVersion((previous) => previous + 1);
+      featureCommitTimerRef.current = null;
+    }, SLIDER_IDLE_COMMIT_MS);
+  };
+
+  const handleFeatureCommit = () => {
+    if (featureCommitTimerRef.current) {
+      window.clearTimeout(featureCommitTimerRef.current);
+      featureCommitTimerRef.current = null;
+    }
+    setFeatureCommitVersion((previous) => previous + 1);
+  };
+
+  const handleFeatureIncludedChange = (key, included) => {
+    setIncludedFeatures((previous) => {
+      const next = new Set(previous);
+      if (included) {
+        next.add(key);
+      } else {
+        next.delete(key);
+      }
+      return [...next];
+    });
+
+    if (included && !Number.isFinite(Number(features[key]))) {
+      setFeatures((previous) => ({
+        ...previous,
+        [key]: defaultValueForFeature(featureConfig, key),
+      }));
+    }
+
+    setFeatureCommitVersion((previous) => previous + 1);
   };
 
   const resetToBaseline = () => {
     if (!baseline) return;
+    if (featureCommitTimerRef.current) {
+      window.clearTimeout(featureCommitTimerRef.current);
+      featureCommitTimerRef.current = null;
+    }
     setFeatures({ ...baseline });
+    setIncludedFeatures(finiteEditableFeatures(featureConfig, baseline));
+    setFeatureCommitVersion((previous) => previous + 1);
+    resetChart({ ...baseline });
   };
+
+  const clearTrajectory = () => {
+    resetChart();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (featureCommitTimerRef.current) {
+        window.clearTimeout(featureCommitTimerRef.current);
+      }
+    };
+  }, []);
 
   if (bootState !== "ready") {
     return <BootScreen state={bootState} error={bootError} />;
@@ -188,20 +267,13 @@ function PlaygroundPage() {
       header={
         <>
           <div className="mb-4">
-            <button
-              type="button"
-              onClick={() => navigateTo(ROUTES.landing)}
-              className="action-button"
-            >
-              <Home className="h-4 w-4" aria-hidden />
-              {NAV_HOME}
-            </button>
+            <InfoPageNav className="mb-0" />
           </div>
           <DashboardHeader
-          lakeId={lakeId}
-          lakeName={lakeName}
           lakeSupport={lakeSupport}
           searchProps={{
+            lakeId,
+            lakeName,
             searchQuery: lakeSearch.searchQuery,
             onSearchQueryChange: lakeSearch.setSearchQuery,
             searchResults: lakeSearch.searchResults,
@@ -224,16 +296,21 @@ function PlaygroundPage() {
           featureConfig={featureConfig}
           features={features}
           baseline={baseline}
+          includedFeatures={includedFeatures}
           onFeatureChange={handleFeatureChange}
+          onFeatureCommit={handleFeatureCommit}
+          onFeatureIncludedChange={handleFeatureIncludedChange}
         />
       }
-      resultsSection={
-        <>
-          <PredictionHero
-            forecast={forecast}
-            predictionError={predictionError}
-            isPredicting={isPredicting}
-          />
+      predictionSection={
+        <PredictionHero
+          forecast={forecast}
+          predictionError={predictionError}
+          isPredicting={isPredicting}
+        />
+      }
+      trajectorySection={
+        <div className="space-y-4">
           <ScenarioActionBar
             onReset={resetToBaseline}
             onSave={() => saveScenario({ lakeId, lakeName, forecast, features })}
@@ -248,12 +325,12 @@ function PlaygroundPage() {
             forecast={forecast}
             compareScenario={selectedCompareScenario}
             latestChange={latestChange}
-            onClearTrajectory={resetChart}
+            onClearTrajectory={clearTrajectory}
           />
-        </>
+        </div>
       }
       driversSection={
-        <ExplainabilityPanel forecast={forecast} featureConfig={featureConfig} />
+        <ExplainabilityPanel forecast={forecast} featureConfig={featureConfig} lakeId={lakeId} />
       }
     />
   );
@@ -264,5 +341,7 @@ export default function App() {
 
   if (path === ROUTES.playground) return <PlaygroundPage />;
   if (path === ROUTES.trends) return <TrendsPage />;
+  if (path === ROUTES.contributors) return <ContributorsPage />;
+  if (path === ROUTES.modeling) return <ModelingProcessPage />;
   return <LandingPage />;
 }

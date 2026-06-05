@@ -21,6 +21,7 @@ import {
   MODEL_FOOTNOTE,
   SECCHI_DIRECTION_NOTE,
 } from "../../lib/copy";
+import { PAGE_CONTAINER } from "../../lib/layoutClasses";
 import { ROUTES } from "../../lib/routes";
 import { useReducedMotion } from "../../lib/useReducedMotion";
 import { AppFooter } from "./AppFooter";
@@ -79,7 +80,7 @@ export function LandingPage() {
   return (
     <div className="dashboard-bg flex min-h-screen flex-col text-slate-900">
       <main className="flex-1">
-        <div className="mx-auto max-w-6xl space-y-5 px-6 py-8 lg:px-8 lg:py-10">
+        <div className={`${PAGE_CONTAINER} space-y-5 py-6 sm:py-8 lg:py-10`}>
           <MotionBlock reducedMotion={reducedMotion}>
             <div className="landing-hero-panel overflow-hidden">
               <div className="grid lg:grid-cols-12">

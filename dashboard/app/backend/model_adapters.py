@@ -87,28 +87,20 @@ class LakeModelAdapter:
 
         waterfall_data = []
         for idx, feature_name in enumerate(self.feature_order):
+            rendered_value = float(df_features.iloc[0][feature_name])
             waterfall_data.append(
                 WaterfallEntry(
                     feature=feature_name,
                     contribution=float(contributions[idx]),
-                    rendered_value=float(df_features.iloc[0][feature_name]),
+                    rendered_value=None if np.isnan(rendered_value) else rendered_value,
                 )
             )
 
         waterfall_data.sort(key=lambda item: abs(item.contribution), reverse=True)
-        top_influencers = waterfall_data[:5]
-        other_contribution = sum(item.contribution for item in waterfall_data[5:])
-        top_influencers.append(
-            WaterfallEntry(
-                feature="Other Combos",
-                contribution=float(other_contribution),
-                rendered_value=None,
-            )
-        )
 
         explainability = ExplainabilityResult(
             base_value=base_expected_value,
-            waterfall=top_influencers,
+            waterfall=waterfall_data,
             explainability_type=self.explainability_type,
         )
         return PredictionResult(prediction_meters=prediction, explainability=explainability)

@@ -21,7 +21,7 @@ function DeltaValue({ value }) {
   const colorClass = isPositive ? "text-delta-up" : isNegative ? "text-delta-down" : "text-slate-700";
 
   return (
-    <span className={`inline-flex items-center gap-1 text-2xl font-medium ${colorClass}`}>
+    <span className={`inline-flex items-center gap-1 text-xl font-medium sm:text-2xl ${colorClass}`}>
       {Icon && <Icon className="w-5 h-5" aria-hidden />}
       {formatSignedMeters(value, { absolute: true })}
     </span>
@@ -39,15 +39,15 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
   const clarityBand = getClarityBand(prediction);
 
   return (
-    <div className="panel p-6 border-l-4 border-l-lake-accent/50">
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+    <div className="panel border-l-4 border-l-lake-accent/50 p-4 sm:p-5 lg:p-6">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between lg:gap-6">
         <div className="min-w-0">
           <h2 className="section-heading text-slate-700">
             {SECTION_LABELS.prediction}
             <SectionHelp content={HELP_CONTENT.prediction} placement="bottom" />
           </h2>
           <div
-            className={`mt-3 text-5xl sm:text-6xl lg:text-7xl font-semibold leading-none tabular-nums ${
+            className={`mt-3 text-4xl font-semibold leading-none tabular-nums sm:text-5xl lg:text-7xl ${
               isPredicting ? "opacity-70" : ""
             }`}
             aria-live="polite"
@@ -76,15 +76,21 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-6 sm:gap-8 text-slate-700">
-          <div>
-            <div className="info-label">{METRIC_LABELS.modelBaseline}</div>
-            <div className="text-2xl font-medium mt-1 tabular-nums">
+        <div className="grid grid-cols-2 gap-3 text-slate-700 sm:flex sm:flex-wrap sm:gap-8">
+          <div className="min-w-0">
+            <div className="info-label inline-flex items-center">
+              {METRIC_LABELS.modelBaseline}
+              <SectionHelp content={HELP_CONTENT.modelBaseline} placement="bottom" />
+            </div>
+            <div className="mt-1 text-xl font-medium tabular-nums sm:text-2xl">
               {forecast ? formatMeters(baseline) : "--"}
             </div>
           </div>
-          <div>
-            <div className="info-label">{METRIC_LABELS.deltaFromBaseline}</div>
+          <div className="min-w-0">
+            <div className="info-label inline-flex items-center">
+              {METRIC_LABELS.deltaFromBaseline}
+              <SectionHelp content={HELP_CONTENT.deltaFromBaseline} placement="bottom" />
+            </div>
             <div className="mt-1">
               <DeltaValue value={delta} />
             </div>

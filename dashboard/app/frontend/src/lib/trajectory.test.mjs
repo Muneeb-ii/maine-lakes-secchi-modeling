@@ -2,9 +2,12 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   buildTrajectoryPoint,
+  canRecordTrajectory,
   capTrajectoryHistory,
+  computeYDomain,
   computeTrajectorySummary,
   detectChangedFeatures,
+  featuresMatchForPrediction,
   formatLatestChange,
   needsResetConfirmation,
   shouldAppendPoint,
@@ -64,7 +67,79 @@ test("computeTrajectorySummary aggregates session", () => {
   assert.equal(summary.latestDeltaFromBaseline, 0.6);
 });
 
+test("computeYDomain caps extreme upper bounds", () => {
+  const domain = computeYDomain([{ prediction: 3.2 }, { prediction: 250 }], 3.1, null);
+  assert.equal(domain[1], 22);
+});
+
 test("needsResetConfirmation only above threshold", () => {
   assert.equal(needsResetConfirmation(5), false);
   assert.equal(needsResetConfirmation(6), true);
+});
+
+test("featuresMatchForPrediction requires matching editable values", () => {
+  const editable = ["PH", "DOMAX"];
+  const baseline = { PH: 7, DOMAX: 8 };
+  const changed = { PH: 7.5, DOMAX: 8 };
+  assert.equal(featuresMatchForPrediction(baseline, baseline, editable), true);
+  assert.equal(featuresMatchForPrediction(baseline, changed, editable), false);
+  assert.equal(featuresMatchForPrediction(null, changed, editable), false);
+});
+
+test("canRecordTrajectory waits for committed prediction and fresh forecast", () => {
+  const editable = ["PH"];
+  const baseline = { PH: 7 };
+  const changed = { PH: 7.5 };
+
+  assert.equal(
+    canRecordTrajectory({
+      lastRecordedCommit: 0,
+      featureCommitVersion: 1,
+      lastPredictedFeatures: baseline,
+      currentFeatures: changed,
+      editableKeys: editable,
+      isPredicting: false,
+      predictionError: "",
+    }),
+    false
+  );
+
+  assert.equal(
+    canRecordTrajectory({
+      lastRecordedCommit: 0,
+      featureCommitVersion: 1,
+      lastPredictedFeatures: changed,
+      currentFeatures: changed,
+      editableKeys: editable,
+      isPredicting: false,
+      predictionError: "",
+    }),
+    true
+  );
+
+  assert.equal(
+    canRecordTrajectory({
+      lastRecordedCommit: 1,
+      featureCommitVersion: 1,
+      lastPredictedFeatures: changed,
+      currentFeatures: changed,
+      editableKeys: editable,
+      isPredicting: false,
+      predictionError: "",
+    }),
+    false
+  );
+
+  assert.equal(
+    canRecordTrajectory({
+      lastRecordedCommit: 0,
+      featureCommitVersion: 1,
+      lastPredictedFeatures: changed,
+      currentFeatures: changed,
+      editableKeys: editable,
+      isPredicting: true,
+      predictionError: "",
+    }),
+    false
+  );
 });

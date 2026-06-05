@@ -3,12 +3,44 @@ import {
   TRAJECTORY_STEP_LABEL_MULTI,
   TRAJECTORY_STEP_LABEL_START,
 } from "./copy.js";
+import { getFriendlyFeatureLabel } from "./featureLabels.js";
 
 const TRAJECTORY_MAX_STEPS = 30;
 const TRAJECTORY_DEDUPE_METERS = 0.02;
 const TRAJECTORY_RESET_CONFIRM_THRESHOLD = 5;
+const SECCHI_CHART_MAX_METERS = 22;
 
-export { TRAJECTORY_MAX_STEPS, TRAJECTORY_DEDUPE_METERS, TRAJECTORY_RESET_CONFIRM_THRESHOLD };
+export {
+  TRAJECTORY_MAX_STEPS,
+  TRAJECTORY_DEDUPE_METERS,
+  TRAJECTORY_RESET_CONFIRM_THRESHOLD,
+  SECCHI_CHART_MAX_METERS,
+};
+
+export function featuresMatchForPrediction(previous, next, editableKeys) {
+  if (!previous || !next) return false;
+  for (const key of editableKeys) {
+    const prev = Number(previous[key]);
+    const nextValue = Number(next[key]);
+    if (Number.isNaN(prev) || Number.isNaN(nextValue)) return false;
+    if (Math.abs(prev - nextValue) > 0.0001) return false;
+  }
+  return true;
+}
+
+export function canRecordTrajectory({
+  lastRecordedCommit,
+  featureCommitVersion,
+  lastPredictedFeatures,
+  currentFeatures,
+  editableKeys,
+  isPredicting,
+  predictionError,
+}) {
+  if (!currentFeatures || isPredicting || predictionError) return false;
+  if (lastRecordedCommit === featureCommitVersion) return false;
+  return featuresMatchForPrediction(lastPredictedFeatures, currentFeatures, editableKeys);
+}
 
 export function detectChangedFeatures(previousFeatures, nextFeatures, featureConfig) {
   if (!previousFeatures || !nextFeatures || !featureConfig) return [];
@@ -23,7 +55,7 @@ export function detectChangedFeatures(previousFeatures, nextFeatures, featureCon
       const config = featureConfig.features?.[key] || {};
       changed.push({
         key,
-        label: config.label || key,
+        label: getFriendlyFeatureLabel(key, config.label),
         value: next,
         unit: config.unit || "",
       });
@@ -107,14 +139,16 @@ export function formatLatestChange(point) {
 }
 
 export function computeYDomain(points, baseline, compareValue, padding = 0.3) {
-  const values = points.map((p) => p.prediction);
+  const values = points
+    .map((p) => p.prediction)
+    .filter((value) => typeof value === "number" && Number.isFinite(value));
   if (typeof baseline === "number") values.push(baseline);
   if (typeof compareValue === "number") values.push(compareValue);
   values.push(2, 4);
   if (!values.length) return [0, 6];
   const min = Math.min(...values) - padding;
-  const max = Math.max(...values) + padding;
-  return [Math.max(0, min), max];
+  const max = Math.min(SECCHI_CHART_MAX_METERS, Math.max(...values) + padding);
+  return [Math.max(0, min), Math.max(max, 6)];
 }
 
 export function needsResetConfirmation(stepCount) {

@@ -1,16 +1,35 @@
-export function buildPayloadFeatures(features, baseline, featureConfig) {
+function toFiniteNumberOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+export function buildPayloadFeatures(
+  features,
+  baseline,
+  featureConfig,
+  includedEditableFeatures = featureConfig?.editable_features || []
+) {
   const canonicalOrder = featureConfig?.canonical_feature_order || [];
   const lockedBaselineFeatures = new Set(featureConfig?.locked_baseline_features || []);
+  const editableFeatures = new Set(featureConfig?.editable_features || []);
+  const includedEditable = new Set(includedEditableFeatures || []);
   const payload = {};
 
   canonicalOrder.forEach((featureName) => {
     if (lockedBaselineFeatures.has(featureName)) {
-      payload[featureName] = Number(
-        baseline?.[featureName] ?? features?.[featureName] ?? 0
+      payload[featureName] = toFiniteNumberOrNull(
+        baseline?.[featureName] ?? features?.[featureName]
       );
       return;
     }
-    payload[featureName] = Number(features?.[featureName] ?? baseline?.[featureName] ?? 0);
+    if (editableFeatures.has(featureName) && !includedEditable.has(featureName)) {
+      payload[featureName] = null;
+      return;
+    }
+    payload[featureName] = toFiniteNumberOrNull(
+      features?.[featureName] ?? baseline?.[featureName]
+    );
   });
 
   return payload;

@@ -1,4 +1,7 @@
 import unittest
+import json
+import math
+from pathlib import Path
 
 from feature_contract import CANONICAL_FEATURE_ORDER, FEATURE_DEFINITIONS
 
@@ -27,6 +30,29 @@ class FeatureContractTests(unittest.TestCase):
     def test_all_canonical_features_have_definitions(self):
         for feature_name in CANONICAL_FEATURE_ORDER:
             self.assertIn(feature_name, FEATURE_DEFINITIONS)
+
+    def test_slider_ranges_cover_supported_lake_baselines(self):
+        baseline_path = Path(__file__).resolve().parents[4] / "artifacts" / "models" / "baseline_lakes_summary.json"
+        with baseline_path.open() as f:
+            baseline_data = json.load(f)
+
+        for feature_name, definition in FEATURE_DEFINITIONS.items():
+            slider = definition.get("slider")
+            if not slider:
+                continue
+            min_value = float(slider["min"])
+            max_value = float(slider["max"])
+            for lake_id, baseline in baseline_data.items():
+                if lake_id == "GLOBAL_FALLBACK":
+                    continue
+                value = baseline.get(feature_name)
+                if value is None:
+                    continue
+                value = float(value)
+                if not math.isfinite(value):
+                    continue
+                self.assertGreaterEqual(value, min_value, f"{feature_name} below range for {lake_id}")
+                self.assertLessEqual(value, max_value, f"{feature_name} above range for {lake_id}")
 
 
 if __name__ == "__main__":

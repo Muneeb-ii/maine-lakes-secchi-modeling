@@ -20,12 +20,18 @@
     --motion-normal: 260ms;
   }
 
+  html {
+    overflow-x: clip;
+  }
+
   body {
     font-family: "DM Sans", system-ui, sans-serif;
     font-size: 17px;
     line-height: 1.6;
     color: var(--text-primary);
     background-color: var(--bg-primary);
+    overflow-x: clip;
+    -webkit-tap-highlight-color: rgba(0, 90, 181, 0.12);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -42,6 +48,7 @@
 
 @layer components {
   .dashboard-bg {
+    overflow-x: clip;
     background-color: var(--bg-primary);
     background-image:
       radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 90, 181, 0.08), transparent),
@@ -78,7 +85,7 @@
   }
 
   .action-button {
-    @apply inline-flex items-center justify-center gap-2 px-4 h-12 rounded-lg border text-base font-medium transition;
+    @apply inline-flex h-12 items-center justify-center gap-2 rounded-lg border px-4 text-base font-medium transition;
     border-color: var(--panel-border);
     background: #ffffff;
     color: var(--accent);
@@ -100,7 +107,7 @@
   }
 
   .info-card {
-    @apply rounded-lg border px-3 py-2;
+    @apply rounded-lg border px-2.5 py-2 sm:px-3;
     border-color: var(--panel-border);
     background: #f8fafc;
   }
@@ -114,7 +121,33 @@
   }
 
   .slider-group {
-    @apply pb-4 border-b border-slate-200 last:border-b-0 last:pb-0;
+    @apply border-b border-slate-200 pb-4 last:border-b-0 last:pb-0;
+  }
+
+  .slider-group-compact {
+    @apply h-full border-b-0 pb-0;
+  }
+
+  .parameter-slider-card {
+    @apply flex h-full flex-col rounded-lg border p-2.5 sm:p-3;
+    border-color: var(--panel-border);
+    background: #f8fafc;
+  }
+
+  .parameter-slider-header {
+    @apply flex flex-col gap-2 sm:min-h-[4.5rem] sm:flex-row sm:items-start sm:justify-between sm:gap-3;
+  }
+
+  .parameter-slider-value {
+    @apply w-full shrink-0 text-left font-mono text-sm tabular-nums text-lake-accent sm:w-[5.75rem] sm:pt-0.5 sm:text-right;
+  }
+
+  .touch-checkbox {
+    @apply relative -m-2 flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center;
+  }
+
+  .parameter-slider-baseline {
+    @apply mt-2 min-h-[1.25rem] text-sm leading-tight text-slate-600;
   }
 
   .input-field {
@@ -153,6 +186,9 @@ input[type="range"] {
   -webkit-appearance: none;
   background: transparent;
   width: 100%;
+  min-height: 2.75rem;
+  padding: 0.75rem 0;
+  touch-action: pan-y;
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;

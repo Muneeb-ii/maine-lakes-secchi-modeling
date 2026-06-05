@@ -6,9 +6,12 @@ import {
   SEARCH_NO_MATCHES,
   SEARCH_PLACEHOLDER,
   SEARCH_RECENT_HEADING,
+  formatLakeSearchDisplay,
 } from "../../lib/copy";
 
 export function LakeSearchCombobox({
+  lakeId,
+  lakeName,
   searchQuery,
   onSearchQueryChange,
   searchResults,
@@ -25,6 +28,9 @@ export function LakeSearchCombobox({
   const listboxId = useId();
   const activeOptionId =
     activeSuggestion >= 0 ? `${listboxId}-option-${activeSuggestion}` : undefined;
+  const displayValue = searchFocused
+    ? searchQuery
+    : formatLakeSearchDisplay(lakeId, lakeName) || searchQuery;
 
   return (
     <div className="w-full relative">
@@ -37,12 +43,17 @@ export function LakeSearchCombobox({
         aria-activedescendant={activeOptionId}
         aria-autocomplete="list"
         aria-label={SEARCH_ARIA_LABEL}
-        value={searchQuery}
+        value={displayValue}
         onChange={(event) => {
           onSearchQueryChange(event.target.value);
           onActiveSuggestionChange(-1);
         }}
-        onFocus={() => onSearchFocusedChange(true)}
+        onFocus={() => {
+          onSearchFocusedChange(true);
+          if (!searchQuery) {
+            onSearchQueryChange(lakeName || "");
+          }
+        }}
         onBlur={() => setTimeout(() => onSearchFocusedChange(false), 150)}
         onKeyDown={onSearchKeyDown}
         placeholder={SEARCH_PLACEHOLDER}
@@ -72,7 +83,7 @@ export function LakeSearchCombobox({
                   id={`${listboxId}-option-${index}`}
                   role="option"
                   aria-selected={index === activeSuggestion}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg text-base transition ${
+                  className={`min-h-12 w-full rounded-lg px-3 py-2.5 text-left text-base transition ${
                     index === activeSuggestion
                       ? "bg-lake-accent/10 text-lake-accent"
                       : "hover:bg-slate-100"
@@ -95,7 +106,7 @@ export function LakeSearchCombobox({
                   <li key={item.midasId} role="presentation">
                     <button
                       type="button"
-                      className="w-full text-left px-3 py-2.5 rounded-lg text-base hover:bg-slate-100 transition"
+                      className="min-h-12 w-full rounded-lg px-3 py-2.5 text-left text-base transition hover:bg-slate-100"
                       onMouseDown={() => onSelectLake(item.midasId, item.lakeName)}
                     >
                       <div className="font-medium">{item.lakeName}</div>

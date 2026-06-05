@@ -89,13 +89,13 @@ def _enforce_rate_limit(request: Request) -> None:
 def _normalize_midas_id(midas_id: str) -> str:
     normalized = str(midas_id or "").upper().strip()
     if not normalized or len(normalized) > 32:
-        raise HTTPException(status_code=400, detail="Invalid MIDAS ID.")
+        raise HTTPException(status_code=400, detail="Please choose a valid lake.")
     return normalized
 
 
 def _locked_baseline_for_prediction(midas_id: str) -> dict:
     if midas_id not in baseline_data or midas_id == "GLOBAL_FALLBACK":
-        raise HTTPException(status_code=400, detail="Predictions require a supported lake MIDAS ID with baseline data.")
+        raise HTTPException(status_code=400, detail="Please choose a lake with enough information for predictions.")
     baseline = baseline_data[midas_id]
     missing_locked = [name for name in LOCKED_BASELINE_FEATURES if name not in baseline]
     if missing_locked:
@@ -126,6 +126,9 @@ def _prediction_features(payload: ScenarioPayload) -> dict:
             normalized_features[feature_name] = float(baseline[feature_name])
             continue
         raw_value = payload.features.get(feature_name, baseline.get(feature_name, 0.0))
+        if raw_value is None:
+            normalized_features[feature_name] = float("nan")
+            continue
         try:
             value = float(raw_value)
         except (TypeError, ValueError):
@@ -212,7 +215,7 @@ def get_lake_baseline(midas_id: str):
             "lake_quality": quality,
         }
     else:
-        raise HTTPException(status_code=404, detail="No baseline mapping available.")
+        raise HTTPException(status_code=404, detail="We could not find enough information for that lake.")
 
 
 @app.get("/lakes/search")

@@ -46,9 +46,6 @@ export const LANDING_DESTINATIONS = {
 export const LANDING_TRENDS_PAGE_NOTE =
   "While Trends is being built, use the Playground to explore how water conditions affect Secchi depth for a lake you choose.";
 
-export const FOOTER_DEVELOPERS =
-  "Developed by Tahiya Chowdhury and Muneeb Nafees at Colby College, in collaboration with 7 Lakes Alliance, with support from USGS funding.";
-export const FOOTER_PARTNERS_LABEL = "Project partners";
 export const MODEL_FOOTNOTE =
   "Estimates use a statistical model trained on Maine lakes with enough long-term monitoring to support reliable predictions.";
 export const SECCHI_DIRECTION_NOTE = "Higher Secchi depth usually means clearer water";
@@ -84,8 +81,6 @@ export const LAKE_FIELD_LABELS = {
 export const UNKNOWN_LAKE_NAME = "Unknown lake";
 
 export const LAKE_SUPPORT_MESSAGES = {
-  supported:
-    "This lake is well represented in the model, so you can explore scenarios with more confidence.",
   unsupported:
     "This lake has fewer monitoring records, so treat predictions as rough estimates.",
   fallback:
@@ -96,9 +91,13 @@ export const PARAMETER_PANEL_INTRO =
   "Drag sliders to change water measurements and see how predicted clarity responds.";
 
 export const EXPLAINABILITY_INTRO =
-  "The three measurements that most pushed this prediction toward clearer or murkier water.";
-export const EXPLAINABILITY_SHOW_ALL = "See all contributing factors";
-export const EXPLAINABILITY_HIDE_ALL = "Hide full factor list";
+  "How lake traits and the water measurements you changed pushed this prediction toward clearer or murkier water.";
+export const EXPLAINABILITY_LAKE_CONTEXT_HEADING = "Lake characteristics";
+export const EXPLAINABILITY_LAKE_CONTEXT_NOTE =
+  "Location, size, and depth for this lake. These stay fixed while you explore.";
+export const EXPLAINABILITY_ADJUSTMENTS_HEADING = "Water conditions you changed";
+export const EXPLAINABILITY_SHOW_ALL = "See all water condition factors";
+export const EXPLAINABILITY_HIDE_ALL = "Hide full water condition list";
 export const EXPLAINABILITY_MISSING =
   "Factor details aren’t available for this prediction.";
 export const CONTRIBUTOR_CURRENT_VALUE = "Current value";
@@ -158,14 +157,32 @@ export const PREDICTION_UPDATING = "Updating prediction…";
 
 export const NAV_HOME = "Back to home";
 
-export function formatLakeContext(lakeName, lakeId) {
+export function formatLakeSearchDisplay(lakeId, lakeName) {
   const id = String(lakeId || "").trim().toUpperCase();
   const name = String(lakeName || "").trim();
-  const hasReadableName = name && name !== UNKNOWN_LAKE_NAME;
-  if (hasReadableName) {
-    return `Exploring ${name}`;
+  if (!id) return "";
+  if (!name || name === UNKNOWN_LAKE_NAME) return id;
+  return `${id}, ${name}`;
+}
+
+export function parseLakeSearchInput(query) {
+  const trimmed = String(query || "").trim();
+  if (!trimmed) return { midasId: "", nameHint: "" };
+
+  const labeledMatch = trimmed.match(/^([A-Za-z]?\d+)\s*,\s*(.+)$/);
+  if (labeledMatch) {
+    return {
+      midasId: labeledMatch[1].toUpperCase(),
+      nameHint: labeledMatch[2].trim(),
+    };
   }
-  return `Exploring lake ${id}`;
+
+  const idOnlyMatch = trimmed.match(/^([A-Za-z]?\d+)$/i);
+  if (idOnlyMatch) {
+    return { midasId: idOnlyMatch[1].toUpperCase(), nameHint: "" };
+  }
+
+  return { midasId: trimmed, nameHint: "" };
 }
 
 export function formatTrajectorySteps(current, max) {
