@@ -1,6 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { FlaskConical, Home } from "lucide-react";
+import { AppFooter } from "./components/layout/AppFooter";
 import { AppShell } from "./components/layout/AppShell";
 import { BootScreen } from "./components/layout/BootScreen";
+import { LandingPage } from "./components/layout/LandingPage";
 import { DashboardHeader } from "./components/lake/DashboardHeader";
 import { LakeProfileCard } from "./components/lake/LakeProfileCard";
 import { ExplainabilityPanel } from "./components/explainability/ExplainabilityPanel";
@@ -13,9 +16,72 @@ import { useDashboardBoot } from "./hooks/useDashboardBoot";
 import { useLakeSearch } from "./hooks/useLakeSearch";
 import { useSavedScenarios } from "./hooks/useSavedScenarios";
 import { useScenarioPrediction } from "./hooks/useScenarioPrediction";
-import { UNKNOWN_LAKE_NAME } from "./lib/copy";
+import {
+  LANDING_DESTINATIONS,
+  LANDING_TRENDS_PAGE_NOTE,
+  NAV_HOME,
+  UNKNOWN_LAKE_NAME,
+} from "./lib/copy";
+import { ROUTES, navigateTo } from "./lib/routes";
 
-export default function App() {
+function useCurrentPath() {
+  const [path, setPath] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    const handlePopState = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  return path;
+}
+
+function PageFrame({ children }) {
+  return (
+    <div className="dashboard-bg flex min-h-screen flex-col text-slate-900">
+      <main className="flex-1">{children}</main>
+      <AppFooter />
+    </div>
+  );
+}
+
+function TrendsPage() {
+  return (
+    <PageFrame>
+      <section className="mx-auto flex min-h-[calc(100vh-96px)] max-w-4xl flex-col justify-center px-6 py-12 lg:px-8">
+        <button
+          type="button"
+          onClick={() => navigateTo(ROUTES.landing)}
+          className="action-button mb-8 w-fit"
+        >
+          <Home className="h-4 w-4" aria-hidden />
+          {NAV_HOME}
+        </button>
+        <div className="panel p-8">
+          <p className="text-base font-semibold uppercase tracking-wide text-lake-accent">
+            {LANDING_DESTINATIONS.trends.title}
+          </p>
+          <h1 className="display-title mt-3 text-4xl">
+            {LANDING_DESTINATIONS.trends.status}
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-700">
+            {LANDING_DESTINATIONS.trends.description} {LANDING_TRENDS_PAGE_NOTE}
+          </p>
+          <button
+            type="button"
+            onClick={() => navigateTo(ROUTES.playground)}
+            className="action-button mt-8"
+          >
+            <FlaskConical className="h-4 w-4" aria-hidden />
+            {LANDING_DESTINATIONS.playground.cta}
+          </button>
+        </div>
+      </section>
+    </PageFrame>
+  );
+}
+
+function PlaygroundPage() {
   const [lakeId, setLakeId] = useState("C3420");
   const [lakeName, setLakeName] = useState("");
   const [baseline, setBaseline] = useState(null);
@@ -118,8 +184,20 @@ export default function App() {
 
   return (
     <AppShell
+      footer={<AppFooter />}
       header={
-        <DashboardHeader
+        <>
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={() => navigateTo(ROUTES.landing)}
+              className="action-button"
+            >
+              <Home className="h-4 w-4" aria-hidden />
+              {NAV_HOME}
+            </button>
+          </div>
+          <DashboardHeader
           lakeId={lakeId}
           lakeName={lakeName}
           lakeSupport={lakeSupport}
@@ -137,7 +215,8 @@ export default function App() {
             onSelectLake: selectLake,
             onSearchKeyDown: handleSearchKeyDown,
           }}
-        />
+          />
+        </>
       }
       lakeSection={<LakeProfileCard baseline={baseline} />}
       parametersSection={
@@ -178,4 +257,12 @@ export default function App() {
       }
     />
   );
+}
+
+export default function App() {
+  const path = useCurrentPath();
+
+  if (path === ROUTES.playground) return <PlaygroundPage />;
+  if (path === ROUTES.trends) return <TrendsPage />;
+  return <LandingPage />;
 }
