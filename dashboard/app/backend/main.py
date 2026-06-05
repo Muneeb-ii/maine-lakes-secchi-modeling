@@ -3,6 +3,7 @@ import math
 import os
 import time
 from collections import defaultdict, deque
+from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,8 +27,6 @@ from feature_contract import (
 from model_registry import ModelRegistry
 
 
-app = FastAPI(title="Lake Predictive Engine API")
-
 def _dashboard_debug() -> bool:
     return os.getenv("DASHBOARD_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
 
@@ -39,17 +38,6 @@ def _allowed_origins() -> tuple[list[str], bool]:
     return [origin.strip() for origin in raw_origins.split(",") if origin.strip()], True
 
 
-allowed_origins, allow_cors_credentials = _allowed_origins()
-
-# Setup CORS for local development with explicit production override support.
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=allow_cors_credentials,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 DEFAULT_MODELS_PATH = Path(__file__).resolve().parents[3] / "artifacts" / "models"
 models_path = Path(os.getenv("MODEL_ARTIFACTS_PATH", str(DEFAULT_MODELS_PATH))).resolve()
 baseline_data = {}
@@ -60,6 +48,50 @@ SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
 RATE_LIMIT_WINDOW_SECONDS = 60
 PREDICT_RATE_LIMIT_PER_MINUTE = int(os.getenv("PREDICT_RATE_LIMIT_PER_MINUTE", "60"))
 _predict_request_times = defaultdict(deque)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global baseline_data, lake_names_data, support_policy_data
+    print("Mounting ML memory and model registry...")
+
+    registry.load()
+
+    baseline_file = models_path / "baseline_lakes_summary.json"
+    names_file = models_path / "lake_names.json"
+    support_file = models_path / "supported_lakes_policy.json"
+
+    if baseline_file.exists():
+        with open(baseline_file, "r") as f:
+            baseline_data = json.load(f)
+        print("Loaded baseline geometries from artifact.")
+
+    if names_file.exists():
+        with open(names_file, "r") as f:
+            raw_lake_names = json.load(f)
+        lake_names_data = {str(key).upper(): value for key, value in raw_lake_names.items()}
+        print("Loaded lake name mapping dictionary.")
+
+    if support_file.exists():
+        with open(support_file, "r") as f:
+            support_policy_data = json.load(f)
+        print("Loaded supported-lake policy metadata.")
+
+    yield
+
+
+allowed_origins, allow_cors_credentials = _allowed_origins()
+
+app = FastAPI(title="Lake Predictive Engine API", lifespan=lifespan)
+
+# Setup CORS for local development with explicit production override support.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=allow_cors_credentials,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def _public_startup_errors() -> list[str]:
@@ -137,32 +169,6 @@ def _prediction_features(payload: ScenarioPayload) -> dict:
         normalized_features[feature_name] = value
     return normalized_features
 
-@app.on_event("startup")
-async def load_ml_objects():
-    global baseline_data, lake_names_data, support_policy_data
-    print("Mounting ML memory and model registry...")
-
-    registry.load()
-
-    baseline_file = models_path / "baseline_lakes_summary.json"
-    names_file = models_path / "lake_names.json"
-    support_file = models_path / "supported_lakes_policy.json"
-
-    if baseline_file.exists():
-        with open(baseline_file, "r") as f:
-            baseline_data = json.load(f)
-        print("Loaded baseline geometries from artifact.")
-
-    if names_file.exists():
-        with open(names_file, "r") as f:
-            raw_lake_names = json.load(f)
-        lake_names_data = {str(key).upper(): value for key, value in raw_lake_names.items()}
-        print("Loaded lake name mapping dictionary.")
-
-    if support_file.exists():
-        with open(support_file, "r") as f:
-            support_policy_data = json.load(f)
-        print("Loaded supported-lake policy metadata.")
 
 @app.get("/")
 def read_root():
