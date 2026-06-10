@@ -1,8 +1,6 @@
 import json
 import math
 import os
-import time
-from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
@@ -25,6 +23,7 @@ from feature_contract import (
     get_feature_config_response,
 )
 from model_registry import ModelRegistry
+from rate_limit import enforce_api_rate_limit, enforce_predict_rate_limit
 
 
 def _dashboard_debug() -> bool:
@@ -45,9 +44,6 @@ lake_names_data = {}
 support_policy_data = {}
 registry = ModelRegistry(models_path=models_path)
 SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
-RATE_LIMIT_WINDOW_SECONDS = 60
-PREDICT_RATE_LIMIT_PER_MINUTE = int(os.getenv("PREDICT_RATE_LIMIT_PER_MINUTE", "60"))
-_predict_request_times = defaultdict(deque)
 
 
 @asynccontextmanager
@@ -94,28 +90,17 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    if request.method != "OPTIONS":
+        enforce_api_rate_limit(request)
+        if request.method == "POST" and request.url.path == "/predict_scenario":
+            enforce_predict_rate_limit(request)
+    return await call_next(request)
+
+
 def _public_startup_errors() -> list[str]:
     return registry.startup_errors() if _dashboard_debug() else []
-
-
-def _client_ip(request: Request) -> str:
-    forwarded_for = request.headers.get("x-forwarded-for", "")
-    if forwarded_for:
-        return forwarded_for.split(",", 1)[0].strip() or "unknown"
-    return request.client.host if request.client else "unknown"
-
-
-def _enforce_rate_limit(request: Request) -> None:
-    if PREDICT_RATE_LIMIT_PER_MINUTE <= 0:
-        return
-    now = time.monotonic()
-    key = _client_ip(request)
-    request_times = _predict_request_times[key]
-    while request_times and now - request_times[0] > RATE_LIMIT_WINDOW_SECONDS:
-        request_times.popleft()
-    if len(request_times) >= PREDICT_RATE_LIMIT_PER_MINUTE:
-        raise HTTPException(status_code=429, detail="Prediction rate limit exceeded. Try again shortly.")
-    request_times.append(now)
 
 
 def _normalize_midas_id(midas_id: str) -> str:
@@ -273,7 +258,6 @@ def predict_scenario(payload: ScenarioPayload, request: Request):
                 },
             )
 
-        _enforce_rate_limit(request)
         normalized_features = _prediction_features(payload)
 
         include_explainability = "explainability" in requested_outputs
