@@ -20,7 +20,7 @@ function getTooltipPosition(rect, placement) {
   };
 }
 
-export function SectionHelp({ content, placement = "bottom", className = "ml-1.5" }) {
+export function SectionHelp({ content, placement = "bottom", className = "" }) {
   const tooltipId = useId();
   const buttonRef = useRef(null);
   const [open, setOpen] = useState(false);
