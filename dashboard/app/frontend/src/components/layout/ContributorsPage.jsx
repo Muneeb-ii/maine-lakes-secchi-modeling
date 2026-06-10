@@ -5,6 +5,7 @@ import { SECTION_ACCENTS } from "../../lib/theme";
 import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 import { InfoPageNav } from "./InfoPageNav";
 import { PageFrame } from "./PageFrame";
+import { PageInProgressNotice } from "./PageInProgressNotice";
 
 export function ContributorsPage() {
   const { eyebrow, title, intro, developers, partners } = CONTRIBUTORS_PAGE;
@@ -12,12 +13,10 @@ export function ContributorsPage() {
   return (
     <PageFrame>
       <section className={`${PAGE_CONTAINER} py-6 sm:py-10 lg:py-12`}>
-        <InfoPageNav />
+        <InfoPageNav eyebrow={eyebrow} />
+        <PageInProgressNotice />
         <div className={`panel p-6 sm:p-8 ${SECTION_ACCENTS.prediction.panelAccentClass}`}>
-          <p className="inline-flex items-center rounded-full border border-lake-accent/25 bg-lake-accentSoft px-3 py-1.5 text-sm font-semibold uppercase tracking-wide text-lake-accent">
-            {eyebrow}
-          </p>
-          <h1 className="display-title mt-3 text-3xl sm:text-4xl">{title}</h1>
+          <h1 className="display-title text-3xl sm:text-4xl">{title}</h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-700">{intro}</p>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:gap-10">

@@ -45,8 +45,11 @@ export const MODELING_PAGE = {
   eyebrow: "Modeling process",
   title: "How we estimate Secchi depth",
   intro:
-    "The Playground shows scenario predictions: if water conditions change for a lake, how might Secchi depth respond? This page explains where those estimates come from, what inputs they use, and how to interpret them responsibly.",
-  sections: [
+    "This dashboard explores lake water clarity with machine learning across two workspaces. The Playground answers “what if” questions when you change water conditions for a lake. Trends will show how clarity has changed over time and what may lie ahead when that workspace launches.",
+  playground: {
+    summary:
+      "Scenario predictions: if water conditions change for a lake, how might Secchi depth respond? The sections below explain where those estimates come from, what inputs they use, and how to interpret them responsibly.",
+    sections: [
     {
       id: "secchi",
       title: "What Secchi depth measures",
@@ -73,7 +76,7 @@ export const MODELING_PAGE = {
       title: "Modeling approach",
       paragraphs: [
         "The served model is a gradient-boosted tree regressor (CatBoost) tuned for Maine lakes. It learns nonlinear relationships between water measurements, lake characteristics, season, and observed Secchi depth.",
-        "Chlorophyll (CHLA) is intentionally excluded from prediction features. Experiments showed that a no-CHLA feature set with native missing-value handling outperformed imputation-heavy alternatives for dashboard use.",
+        "Chlorophyll (CHLA) is intentionally excluded from prediction features. During model selection, we found that leaving CHLA out and letting the model handle missing chemistry natively worked better than filling gaps with imputed values for interactive scenario use.",
         "When you move sliders in the Playground, the model recomputes a prediction for your scenario. Locked inputs—year, month, location, and lake size—stay tied to the lake profile you selected.",
       ],
     },
@@ -134,7 +137,7 @@ export const MODELING_PAGE = {
       id: "limitations",
       title: "Limitations and responsible use",
       paragraphs: [
-        "Scenario mode answers “what if” questions for adjusted water conditions. It does not forecast long-term trends across years—that capability is planned for the separate Trends workspace.",
+        "Scenario mode answers “what if” questions for adjusted water conditions. It does not forecast long-term trends across years—that question is for the Trends workspace (in development; see below).",
         "Predictions depend on the quality and completeness of monitoring for each lake. Unsupported lakes, sparse chemistry, or statewide fallback profiles increase uncertainty.",
         "Saved scenarios stay in your browser only; they are not stored on a server. Use results to explore hypotheses and communicate patterns, not as a substitute for site-specific monitoring or management decisions.",
       ],
@@ -147,11 +150,20 @@ export const MODELING_PAGE = {
     },
     {
       id: "research",
-      title: "Research trail",
+      title: "How we chose the served model",
       paragraphs: [
-        "The active dashboard model traces to experiments 34, 35, 37, and 38 in this repository: CatBoost tuning without CHLA, leave-one-lake-out checks, imputation benchmarks, and quality-threshold support policy. Each experiment produced committed reports used to choose the served artifact.",
-        "Model version 2026-05-28-exp34-exp38 is loaded from repository artifacts at deploy time, so the API and UI stay aligned with a single canonical feature contract.",
+        "The Playground model was not picked from a single offline score. We compared candidate setups on chronological splits, checked whether lakes held up under leave-one-lake-out validation, and benchmarked missing-chemistry strategies before settling on native missing-value handling without chlorophyll.",
+        "We also defined the supported-lake policy from monitoring depth and data completeness so the tool prioritizes lakes with enough history for stable estimates. The dashboard loads one validated model package at deploy time, which keeps predictions, slider definitions, and explainability aligned.",
       ],
     },
-  ],
+    ],
+  },
+  trends: {
+    summary: "Clarity over time for Maine lakes.",
+    paragraphs: [
+      "The Trends workspace will explore how clarity has changed over time and what may lie ahead for lakes you follow. It is built for temporal questions—not slider scenarios.",
+      "Model selection, inputs, and performance details for trend forecasting will be documented here when the workspace launches. Until then, use the Playground to explore how water conditions affect Secchi depth for a lake you choose.",
+    ],
+    workspaceCta: "Visit the Trends workspace",
+  },
 };

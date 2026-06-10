@@ -7,10 +7,11 @@ export const PLAYGROUND_TITLE = "Lake Water Clarity Playground";
 export const PLAYGROUND_TAGLINE =
   "Choose a lake, adjust water measurements, and see how predicted Secchi depth compares to that lake’s typical profile.";
 
-export const LANDING_EYEBROW = "Maine lakes · Water clarity";
 export const LANDING_TITLE = "Explore Secchi depth";
-export const LANDING_HEADER_HOOK =
-  "Secchi depth is how far a standard disk stays visible underwater, recorded in meters. It tells us about the water clarity of a lake.";
+export const LANDING_HEADER_HOOK_LINES = [
+  "Secchi depth is how far a standard disk stays visible underwater, recorded in meters.",
+  "It tells us about the water clarity of a lake.",
+];
 export const LANDING_HEADER_STATS = [
   { label: "Lakes ready to explore", value: "187" },
   { label: "Monitoring records", value: "87,000+" },

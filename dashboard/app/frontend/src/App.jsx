@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BarChart3, FlaskConical } from "lucide-react";
+import { BarChart3, FlaskConical, Waves } from "lucide-react";
 import { ClaroGuide } from "./components/claro/ClaroGuide";
 import { AppFooter } from "./components/layout/AppFooter";
 import { AppShell } from "./components/layout/AppShell";
@@ -24,6 +24,7 @@ import { useScenarioPrediction } from "./hooks/useScenarioPrediction";
 import {
   LANDING_DESTINATIONS,
   LANDING_TRENDS_PAGE_NOTE,
+  PLAYGROUND_EYEBROW,
   SCENARIO_DELETED_STATUS,
   SCENARIO_DELETE_CONFIRM,
   SCENARIO_LOAD_CONFIRM,
@@ -76,7 +77,10 @@ function TrendsPage() {
   return (
     <PageFrame>
       <section className={`${PAGE_CONTAINER} flex min-h-[calc(100vh-96px)] flex-col justify-center py-12`}>
-        <InfoPageNav />
+        <InfoPageNav
+          eyebrow={LANDING_DESTINATIONS.trends.title}
+          eyebrowTone="amber"
+        />
         <div
           data-claro-target="trends-page"
           className={`panel p-8 ${SECTION_ACCENTS.trends.panelAccentClass}`}
@@ -85,10 +89,7 @@ function TrendsPage() {
               "linear-gradient(135deg, rgba(230, 159, 0, 0.08) 0%, #ffffff 55%)",
           }}
         >
-          <p className="inline-flex items-center gap-2 rounded-full border border-lake-amber/30 bg-white px-3 py-1.5 text-sm font-semibold uppercase tracking-wide text-lake-amber">
-            {LANDING_DESTINATIONS.trends.title}
-          </p>
-          <h1 className="display-title mt-4 flex items-center gap-3 text-4xl">
+          <h1 className="display-title flex items-center gap-3 text-4xl">
             <SectionHeadingIcon section="trends" icon={BarChart3} />
             {LANDING_DESTINATIONS.trends.status}
           </h1>
@@ -363,9 +364,11 @@ function PlaygroundPage() {
       }
       header={
         <>
-          <div className="mb-4">
-            <InfoPageNav className="mb-0" />
-          </div>
+          <InfoPageNav
+            className="mb-4"
+            eyebrow={PLAYGROUND_EYEBROW}
+            eyebrowIcon={Waves}
+          />
           <DashboardHeader
             lakeSupport={lakeSupport}
             searchProps={{
