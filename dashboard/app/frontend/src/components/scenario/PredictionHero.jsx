@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Waves } from "lucide-react";
 import {
   METRIC_LABELS,
   PREDICTION_UPDATING,
@@ -8,8 +8,10 @@ import {
 } from "../../lib/copy";
 import { formatMeters, formatSignedMeters, getClarityBand } from "../../lib/formatters";
 import { HELP_CONTENT } from "../../lib/helpContent";
+import { SECTION_ACCENTS } from "../../lib/theme";
 import { useReducedMotion } from "../../lib/useReducedMotion";
 import { SectionHelp } from "../ui/SectionHelp";
+import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 
 function DeltaValue({ value }) {
   if (typeof value !== "number" || Number.isNaN(value)) {
@@ -37,12 +39,16 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
       ? prediction - baseline
       : null;
   const clarityBand = getClarityBand(prediction);
+  const heroWashClass = clarityBand?.heroWashClass || "hero-wash-prediction";
 
   return (
-    <div className="panel border-l-4 border-l-lake-accent/50 p-4 sm:p-5 lg:p-6">
+    <div
+      className={`panel p-4 sm:p-5 lg:p-6 ${heroWashClass} ${SECTION_ACCENTS.prediction.panelAccentClass}`}
+    >
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between lg:gap-6">
         <div className="min-w-0">
           <h2 className="section-heading text-slate-700">
+            <SectionHeadingIcon section="prediction" icon={Waves} />
             {SECTION_LABELS.prediction}
             <SectionHelp content={HELP_CONTENT.prediction} placement="bottom" />
           </h2>
@@ -65,13 +71,11 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
               </motion.span>
             </AnimatePresence>
           </div>
-          <p className="mt-2 text-base text-slate-700">{SECCHI_DIRECTION_NOTE}</p>
+          <p className="body-copy mt-2">{SECCHI_DIRECTION_NOTE}</p>
           {clarityBand && forecast && (
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className="text-sm font-medium px-2.5 py-1 rounded-full bg-lake-accent/10 text-lake-accent border border-lake-accent/30">
-                {clarityBand.label}
-              </span>
-              <span className="text-sm text-slate-600">{clarityBand.description}</span>
+              <span className={clarityBand.pillClass}>{clarityBand.label}</span>
+              <span className="body-copy">{clarityBand.description}</span>
             </div>
           )}
         </div>
@@ -99,7 +103,7 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
       </div>
 
       {isPredicting && (
-        <p className="mt-4 text-sm text-slate-600" role="status">
+        <p className="mt-4 text-base text-slate-700" role="status">
           {PREDICTION_UPDATING}
         </p>
       )}

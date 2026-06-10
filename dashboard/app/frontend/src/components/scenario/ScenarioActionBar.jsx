@@ -1,14 +1,17 @@
-import { Bookmark, Layers, RotateCcw } from "lucide-react";
+import { Bookmark, Layers, RotateCcw, Trash2 } from "lucide-react";
 import {
   SCENARIO_COMPARE_LABEL,
   SCENARIO_COMPARE_PLACEHOLDER,
+  SCENARIO_DELETE,
   SCENARIO_RESET,
   SCENARIO_SAVE,
   SECTION_LABELS,
   formatSavedScenarioOption,
 } from "../../lib/copy";
 import { HELP_CONTENT } from "../../lib/helpContent";
+import { SECTION_ACCENTS } from "../../lib/theme";
 import { SectionHelp } from "../ui/SectionHelp";
+import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 
 export function ScenarioActionBar({
   onReset,
@@ -17,10 +20,18 @@ export function ScenarioActionBar({
   savedScenarios,
   compareScenarioId,
   onCompareChange,
+  onDeleteScenario,
 }) {
+  const compareActive = Boolean(compareScenarioId);
+
   return (
-    <div className="panel p-4">
+    <div
+      className={`panel p-4 ${
+        compareActive ? "panel-accent-left panel-accent-compare" : SECTION_ACCENTS.scenario.panelAccentClass
+      }`}
+    >
       <div className="section-heading mb-3">
+        <SectionHeadingIcon section="scenario" icon={Bookmark} />
         {SECTION_LABELS.scenarioActions}
         <SectionHelp content={HELP_CONTENT.scenarioActions} />
       </div>
@@ -31,7 +42,7 @@ export function ScenarioActionBar({
         </button>
         <button
           type="button"
-          className="action-button w-full sm:w-auto"
+          className="action-button-primary w-full sm:w-auto"
           onClick={onSave}
           disabled={!canSave}
         >
@@ -39,7 +50,7 @@ export function ScenarioActionBar({
           {SCENARIO_SAVE}
         </button>
         <div className="flex w-full items-center gap-2 sm:col-span-2 lg:min-w-[220px] lg:flex-1">
-          <Layers className="w-4 h-4 text-slate-600 shrink-0" aria-hidden />
+          <Layers className="w-4 h-4 shrink-0 text-lake-sectionCompare" aria-hidden />
           <label htmlFor="compare-scenario" className="sr-only">
             {SCENARIO_COMPARE_LABEL}
           </label>
@@ -61,6 +72,15 @@ export function ScenarioActionBar({
             ))}
           </select>
         </div>
+        <button
+          type="button"
+          className="action-button-danger w-full sm:col-span-2 sm:w-auto"
+          onClick={onDeleteScenario}
+          disabled={!compareScenarioId}
+        >
+          <Trash2 className="w-4 h-4" aria-hidden />
+          {SCENARIO_DELETE}
+        </button>
       </div>
     </div>
   );

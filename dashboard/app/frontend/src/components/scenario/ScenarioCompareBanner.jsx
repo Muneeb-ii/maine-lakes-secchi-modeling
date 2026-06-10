@@ -11,7 +11,7 @@ export function ScenarioCompareBanner({ scenario, delta }) {
   const colorClass = isPositive ? "text-delta-up" : isNegative ? "text-delta-down" : "text-slate-700";
 
   return (
-    <div className="panel p-4 text-base text-slate-700" role="status">
+    <div className="callout-compare panel p-4 body-copy" role="status">
       <p>
         {COMPARE_BANNER_INTRO}{" "}
         <time dateTime={scenario.timestamp}>{new Date(scenario.timestamp).toLocaleString()}</time>.

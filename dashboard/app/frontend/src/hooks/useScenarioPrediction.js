@@ -9,6 +9,7 @@ import { resolveModelBaseline } from "../lib/playgroundGuards";
 import {
   buildTrajectoryPoint,
   capTrajectoryHistory,
+  buildComparableFeatureState,
   detectChangedFeatures,
   featuresMatchForPrediction,
   formatLatestChange,
@@ -28,12 +29,20 @@ export function useScenarioPrediction({
   const [predictionError, setPredictionError] = useState("");
   const [isPredicting, setIsPredicting] = useState(false);
   const [chartHistory, setChartHistory] = useState([]);
-  const previousFeaturesRef = useRef(null);
+  const previousScenarioStateRef = useRef(null);
   const lastRecordedCommitRef = useRef(featureCommitVersion);
   const baselinePredictionRef = useRef(baselinePrediction);
   const lastPredictedFeaturesRef = useRef(null);
   const featuresRef = useRef(features);
   const predictRequestIdRef = useRef(0);
+
+  const baselineIncludedFeatures = useMemo(
+    () =>
+      (featureConfig?.editable_features || []).filter((key) =>
+        Number.isFinite(Number(baseline?.[key]))
+      ),
+    [baseline, featureConfig]
+  );
 
   useEffect(() => {
     featuresRef.current = features;
@@ -61,16 +70,18 @@ export function useScenarioPrediction({
   }, [baselinePrediction]);
 
   useEffect(() => {
-    previousFeaturesRef.current =
-      baseline && Object.keys(baseline).length > 0 ? { ...baseline } : null;
+    previousScenarioStateRef.current =
+      baseline && featureConfig && Object.keys(baseline).length > 0
+        ? buildComparableFeatureState(baseline, featureConfig, baselineIncludedFeatures)
+        : null;
     lastRecordedCommitRef.current = featureCommitVersion;
     setChartHistory([]);
     lastPredictedFeaturesRef.current = null;
-  }, [baseline]);
+  }, [baseline, featureConfig, baselineIncludedFeatures]);
 
   useEffect(() => {
     setBaselinePrediction(null);
-    if (!baseline || !featureConfig || !includedFeatures?.length) return;
+    if (!baseline || !featureConfig || !baselineIncludedFeatures.length) return;
 
     let cancelled = false;
     const loadBaselinePrediction = async () => {
@@ -79,7 +90,7 @@ export function useScenarioPrediction({
           baseline,
           baseline,
           featureConfig,
-          includedFeatures
+          baselineIncludedFeatures
         );
         const res = await fetch(`${API_URL}/predict_scenario`, {
           method: "POST",
@@ -110,7 +121,7 @@ export function useScenarioPrediction({
     return () => {
       cancelled = true;
     };
-  }, [baseline, featureConfig, lakeId, includedFeatures]);
+  }, [baseline, featureConfig, lakeId, baselineIncludedFeatures]);
 
   useEffect(() => {
     const currentFeatures = featuresRef.current;
@@ -159,7 +170,11 @@ export function useScenarioPrediction({
         );
         parsed.explainability.base_value = modelBaseline;
         setForecast(parsed);
-        lastPredictedFeaturesRef.current = { ...featuresRef.current };
+        lastPredictedFeaturesRef.current = buildComparableFeatureState(
+          featuresRef.current,
+          featureConfig,
+          includedFeatures
+        );
       } catch (error) {
         if (!cancelled && requestId === predictRequestIdRef.current) {
           setPredictionError(error.message || "Prediction failed.");
@@ -186,27 +201,45 @@ export function useScenarioPrediction({
     }
 
     const editableKeys = featureConfig.editable_features || [];
-    if (!featuresMatchForPrediction(lastPredictedFeaturesRef.current, features, editableKeys)) {
+    const currentScenarioState = buildComparableFeatureState(
+      features,
+      featureConfig,
+      includedFeatures
+    );
+    if (
+      !featuresMatchForPrediction(
+        lastPredictedFeaturesRef.current,
+        currentScenarioState,
+        editableKeys
+      )
+    ) {
       return;
     }
 
-    const previousFeatures = previousFeaturesRef.current;
-    if (!previousFeatures) {
-      previousFeaturesRef.current =
-        baseline && Object.keys(baseline).length > 0 ? { ...baseline } : { ...features };
+    const previousScenarioState = previousScenarioStateRef.current;
+    if (!previousScenarioState) {
+      previousScenarioStateRef.current =
+        baseline && Object.keys(baseline).length > 0
+          ? buildComparableFeatureState(baseline, featureConfig, includedFeatures)
+          : currentScenarioState;
       lastRecordedCommitRef.current = featureCommitVersion;
       return;
     }
 
-    const changedFeatures = detectChangedFeatures(previousFeatures, features, featureConfig);
+    const changedFeatures = detectChangedFeatures(
+      previousScenarioState,
+      currentScenarioState,
+      featureConfig
+    );
     if (changedFeatures.length === 0) {
-      previousFeaturesRef.current = { ...features };
+      previousScenarioStateRef.current = currentScenarioState;
       lastRecordedCommitRef.current = featureCommitVersion;
       return;
     }
 
     const prediction = forecast.predictionMeters;
     const modelBaseline = forecast.explainability.base_value;
+    const hasInclusionChange = changedFeatures.some((feature) => feature.included !== undefined);
 
     setChartHistory((previous) => {
       if (previous.length === 0) {
@@ -226,15 +259,15 @@ export function useScenarioPrediction({
           previousPrediction: modelBaseline,
         });
 
-        previousFeaturesRef.current = { ...features };
+        previousScenarioStateRef.current = currentScenarioState;
         lastRecordedCommitRef.current = featureCommitVersion;
         return capTrajectoryHistory([startingPoint, changedPoint]);
       }
 
       const lastPrediction = previous[previous.length - 1].prediction;
 
-      if (!shouldAppendPoint(lastPrediction, prediction, false)) {
-        previousFeaturesRef.current = { ...features };
+      if (!hasInclusionChange && !shouldAppendPoint(lastPrediction, prediction, false)) {
+        previousScenarioStateRef.current = currentScenarioState;
         lastRecordedCommitRef.current = featureCommitVersion;
         return previous;
       }
@@ -248,7 +281,7 @@ export function useScenarioPrediction({
         previousPrediction: lastPrediction,
       });
 
-      previousFeaturesRef.current = { ...features };
+      previousScenarioStateRef.current = currentScenarioState;
       lastRecordedCommitRef.current = featureCommitVersion;
       return capTrajectoryHistory([...previous, point]);
     });
@@ -258,6 +291,7 @@ export function useScenarioPrediction({
     featureConfig,
     features,
     forecast,
+    includedFeatures,
     isPredicting,
     predictionError,
   ]);
@@ -269,15 +303,17 @@ export function useScenarioPrediction({
 
   const resetChart = (seedFeatures = features) => {
     setChartHistory([]);
-    previousFeaturesRef.current =
-      seedFeatures && Object.keys(seedFeatures).length > 0 ? { ...seedFeatures } : null;
+    previousScenarioStateRef.current =
+      seedFeatures && Object.keys(seedFeatures).length > 0 && featureConfig
+        ? buildComparableFeatureState(seedFeatures, featureConfig, includedFeatures)
+        : null;
     lastRecordedCommitRef.current = featureCommitVersion;
   };
 
   const clearForecast = () => {
     setForecast(null);
     setBaselinePrediction(null);
-    previousFeaturesRef.current = null;
+    previousScenarioStateRef.current = null;
     lastRecordedCommitRef.current = featureCommitVersion;
     lastPredictedFeaturesRef.current = null;
   };

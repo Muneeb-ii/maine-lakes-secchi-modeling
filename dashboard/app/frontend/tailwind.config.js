@@ -14,12 +14,30 @@ export default {
           panel: "#FFFFFF",
           border: "#CBD5E1",
           accent: "#005AB5",
+          accentSoft: "#EFF6FF",
           muted: "#4B5563",
           amber: "#E69F00",
+          sectionLake: "#0072B2",
+          sectionDrivers: "#009E73",
+          sectionCompare: "#CC79A7",
         },
         delta: {
           up: "#00836D",
           down: "#D55E00",
+        },
+        clarity: {
+          turbid: {
+            bg: "#FFF7ED",
+            border: "#D55E00",
+          },
+          moderate: {
+            bg: "#FFFBEB",
+            border: "#E69F00",
+          },
+          clearer: {
+            bg: "#ECFDF5",
+            border: "#00836D",
+          },
         },
       },
       boxShadow: {

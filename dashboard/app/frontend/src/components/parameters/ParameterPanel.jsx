@@ -2,7 +2,9 @@ import { Sparkles } from "lucide-react";
 import { PARAMETER_PANEL_INTRO, SECTION_LABELS } from "../../lib/copy";
 import { PARAMETER_GROUPS } from "../../lib/constants";
 import { HELP_CONTENT } from "../../lib/helpContent";
+import { SECTION_ACCENTS } from "../../lib/theme";
 import { SectionHelp } from "../ui/SectionHelp";
+import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 import { ParameterSlider } from "./ParameterSlider";
 
 function getSliderBounds(config) {
@@ -29,19 +31,19 @@ export function ParameterPanel({
   })).filter((group) => group.keys.length > 0);
 
   return (
-    <div className="panel p-4 sm:p-5">
+    <div className={`panel p-4 sm:p-5 ${SECTION_ACCENTS.parameters.panelAccentClass}`}>
       <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
         <h2 className="section-heading">
-          <Sparkles className="w-4 h-4" aria-hidden />
+          <SectionHeadingIcon section="parameters" icon={Sparkles} />
           {SECTION_LABELS.parameters}
           <SectionHelp content={HELP_CONTENT.parameters} />
         </h2>
-        <p className="max-w-2xl text-sm text-slate-600">{PARAMETER_PANEL_INTRO}</p>
+        <p className="body-copy max-w-2xl">{PARAMETER_PANEL_INTRO}</p>
       </div>
       <div className="mt-4 space-y-5">
         {grouped.map((group) => (
           <div key={group.key}>
-            <h3 className="mb-3 text-sm font-semibold text-slate-600">{group.label}</h3>
+            <h3 className="group-label-accent mb-3">{group.label}</h3>
             <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {group.keys.map((key) => {
                 const config = featureConfig.features[key];

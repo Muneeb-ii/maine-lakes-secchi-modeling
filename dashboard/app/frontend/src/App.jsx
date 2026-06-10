@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FlaskConical } from "lucide-react";
+import { BarChart3, FlaskConical } from "lucide-react";
 import { AppFooter } from "./components/layout/AppFooter";
 import { AppShell } from "./components/layout/AppShell";
 import { BootScreen } from "./components/layout/BootScreen";
@@ -29,6 +29,8 @@ import {
 import { PAGE_CONTAINER } from "./lib/layoutClasses";
 import { stepSearchSuggestion } from "./lib/playgroundGuards";
 import { ROUTES, navigateTo } from "./lib/routes";
+import { SECTION_ACCENTS } from "./lib/theme";
+import { SectionHeadingIcon } from "./components/ui/SectionHeadingIcon";
 
 const SLIDER_IDLE_COMMIT_MS = 700;
 
@@ -60,11 +62,18 @@ function TrendsPage() {
     <PageFrame>
       <section className={`${PAGE_CONTAINER} flex min-h-[calc(100vh-96px)] flex-col justify-center py-12`}>
         <InfoPageNav />
-        <div className="panel p-8">
-          <p className="text-base font-semibold uppercase tracking-wide text-lake-accent">
+        <div
+          className={`panel p-8 ${SECTION_ACCENTS.trends.panelAccentClass}`}
+          style={{
+            backgroundImage:
+              "linear-gradient(135deg, rgba(230, 159, 0, 0.08) 0%, #ffffff 55%)",
+          }}
+        >
+          <p className="inline-flex items-center gap-2 rounded-full border border-lake-amber/30 bg-white px-3 py-1.5 text-sm font-semibold uppercase tracking-wide text-lake-amber">
             {LANDING_DESTINATIONS.trends.title}
           </p>
-          <h1 className="display-title mt-3 text-4xl">
+          <h1 className="display-title mt-4 flex items-center gap-3 text-4xl">
+            <SectionHeadingIcon section="trends" icon={BarChart3} />
             {LANDING_DESTINATIONS.trends.status}
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-700">
@@ -73,7 +82,7 @@ function TrendsPage() {
           <button
             type="button"
             onClick={() => navigateTo(ROUTES.playground)}
-            className="action-button mt-8"
+            className="action-button-primary mt-8"
           >
             <FlaskConical className="h-4 w-4" aria-hidden />
             {LANDING_DESTINATIONS.playground.cta}
@@ -140,6 +149,7 @@ function PlaygroundPage() {
     setCompareScenarioId,
     selectedCompareScenario,
     saveScenario,
+    deleteScenario,
   } = useSavedScenarios();
 
   const scenarioDelta =
@@ -318,6 +328,7 @@ function PlaygroundPage() {
             savedScenarios={savedScenarios}
             compareScenarioId={compareScenarioId}
             onCompareChange={setCompareScenarioId}
+            onDeleteScenario={deleteScenario}
           />
           <ScenarioCompareBanner scenario={selectedCompareScenario} delta={scenarioDelta} />
           <TrajectoryChart

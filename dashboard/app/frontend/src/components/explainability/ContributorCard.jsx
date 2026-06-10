@@ -29,7 +29,7 @@ export function ContributorCard({ item, label, unit = "" }) {
           {formatSignedMeters(item.contribution, { absolute: true })}
         </span>
       </div>
-      <p className="mt-1 text-sm text-slate-600">
+      <p className="mt-1 text-base text-slate-700">
         {CONTRIBUTOR_CURRENT_VALUE}:{" "}
         {item.rendered_value === null
           ? CONTRIBUTOR_AGGREGATE_VALUE

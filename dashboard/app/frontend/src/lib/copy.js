@@ -3,9 +3,14 @@ export const DASHBOARD_TAGLINE =
   "See how water conditions may affect Secchi depth for lakes across Maine.";
 
 export const LANDING_EYEBROW = "Maine lakes · Water clarity";
-export const LANDING_TITLE = "Explore Secchi depth for Maine lakes";
-export const LANDING_INTRO =
-  "Secchi depth is how far you can see into the water. Deeper usually means clearer. Choose a lake, try different water conditions, and see how clarity might change.";
+export const LANDING_TITLE = "Explore Secchi depth";
+export const LANDING_HEADER_HOOK =
+  "Secchi depth is how far a standard disk stays visible underwater, recorded in meters. It tells us about the water clarity of a lake.";
+export const LANDING_HEADER_STATS = [
+  { label: "Lakes ready to explore", value: "187" },
+  { label: "Monitoring records", value: "87,000+" },
+  { label: "Measurements in the model", value: "14" },
+];
 export const LANDING_CLARITY_TITLE = "How to read Secchi depth";
 export const LANDING_HOW_IT_WORKS_TITLE = "What you can do here";
 export const LANDING_HIGHLIGHTS = [
@@ -23,8 +28,6 @@ export const LANDING_HIGHLIGHTS = [
   },
 ];
 export const LANDING_WORKSPACES_TITLE = "Get started";
-export const LANDING_WORKSPACES_INTRO =
-  "Open the Playground to explore scenarios today, or visit Trends to see what’s coming next.";
 
 export const LANDING_DESTINATIONS = {
   trends: {
@@ -46,8 +49,6 @@ export const LANDING_DESTINATIONS = {
 export const LANDING_TRENDS_PAGE_NOTE =
   "While Trends is being built, use the Playground to explore how water conditions affect Secchi depth for a lake you choose.";
 
-export const MODEL_FOOTNOTE =
-  "Estimates use a statistical model trained on Maine lakes with enough long-term monitoring to support reliable predictions.";
 export const SECCHI_DIRECTION_NOTE = "Higher Secchi depth usually means clearer water";
 
 export const SECTION_LABELS = {
@@ -66,8 +67,11 @@ export const METRIC_LABELS = {
   modelBaseline: "Typical for this lake",
   deltaFromBaseline: "Change from typical",
   latestChange: "Last slider change",
-  steps: "Points recorded",
-  sessionRange: "Range this session",
+  steps: "Recorded changes",
+  sessionRange: "Depth range",
+  latestSecchi: "Latest Secchi",
+  latestVsPrevious: "Latest change",
+  largestMove: "Largest move",
   latestVsBaseline: "Latest vs typical",
 };
 
@@ -107,6 +111,7 @@ export const ARIA_CONTRIBUTION_MURKIER = "pushes toward murkier water";
 
 export const SCENARIO_RESET = "Restore lake defaults";
 export const SCENARIO_SAVE = "Save this scenario";
+export const SCENARIO_DELETE = "Delete saved scenario";
 export const SCENARIO_COMPARE_LABEL = "Compare with a saved scenario";
 export const SCENARIO_COMPARE_PLACEHOLDER = "Choose a saved scenario…";
 
@@ -118,16 +123,16 @@ export const COMPARE_BANNER_INTRO = "Comparing with a scenario you saved on";
 export const COMPARE_BANNER_DELTA = "Difference from that scenario";
 
 export const TRAJECTORY_EMPTY_PROMPT =
-  "Move a slider to record your first change.";
+  "Move a slider to start a scenario history.";
 export const TRAJECTORY_STEP_NOTE =
-  "A point is added when predicted Secchi changes by at least 0.02 m (about 0.8 in). Very small tweaks may not show up.";
+  "Each dot is one meaningful slider adjustment. Very small tweaks under 0.02 m may be ignored so the chart stays readable.";
 export const TRAJECTORY_RESET_CONFIRM =
-  "Clear every recorded change? Your slider settings will stay as they are.";
-export const TRAJECTORY_RESET_BUTTON = "Clear changes";
+  "Clear the scenario history chart? Saved scenarios will stay in the comparison menu.";
+export const TRAJECTORY_RESET_BUTTON = "Clear chart history";
 export const TRAJECTORY_CHART_EMPTY_SUMMARY =
-  "Changes chart is empty. Adjust water conditions to record points.";
-export const TRAJECTORY_STEP_LABEL_START = "Starting point";
-export const TRAJECTORY_STEP_LABEL_ADJUSTMENT = "Adjustment";
+  "Scenario history chart is empty. Adjust water conditions to record meaningful changes.";
+export const TRAJECTORY_STEP_LABEL_START = "Typical lake condition";
+export const TRAJECTORY_STEP_LABEL_ADJUSTMENT = "Slider adjustment";
 export const TRAJECTORY_STEP_LABEL_MULTI = (count) => `${count} measurements changed`;
 
 export const TRAJECTORY_LEGEND = {
@@ -138,9 +143,17 @@ export const TRAJECTORY_LEGEND = {
   clarity4m: "4 m, moderate reference",
 };
 
-export const TRAJECTORY_AXIS_SESSION = "Adjustments you made";
+export const TRAJECTORY_AXIS_SESSION = "Scenario history";
 export const TRAJECTORY_AXIS_SECCHI = "Secchi depth (m)";
 export const TRAJECTORY_TOOLTIP_VS_BASELINE = "vs typical";
+export const TRAJECTORY_TOOLTIP_VS_PREVIOUS = "vs previous change";
+export const TRAJECTORY_SCALE_LABEL = "Chart scale";
+export const TRAJECTORY_SCALE_DETAIL = "Detail";
+export const TRAJECTORY_SCALE_FULL = "Full context";
+export const TRAJECTORY_SCALE_NOTE_DETAIL =
+  "Detail scale zooms in around your scenario so small changes are easier to see.";
+export const TRAJECTORY_SCALE_NOTE_FULL =
+  "Full context keeps the 2 m and 4 m clarity references in view.";
 
 export const SEARCH_PLACEHOLDER = "Search by lake name…";
 export const SEARCH_ARIA_LABEL = "Search for a lake";
@@ -149,6 +162,9 @@ export const SEARCH_NO_MATCHES = "No lakes match that search.";
 export const SEARCH_RECENT_HEADING = "Recently viewed";
 
 export const SLIDER_STARTING_VALUE = "This lake’s usual value";
+export const SLIDER_VALUE_LABEL = "Type value";
+export const SLIDER_VALUE_ERROR = (min, max, unit = "") =>
+  `Enter a value from ${min} to ${max}${unit ? ` ${unit}` : ""}.`;
 
 export const BOOT_LOADING = "Loading lake data and predictions…";
 export const BOOT_ERROR_TITLE = "Dashboard couldn’t load";
@@ -186,9 +202,9 @@ export function parseLakeSearchInput(query) {
 }
 
 export function formatTrajectorySteps(current, max) {
-  return `${current} of ${max} points`;
+  return `${current} of ${max} changes shown`;
 }
 
 export function formatTrajectoryChartLiveSummary(stepCount, latestSecchi, deltaFromTypical) {
-  return `Chart with ${stepCount} points. Latest Secchi ${latestSecchi}, ${deltaFromTypical} compared to typical.`;
+  return `Scenario history chart with ${stepCount} changes. Latest Secchi ${latestSecchi}, ${deltaFromTypical} compared to typical.`;
 }

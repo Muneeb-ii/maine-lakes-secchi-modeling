@@ -17,9 +17,11 @@ import {
 } from "../../lib/featureLabels";
 import { getContributionDisplay } from "../../lib/playgroundGuards";
 import { HELP_CONTENT } from "../../lib/helpContent";
+import { SECTION_ACCENTS } from "../../lib/theme";
 import { SectionHelp } from "../ui/SectionHelp";
+import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 
-function CompactContributorRow({ item, featureConfig }) {
+function CompactContributorRow({ item, featureConfig, rankClass = "" }) {
   const { tone } = getContributionDisplay(item.contribution);
   const toneClass =
     tone === "up"
@@ -29,7 +31,9 @@ function CompactContributorRow({ item, featureConfig }) {
         : "text-slate-600";
 
   return (
-    <div className="text-sm text-slate-700 flex justify-between gap-4 py-1 border-b border-slate-200 last:border-0">
+    <div
+      className={`flex justify-between gap-4 border-b border-slate-200 py-1.5 text-base text-slate-700 last:border-0 ${rankClass}`}
+    >
       <span>
         {getFriendlyFeatureLabel(item.feature, featureConfig?.features?.[item.feature]?.label)}
       </span>
@@ -84,9 +88,11 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
   const hasDrivers = contextWaterfall.length > 0 || editableWaterfall.length > 0;
 
   return (
-    <div className="panel flex h-full flex-col p-4 sm:p-5">
+    <div
+      className={`panel flex h-full flex-col p-4 sm:p-5 ${SECTION_ACCENTS.drivers.panelAccentClass}`}
+    >
       <h2 className="section-heading">
-        <Gauge className="w-4 h-4 text-lake-accent" aria-hidden />
+        <SectionHeadingIcon section="drivers" icon={Gauge} />
         {SECTION_LABELS.explainability}
         <SectionHelp content={HELP_CONTENT.explainability} />
       </h2>
@@ -97,7 +103,7 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
             <section aria-labelledby="explainability-lake-context-heading">
               <h3
                 id="explainability-lake-context-heading"
-                className="text-sm font-semibold text-slate-900"
+                className="section-subheading"
               >
                 {EXPLAINABILITY_LAKE_CONTEXT_HEADING}
               </h3>
@@ -117,16 +123,17 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
             <section aria-labelledby="explainability-adjustments-heading">
               <h3
                 id="explainability-adjustments-heading"
-                className="text-sm font-semibold text-slate-900"
+                className="section-subheading"
               >
                 {EXPLAINABILITY_ADJUSTMENTS_HEADING}
               </h3>
               <div className="mt-2 space-y-0">
-                {topEditable.map((item) => (
+                {topEditable.map((item, index) => (
                   <CompactContributorRow
                     key={item.feature}
                     item={item}
                     featureConfig={featureConfig}
+                    rankClass={`driver-row-ranked-${index + 1}`}
                   />
                 ))}
               </div>
@@ -135,7 +142,7 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
                 <>
                   <button
                     type="button"
-                    className="mt-3 text-sm font-semibold text-lake-accent hover:text-blue-700 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent rounded px-1"
+                    className="mt-3 rounded px-1 text-base font-semibold text-lake-accent transition hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
                     onClick={() => setExpanded((previous) => !previous)}
                     aria-expanded={expanded}
                   >

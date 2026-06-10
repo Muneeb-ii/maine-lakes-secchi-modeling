@@ -13,11 +13,8 @@ export function LakeSupportNote({ lakeSupport }) {
     : LAKE_SUPPORT_MESSAGES.unsupported;
 
   return (
-    <div
-      className="flex gap-2.5 rounded-lg border border-lake-amber/60 bg-lake-amber/10 px-3 py-2.5 text-sm text-slate-700 leading-relaxed"
-      role="status"
-    >
-      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-slate-600" aria-hidden />
+    <div className="callout-amber flex gap-2.5 body-copy" role="status">
+      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-lake-amber" aria-hidden />
       <p>{message}</p>
     </div>
   );

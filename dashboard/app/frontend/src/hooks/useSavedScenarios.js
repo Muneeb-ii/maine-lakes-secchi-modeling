@@ -40,11 +40,18 @@ export function useSavedScenarios() {
     setCompareScenarioId(scenario.id);
   };
 
+  const deleteScenario = (scenarioId = compareScenarioId) => {
+    if (!scenarioId) return;
+    setSavedScenarios((previous) => previous.filter((scenario) => scenario.id !== scenarioId));
+    setCompareScenarioId((current) => (current === scenarioId ? "" : current));
+  };
+
   return {
     savedScenarios,
     compareScenarioId,
     setCompareScenarioId,
     selectedCompareScenario,
     saveScenario,
+    deleteScenario,
   };
 }

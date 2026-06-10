@@ -66,12 +66,12 @@ export function LakeSearchCombobox({
           className="absolute z-20 mt-2 w-full panel p-2 max-h-72 overflow-auto list-none m-0"
         >
           {isSearching && (
-            <li className="p-2 text-sm text-slate-600" role="status">
+            <li className="p-2 text-base text-slate-700" role="status">
               {SEARCH_LOADING}
             </li>
           )}
           {searchError && (
-            <li className="p-2 text-sm text-delta-down" role="alert">
+            <li className="p-2 text-base text-delta-down" role="alert">
               {searchError}
             </li>
           )}
@@ -91,16 +91,16 @@ export function LakeSearchCombobox({
                   onMouseDown={() => onSelectLake(result.midasId, result.lakeName)}
                 >
                   <div className="font-medium">{result.lakeName}</div>
-                  <div className="text-sm text-slate-600">{result.midasId}</div>
+                  <div className="text-base text-slate-700">{result.midasId}</div>
                 </button>
               </li>
             ))}
           {!isSearching && searchResults.length === 0 && searchQuery.trim() && !searchError && (
-            <li className="p-2 text-sm text-slate-600">{SEARCH_NO_MATCHES}</li>
+            <li className="p-2 text-base text-slate-700">{SEARCH_NO_MATCHES}</li>
           )}
           {!searchQuery.trim() && recentLakes.length > 0 && (
             <li>
-              <div className="px-2 py-1 text-sm font-medium text-slate-600">{SEARCH_RECENT_HEADING}</div>
+              <div className="px-2 py-1 text-base font-medium text-slate-700">{SEARCH_RECENT_HEADING}</div>
               <ul className="list-none m-0 p-0">
                 {recentLakes.map((item) => (
                   <li key={item.midasId} role="presentation">
@@ -110,7 +110,7 @@ export function LakeSearchCombobox({
                       onMouseDown={() => onSelectLake(item.midasId, item.lakeName)}
                     >
                       <div className="font-medium">{item.lakeName}</div>
-                      <div className="text-sm text-slate-600">{item.midasId}</div>
+                      <div className="text-base text-slate-700">{item.midasId}</div>
                     </button>
                   </li>
                 ))}

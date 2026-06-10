@@ -1,12 +1,18 @@
+import { BookOpen } from "lucide-react";
 import { MODELING_PAGE } from "../../lib/infoPagesCopy";
 import { PAGE_CONTAINER } from "../../lib/layoutClasses";
+import { SECTION_ACCENTS } from "../../lib/theme";
+import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 import { InfoPageNav } from "./InfoPageNav";
 import { PageFrame } from "./PageFrame";
 
 function ModelingSection({ section }) {
   return (
     <section id={section.id} className="scroll-mt-8 border-t border-lake-border pt-8 first:border-t-0 first:pt-0">
-      <h2 className="section-heading text-xl text-slate-950">{section.title}</h2>
+      <h2 className="section-heading text-xl text-slate-950">
+        <SectionHeadingIcon section="drivers" icon={BookOpen} />
+        {section.title}
+      </h2>
       <div className="mt-4 space-y-4">
         {section.paragraphs?.map((paragraph) => (
           <p key={paragraph} className="text-base leading-7 text-slate-700">
@@ -18,7 +24,7 @@ function ModelingSection({ section }) {
       {section.stats?.length > 0 && (
         <dl className="mt-5 grid gap-3 sm:grid-cols-3">
           {section.stats.map((stat) => (
-            <div key={stat.label} className="info-card">
+            <div key={stat.label} className="info-card-accent">
               <dt className="info-label">{stat.label}</dt>
               <dd className="info-value tabular-nums">{stat.value}</dd>
             </div>
@@ -31,8 +37,8 @@ function ModelingSection({ section }) {
           {section.featureGroups.map((group) => (
             <div key={group.name} className="info-card h-full">
               <h3 className="text-base font-semibold text-slate-950">{group.name}</h3>
-              <p className="mt-1 text-sm leading-6 text-slate-600">{group.description}</p>
-              <ul className="mt-3 space-y-1.5 text-sm leading-6 text-slate-700">
+              <p className="mt-1 text-base leading-7 text-slate-700">{group.description}</p>
+              <ul className="mt-3 space-y-1.5 text-base leading-7 text-slate-700">
                 {group.features.map((feature) => (
                   <li key={feature} className="flex gap-2">
                     <span className="text-lake-accent" aria-hidden>
@@ -68,13 +74,15 @@ export function ModelingProcessPage() {
     <PageFrame>
       <article className={`${PAGE_CONTAINER} py-6 sm:py-10 lg:py-12`}>
         <InfoPageNav />
-        <header className="panel p-6 sm:p-8">
-          <p className="text-sm font-semibold uppercase tracking-wide text-lake-accent">{eyebrow}</p>
+        <header className={`panel p-6 sm:p-8 ${SECTION_ACCENTS.prediction.panelAccentClass} hero-wash-prediction`}>
+          <p className="inline-flex items-center rounded-full border border-lake-accent/25 bg-white px-3 py-1.5 text-sm font-semibold uppercase tracking-wide text-lake-accent">
+            {eyebrow}
+          </p>
           <h1 className="display-title mt-3 text-3xl sm:text-4xl">{title}</h1>
-          <p className="mt-4 text-base leading-7 text-slate-700">{intro}</p>
+          <p className="mt-4 text-lg leading-8 text-slate-700">{intro}</p>
         </header>
 
-        <div className="panel mt-5 p-6 sm:p-8">
+        <div className={`panel mt-5 p-6 sm:p-8 ${SECTION_ACCENTS.drivers.panelAccentClass}`}>
           {sections.map((section) => (
             <ModelingSection key={section.id} section={section} />
           ))}
