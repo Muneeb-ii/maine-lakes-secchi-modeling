@@ -8,6 +8,7 @@ import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 export function LakeProfileCard({ baseline }) {
   return (
     <div
+      data-claro-target="lake-profile"
       className={`panel h-full p-4 sm:p-5 ${SECTION_ACCENTS.lake.panelAccentClass}`}
     >
       <div className="section-heading">

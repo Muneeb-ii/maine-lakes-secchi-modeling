@@ -89,6 +89,7 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
 
   return (
     <div
+      data-claro-target="drivers-panel"
       className={`panel flex h-full flex-col p-4 sm:p-5 ${SECTION_ACCENTS.drivers.panelAccentClass}`}
     >
       <h2 className="section-heading">

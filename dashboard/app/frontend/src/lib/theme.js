@@ -61,6 +61,14 @@ export const SECTION_ACCENTS = {
   },
 };
 
+export const CLARO_ACCENTS = {
+  iconClass: "text-lake-claro",
+  textClass: "text-[#0F6B4A]",
+  launcherClass: "claro-launcher",
+  buttonClass: "claro-button",
+  kickerClass: "claro-kicker",
+};
+
 export const PARAMETER_ICON_COLORS = {
   Beaker: "text-lake-accent",
   Droplet: "text-lake-sectionLake",

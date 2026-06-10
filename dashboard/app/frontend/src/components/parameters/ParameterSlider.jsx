@@ -83,7 +83,7 @@ export function ParameterSlider({
     >
       <div className="parameter-slider-header">
         <div className="flex min-w-0 items-start gap-1 sm:gap-2">
-          <label className="touch-checkbox">
+          <label className="touch-checkbox" data-claro-target="parameter-include">
             <input
               type="checkbox"
               className="h-4 w-4 accent-lake-accent"

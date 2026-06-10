@@ -31,7 +31,10 @@ export function ParameterPanel({
   })).filter((group) => group.keys.length > 0);
 
   return (
-    <div className={`panel p-4 sm:p-5 ${SECTION_ACCENTS.parameters.panelAccentClass}`}>
+    <div
+      data-claro-target="parameter-panel"
+      className={`panel p-4 sm:p-5 ${SECTION_ACCENTS.parameters.panelAccentClass}`}
+    >
       <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
         <h2 className="section-heading">
           <SectionHeadingIcon section="parameters" icon={Sparkles} />

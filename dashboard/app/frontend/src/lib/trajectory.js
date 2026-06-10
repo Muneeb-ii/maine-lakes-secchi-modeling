@@ -199,6 +199,29 @@ export function formatLatestChange(point) {
   return `${change.label} changed to ${valueText} → Secchi ${deltaText}`;
 }
 
+export function formatTrajectoryChangeValue(change) {
+  if (!change) return "Typical";
+  if (change.value === null) return "Not included";
+  if (change.unit && change.unit.length > 0) return `${change.value} ${change.unit}`;
+  return String(change.value);
+}
+
+export function buildTrajectoryChangeRows(points, maxRows = TRAJECTORY_MAX_STEPS) {
+  return points.slice(-maxRows).map((point) => {
+    const primaryChange = point.changedFeatures?.[0] || null;
+    const extraChangeCount = Math.max(0, (point.changedFeatures?.length || 0) - 1);
+    return {
+      step: point.step,
+      label: primaryChange?.label || point.label || TRAJECTORY_STEP_LABEL_START,
+      value: formatTrajectoryChangeValue(primaryChange),
+      prediction: point.prediction,
+      deltaFromPrevious: point.deltaFromPrevious,
+      extraChangeCount,
+      isStarting: point.step === 1 || !primaryChange,
+    };
+  });
+}
+
 export function isPlausibleSecchiMeters(value) {
   return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= SECCHI_CHART_MAX_METERS;
 }

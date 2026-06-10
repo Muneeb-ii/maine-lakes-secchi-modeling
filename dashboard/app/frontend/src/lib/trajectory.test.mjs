@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   buildTrajectoryPoint,
+  buildTrajectoryChangeRows,
   buildComparableFeatureState,
   buildYAxisTicks,
   canRecordTrajectory,
@@ -77,6 +78,41 @@ test("formatLatestChange renders readable line", () => {
     previousPrediction: 3.02,
   });
   assert.equal(formatLatestChange(point), "pH changed to 7.4 → Secchi +0.18 m");
+});
+
+test("buildTrajectoryChangeRows mirrors chart history points", () => {
+  const points = [
+    buildTrajectoryPoint({
+      step: 1,
+      prediction: 3.0,
+      baseline: 3.0,
+      changedFeatures: [],
+      previousPrediction: null,
+      isStarting: true,
+    }),
+    buildTrajectoryPoint({
+      step: 2,
+      prediction: 3.2,
+      baseline: 3.0,
+      changedFeatures: [{ key: "DOMAX", label: "Highest dissolved oxygen", value: 8.4, unit: "ppm" }],
+      previousPrediction: 3.0,
+    }),
+    buildTrajectoryPoint({
+      step: 3,
+      prediction: 3.1,
+      baseline: 3.0,
+      changedFeatures: [{ key: "PH", label: "pH", value: null, unit: "" }],
+      previousPrediction: 3.2,
+    }),
+  ];
+  const rows = buildTrajectoryChangeRows(points);
+  assert.equal(rows.length, 3);
+  assert.deepEqual(rows.map((row) => row.step), [1, 2, 3]);
+  assert.equal(rows[0].value, "Typical");
+  assert.equal(rows[1].label, "Highest dissolved oxygen");
+  assert.equal(rows[1].value, "8.4 ppm");
+  assert.equal(rows[1].prediction, 3.2);
+  assert.equal(rows[2].value, "Not included");
 });
 
 test("computeTrajectorySummary aggregates session", () => {

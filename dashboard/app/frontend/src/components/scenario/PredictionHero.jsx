@@ -43,6 +43,7 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
 
   return (
     <div
+      data-claro-target="prediction-card"
       className={`panel p-4 sm:p-5 lg:p-6 ${heroWashClass} ${SECTION_ACCENTS.prediction.panelAccentClass}`}
     >
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between lg:gap-6">
@@ -80,7 +81,10 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-slate-700 sm:flex sm:flex-wrap sm:gap-8">
+        <div
+          data-claro-target="prediction-metrics"
+          className="grid grid-cols-2 gap-3 text-slate-700 sm:flex sm:flex-wrap sm:gap-8"
+        >
           <div className="min-w-0">
             <div className="info-label inline-flex items-center">
               {METRIC_LABELS.modelBaseline}

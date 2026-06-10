@@ -36,6 +36,7 @@ import { TRAJECTORY_MAX_STEPS } from "../../lib/constants";
 import { formatMeters, formatSignedMeters } from "../../lib/formatters";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import {
+  buildTrajectoryChangeRows,
   buildYAxisTicks,
   clampSecchiForChart,
   computeTrajectorySummary,
@@ -115,6 +116,66 @@ function ScenarioLegend({ hasCompare, showClarityReferences }) {
   );
 }
 
+function ChangeTone({ value }) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return <span className="text-slate-600">Start</span>;
+  }
+  const toneClass = value > 0 ? "text-delta-up" : value < 0 ? "text-delta-down" : "text-slate-600";
+  return <span className={`font-medium ${toneClass}`}>{formatSignedMeters(value)}</span>;
+}
+
+function TrajectoryChangeTable({ rows }) {
+  if (!rows.length) {
+    return (
+      <div className="flex h-full min-h-[220px] flex-col justify-center rounded-lg border border-dashed border-lake-accent/35 bg-lake-accentSoft/50 px-4 text-center">
+        <p className="text-base font-semibold text-slate-800">No changes recorded yet</p>
+        <p className="mt-2 text-base leading-relaxed text-slate-700">
+          Adjust a water condition and the same session points shown in the chart will appear here as rows.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-full overflow-hidden rounded-lg border border-lake-border bg-white">
+      <div className="border-b border-slate-200 bg-slate-50 px-3 py-2">
+        <h3 className="section-subheading text-base">Change log</h3>
+        <p className="text-base leading-relaxed text-slate-600">Rows stay in sync with the chart points.</p>
+      </div>
+      <div className="max-h-[420px] overflow-auto">
+        <table className="min-w-full text-left text-base">
+          <thead className="sticky top-0 bg-white shadow-[0_1px_0_#e2e8f0]">
+            <tr>
+              <th scope="col" className="px-3 py-2 font-semibold text-slate-600">Step</th>
+              <th scope="col" className="px-3 py-2 font-semibold text-slate-600">Change</th>
+              <th scope="col" className="px-3 py-2 font-semibold text-slate-600">Secchi</th>
+              <th scope="col" className="px-3 py-2 font-semibold text-slate-600">Move</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.step} className="border-b border-slate-100 last:border-0">
+                <td className="px-3 py-2 font-semibold tabular-nums text-slate-900">{row.step}</td>
+                <td className="px-3 py-2 text-slate-700">
+                  <div className="font-medium text-slate-900">{row.label}</div>
+                  <div className="text-sm leading-snug text-slate-600">
+                    {row.value}
+                    {row.extraChangeCount > 0 ? ` + ${row.extraChangeCount} more` : ""}
+                  </div>
+                </td>
+                <td className="px-3 py-2 tabular-nums text-slate-900">{formatMeters(row.prediction)}</td>
+                <td className="px-3 py-2 tabular-nums">
+                  <ChangeTone value={row.deltaFromPrevious} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 export function TrajectoryChart({
   chartData,
   forecast,
@@ -145,6 +206,7 @@ export function TrajectoryChart({
       })),
     [chartData]
   );
+  const changeRows = useMemo(() => buildTrajectoryChangeRows(chartData), [chartData]);
   const showClarityReferences = scaleMode === "full";
 
   const chartSummary = useMemo(() => {
@@ -168,6 +230,7 @@ export function TrajectoryChart({
 
   return (
     <div
+      data-claro-target="trajectory-chart"
       className={`panel flex h-full flex-col p-4 sm:p-5 ${SECTION_ACCENTS.trajectory.panelAccentClass}`}
     >
       <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
@@ -288,18 +351,19 @@ export function TrajectoryChart({
         />
       )}
 
-      <div className="h-[340px] sm:h-[420px] xl:h-[460px]">
-        {chartData.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-lake-accent/35 bg-lake-accentSoft/50 px-4 text-center text-base text-slate-600">
-            <p>{TRAJECTORY_EMPTY_PROMPT}</p>
-            <p className="max-w-md text-base text-slate-700">{TRAJECTORY_STEP_NOTE}</p>
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={plottedData}
-              margin={{ top: 12, right: 16, left: 8, bottom: 28 }}
-            >
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(26rem,0.42fr)] xl:items-stretch">
+        <div className="h-[340px] sm:h-[420px] xl:h-[460px]">
+          {chartData.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-lake-accent/35 bg-lake-accentSoft/50 px-4 text-center text-base text-slate-600">
+              <p>{TRAJECTORY_EMPTY_PROMPT}</p>
+              <p className="max-w-md text-base text-slate-700">{TRAJECTORY_STEP_NOTE}</p>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart
+                data={plottedData}
+                margin={{ top: 12, right: 16, left: 8, bottom: 28 }}
+              >
               <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
               <XAxis
                 dataKey="step"
@@ -414,9 +478,11 @@ export function TrajectoryChart({
                   ifOverflow="discard"
                 />
               )}
-            </ComposedChart>
-          </ResponsiveContainer>
-        )}
+              </ComposedChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+        <TrajectoryChangeTable rows={changeRows} />
       </div>
     </div>
   );

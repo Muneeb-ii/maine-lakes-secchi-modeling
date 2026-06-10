@@ -28,6 +28,7 @@ export function AppShell({
   lakeSection,
   parametersSection,
   predictionSection,
+  scenarioSection,
   trajectorySection,
   resultsSection,
   driversSection,
@@ -67,11 +68,11 @@ export function AppShell({
             </MotionSection>
 
             <MotionSection
-              id="trajectory"
+              id="scenario"
               reducedMotion={reducedMotion}
               className="order-4 xl:col-span-7 min-w-0 xl:self-stretch"
             >
-              {trajectorySection}
+              {scenarioSection}
             </MotionSection>
 
             <MotionSection
@@ -80,6 +81,14 @@ export function AppShell({
               className="order-5 xl:col-span-5 xl:self-stretch"
             >
               {driversSection}
+            </MotionSection>
+
+            <MotionSection
+              id="trajectory"
+              reducedMotion={reducedMotion}
+              className="order-6 xl:col-span-12 min-w-0"
+            >
+              {trajectorySection}
             </MotionSection>
           </div>
         </div>

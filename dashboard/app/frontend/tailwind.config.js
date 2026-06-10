@@ -20,6 +20,9 @@ export default {
           sectionLake: "#0072B2",
           sectionDrivers: "#009E73",
           sectionCompare: "#CC79A7",
+          claro: "#1A9B6E",
+          claroBright: "#09ED68",
+          claroSoft: "#E8F7F1",
         },
         delta: {
           up: "#00836D",

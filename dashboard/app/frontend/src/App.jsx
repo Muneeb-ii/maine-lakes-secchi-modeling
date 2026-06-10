@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BarChart3, FlaskConical } from "lucide-react";
+import { ClaroGuide } from "./components/claro/ClaroGuide";
 import { AppFooter } from "./components/layout/AppFooter";
 import { AppShell } from "./components/layout/AppShell";
 import { BootScreen } from "./components/layout/BootScreen";
@@ -23,12 +24,26 @@ import { useScenarioPrediction } from "./hooks/useScenarioPrediction";
 import {
   LANDING_DESTINATIONS,
   LANDING_TRENDS_PAGE_NOTE,
+  SCENARIO_DELETED_STATUS,
+  SCENARIO_DELETE_CONFIRM,
+  SCENARIO_LOAD_CONFIRM,
+  SCENARIO_LOADED_STATUS,
+  SCENARIO_SAVED_STATUS,
   UNKNOWN_LAKE_NAME,
   parseLakeSearchInput,
 } from "./lib/copy";
 import { PAGE_CONTAINER } from "./lib/layoutClasses";
 import { stepSearchSuggestion } from "./lib/playgroundGuards";
 import { ROUTES, navigateTo } from "./lib/routes";
+import { getClaroRouteId } from "./lib/claroTourContent";
+import {
+  buildFeaturesFromSnapshot,
+  compareIdForLake,
+  filterIncludedFeaturesForConfig,
+  hasChangesFromSnapshot,
+  hasScenarioChangesFromBaseline,
+  isCompareScenarioActive,
+} from "./lib/savedScenarios";
 import { SECTION_ACCENTS } from "./lib/theme";
 import { SectionHeadingIcon } from "./components/ui/SectionHeadingIcon";
 
@@ -63,6 +78,7 @@ function TrendsPage() {
       <section className={`${PAGE_CONTAINER} flex min-h-[calc(100vh-96px)] flex-col justify-center py-12`}>
         <InfoPageNav />
         <div
+          data-claro-target="trends-page"
           className={`panel p-8 ${SECTION_ACCENTS.trends.panelAccentClass}`}
           style={{
             backgroundImage:
@@ -101,6 +117,7 @@ function PlaygroundPage() {
   const [includedFeatures, setIncludedFeatures] = useState([]);
   const [featureCommitVersion, setFeatureCommitVersion] = useState(0);
   const [lakeSupport, setLakeSupport] = useState(null);
+  const [scenarioActionStatus, setScenarioActionStatus] = useState("");
   const featureCommitTimerRef = useRef(null);
 
   const handleLakeLoaded = useCallback((normalized, name, lakeBaseline, support, config) => {
@@ -147,15 +164,74 @@ function PlaygroundPage() {
     savedScenarios,
     compareScenarioId,
     setCompareScenarioId,
-    selectedCompareScenario,
     saveScenario,
     deleteScenario,
+    scenariosForCurrentLake,
+    otherLakeScenarioCount,
   } = useSavedScenarios();
 
+  const lakeSavedScenarios = scenariosForCurrentLake(lakeId);
+  const otherLakeSaveCount = otherLakeScenarioCount(lakeId);
+  const lakeCompareScenarioId = compareIdForLake(savedScenarios, compareScenarioId, lakeId);
+  const activeCompareScenario = useMemo(() => {
+    if (!lakeCompareScenarioId) return null;
+    return savedScenarios.find((scenario) => scenario.id === lakeCompareScenarioId) ?? null;
+  }, [lakeCompareScenarioId, savedScenarios]);
+
+  const canSave =
+    Boolean(forecast) &&
+    hasScenarioChangesFromBaseline(baseline, features, featureConfig, includedFeatures);
+
   const scenarioDelta =
-    selectedCompareScenario && forecast
-      ? forecast.predictionMeters - selectedCompareScenario.predictionMeters
+    isCompareScenarioActive(activeCompareScenario, lakeId, forecast) && forecast
+      ? forecast.predictionMeters - activeCompareScenario.predictionMeters
       : null;
+
+  const handleSaveScenario = (label) => {
+    const saved = saveScenario({
+      lakeId,
+      lakeName,
+      forecast,
+      features,
+      includedFeatures,
+      label,
+    });
+    if (saved) {
+      setScenarioActionStatus(SCENARIO_SAVED_STATUS);
+    }
+    return saved;
+  };
+
+  const handleLoadScenario = () => {
+    if (!activeCompareScenario || !baseline) return;
+    if (
+      hasChangesFromSnapshot(features, includedFeatures, activeCompareScenario, featureConfig) &&
+      !window.confirm(SCENARIO_LOAD_CONFIRM)
+    ) {
+      return;
+    }
+    if (featureCommitTimerRef.current) {
+      window.clearTimeout(featureCommitTimerRef.current);
+      featureCommitTimerRef.current = null;
+    }
+    setFeatures(
+      buildFeaturesFromSnapshot(activeCompareScenario, baseline, featureConfig)
+    );
+    setIncludedFeatures(
+      filterIncludedFeaturesForConfig(activeCompareScenario.includedFeatures, featureConfig)
+    );
+    setFeatureCommitVersion((previous) => previous + 1);
+    setScenarioActionStatus(SCENARIO_LOADED_STATUS);
+  };
+
+  const handleDeleteScenario = () => {
+    if (!lakeCompareScenarioId) return;
+    if (!window.confirm(SCENARIO_DELETE_CONFIRM)) return;
+    const deleted = deleteScenario(lakeCompareScenarioId);
+    if (deleted) {
+      setScenarioActionStatus(SCENARIO_DELETED_STATUS);
+    }
+  };
 
   const selectLake = async (midasId, nameHint) => {
     try {
@@ -267,36 +343,47 @@ function PlaygroundPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!scenarioActionStatus) return undefined;
+    const timer = window.setTimeout(() => setScenarioActionStatus(""), 4000);
+    return () => window.clearTimeout(timer);
+  }, [scenarioActionStatus]);
+
   if (bootState !== "ready") {
     return <BootScreen state={bootState} error={bootError} />;
   }
 
   return (
     <AppShell
-      footer={<AppFooter />}
+      footer={
+        <>
+          <AppFooter />
+          <ClaroGuide routeId={getClaroRouteId(ROUTES.playground)} />
+        </>
+      }
       header={
         <>
           <div className="mb-4">
             <InfoPageNav className="mb-0" />
           </div>
           <DashboardHeader
-          lakeSupport={lakeSupport}
-          searchProps={{
-            lakeId,
-            lakeName,
-            searchQuery: lakeSearch.searchQuery,
-            onSearchQueryChange: lakeSearch.setSearchQuery,
-            searchResults: lakeSearch.searchResults,
-            searchError: lakeSearch.searchError,
-            searchFocused: lakeSearch.searchFocused,
-            onSearchFocusedChange: lakeSearch.setSearchFocused,
-            isSearching: lakeSearch.isSearching,
-            activeSuggestion: lakeSearch.activeSuggestion,
-            onActiveSuggestionChange: lakeSearch.setActiveSuggestion,
-            recentLakes: lakeSearch.recentLakes,
-            onSelectLake: selectLake,
-            onSearchKeyDown: handleSearchKeyDown,
-          }}
+            lakeSupport={lakeSupport}
+            searchProps={{
+              lakeId,
+              lakeName,
+              searchQuery: lakeSearch.searchQuery,
+              onSearchQueryChange: lakeSearch.setSearchQuery,
+              searchResults: lakeSearch.searchResults,
+              searchError: lakeSearch.searchError,
+              searchFocused: lakeSearch.searchFocused,
+              onSearchFocusedChange: lakeSearch.setSearchFocused,
+              isSearching: lakeSearch.isSearching,
+              activeSuggestion: lakeSearch.activeSuggestion,
+              onActiveSuggestionChange: lakeSearch.setActiveSuggestion,
+              recentLakes: lakeSearch.recentLakes,
+              onSelectLake: selectLake,
+              onSearchKeyDown: handleSearchKeyDown,
+            }}
           />
         </>
       }
@@ -319,22 +406,31 @@ function PlaygroundPage() {
           isPredicting={isPredicting}
         />
       }
+      scenarioSection={
+        <ScenarioActionBar
+          onReset={resetToBaseline}
+          onSave={handleSaveScenario}
+          onLoad={handleLoadScenario}
+          canSave={canSave}
+          lakeSavedScenarios={lakeSavedScenarios}
+          otherLakeSaveCount={otherLakeSaveCount}
+          compareScenarioId={lakeCompareScenarioId}
+          onCompareChange={setCompareScenarioId}
+          onDeleteScenario={handleDeleteScenario}
+          actionStatus={scenarioActionStatus}
+        />
+      }
       trajectorySection={
         <div className="space-y-4">
-          <ScenarioActionBar
-            onReset={resetToBaseline}
-            onSave={() => saveScenario({ lakeId, lakeName, forecast, features })}
-            canSave={Boolean(forecast)}
-            savedScenarios={savedScenarios}
-            compareScenarioId={compareScenarioId}
-            onCompareChange={setCompareScenarioId}
-            onDeleteScenario={deleteScenario}
+          <ScenarioCompareBanner
+            scenario={activeCompareScenario}
+            delta={scenarioDelta}
+            lakeName={lakeName || lakeId}
           />
-          <ScenarioCompareBanner scenario={selectedCompareScenario} delta={scenarioDelta} />
           <TrajectoryChart
             chartData={chartHistory}
             forecast={forecast}
-            compareScenario={selectedCompareScenario}
+            compareScenario={activeCompareScenario}
             latestChange={latestChange}
             onClearTrajectory={clearTrajectory}
           />

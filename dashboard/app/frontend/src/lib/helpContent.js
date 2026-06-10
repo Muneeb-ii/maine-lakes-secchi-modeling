@@ -29,6 +29,6 @@ export const HELP_CONTENT = {
   },
   scenarioActions: {
     title: "Save & compare",
-    body: "Restore sliders to the lake’s usual values, save your current slider settings, compare with a saved scenario, or delete the selected saved scenario.",
+    body: "Save bookmarks a snapshot of your current sliders and predicted Secchi depth in this browser only — you can add an optional name. Selecting a snapshot compares it on the chart as a reference line. Load restores that snapshot’s sliders. Restore lake defaults resets sliders and clears chart history; saved snapshots stay in the menu. Delete removes the selected snapshot.",
   },
 };

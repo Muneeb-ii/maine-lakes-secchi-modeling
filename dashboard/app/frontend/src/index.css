@@ -25,6 +25,12 @@
     --section-lake: #0072b2;
     --section-drivers: #009e73;
     --section-compare: #cc79a7;
+    --claro: #1a9b6e;
+    --claro-bright: #3ecf8e;
+    --claro-soft: #e8f7f1;
+    --claro-border: rgba(26, 155, 110, 0.38);
+    --claro-text: #0f6b4a;
+    --claro-on-fill: #ffffff;
     --radius-lg: 0.75rem;
     --shadow-soft: 0 14px 35px rgba(15, 23, 42, 0.08);
     --motion-fast: 180ms;
@@ -437,6 +443,130 @@
     box-shadow:
       0 20px 50px rgba(15, 23, 42, 0.14),
       0 0 0 1px rgba(255, 255, 255, 0.9);
+  }
+
+  .claro-kicker {
+    @apply inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide;
+    color: var(--claro-text);
+  }
+
+  .claro-launcher {
+    @apply fixed right-4 inline-flex h-12 items-center gap-2.5 rounded-full border px-4 text-base font-semibold shadow-panel transition sm:right-5 lg:h-14 lg:gap-3 lg:px-5 lg:text-lg;
+    z-index: 240;
+    border-color: var(--claro-border);
+    background: #ffffff;
+    color: var(--claro-text);
+    box-shadow:
+      var(--shadow-soft),
+      0 4px 18px rgba(26, 155, 110, 0.1);
+  }
+
+  .claro-launcher:hover {
+    border-color: rgba(26, 155, 110, 0.55);
+    background: var(--claro-soft);
+  }
+
+  .claro-launcher:focus-visible {
+    outline: 2px solid var(--claro);
+    outline-offset: 3px;
+  }
+
+  .claro-launcher-mark {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-slate-200 lg:h-11 lg:w-11;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+  }
+
+  .claro-prompt {
+    @apply fixed right-4 w-[min(24rem,calc(100vw-2rem))] rounded-lg border bg-white p-4 shadow-panel sm:right-5 lg:p-5;
+    z-index: 240;
+    border-color: var(--claro-border);
+    border-left-width: 4px;
+    border-left-color: var(--claro);
+  }
+
+  .claro-tour-layer {
+    @apply fixed inset-0;
+    pointer-events: none;
+  }
+
+  .claro-tour-scrim {
+    @apply fixed inset-0;
+    pointer-events: none;
+    background: rgba(15, 23, 42, 0.46);
+  }
+
+  .claro-spotlight {
+    @apply fixed rounded-lg;
+    pointer-events: none;
+    box-shadow:
+      0 0 0 9999px rgba(15, 23, 42, 0.46),
+      0 0 0 3px rgba(255, 255, 255, 0.95),
+      0 0 0 7px rgba(26, 155, 110, 0.65),
+      0 18px 50px rgba(15, 23, 42, 0.28);
+    transition:
+      top var(--motion-normal) ease,
+      left var(--motion-normal) ease,
+      width var(--motion-normal) ease,
+      height var(--motion-normal) ease;
+  }
+
+  .claro-tour-card {
+    @apply fixed rounded-lg border bg-white p-4 shadow-panel sm:p-5;
+    pointer-events: auto;
+    border-color: var(--panel-border);
+  }
+
+  .claro-icon-button {
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-slate-600 transition focus-visible:outline focus-visible:outline-2;
+    outline-color: var(--claro);
+  }
+
+  .claro-icon-button:hover {
+    background: var(--claro-soft);
+    color: var(--claro-text);
+  }
+
+  .claro-button {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg border px-4 text-base font-semibold transition;
+    border-color: rgba(26, 155, 110, 0.45);
+    background: var(--claro-soft);
+    color: var(--claro-text);
+  }
+
+  .claro-button:hover:not(:disabled) {
+    border-color: var(--claro);
+    background: #dff3ea;
+  }
+
+  .claro-button:focus-visible {
+    outline: 2px solid var(--claro);
+    outline-offset: 2px;
+  }
+
+  .claro-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .claro-cursor-hint {
+    @apply fixed inline-flex items-center gap-1 rounded-full border bg-white px-2.5 py-1 text-sm font-semibold capitalize shadow-panel;
+    pointer-events: none;
+    border-color: var(--claro-border);
+    color: var(--claro-text);
+  }
+
+  .claro-cursor-hint-motion {
+    animation: claro-cursor-pulse 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes claro-cursor-pulse {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(4px, 4px);
   }
 }
 

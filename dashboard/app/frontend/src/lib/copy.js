@@ -2,6 +2,11 @@ export const DASHBOARD_TITLE = "Maine Lake Water Clarity Dashboard";
 export const DASHBOARD_TAGLINE =
   "See how water conditions may affect Secchi depth for lakes across Maine.";
 
+export const PLAYGROUND_EYEBROW = "Playground · Maine lakes";
+export const PLAYGROUND_TITLE = "Lake Water Clarity Playground";
+export const PLAYGROUND_TAGLINE =
+  "Choose a lake, adjust water measurements, and see how predicted Secchi depth compares to that lake’s typical profile.";
+
 export const LANDING_EYEBROW = "Maine lakes · Water clarity";
 export const LANDING_TITLE = "Explore Secchi depth";
 export const LANDING_HEADER_HOOK =
@@ -111,16 +116,49 @@ export const ARIA_CONTRIBUTION_MURKIER = "pushes toward murkier water";
 
 export const SCENARIO_RESET = "Restore lake defaults";
 export const SCENARIO_SAVE = "Save this scenario";
+export const SCENARIO_LOAD = "Load snapshot";
 export const SCENARIO_DELETE = "Delete saved scenario";
-export const SCENARIO_COMPARE_LABEL = "Compare with a saved scenario";
-export const SCENARIO_COMPARE_PLACEHOLDER = "Choose a saved scenario…";
+export const SCENARIO_COMPARE_LABEL = "Choose a saved snapshot";
+export const SCENARIO_COMPARE_PLACEHOLDER = "Choose a saved snapshot…";
+export const SCENARIO_DELETE_CONFIRM =
+  "Delete this saved snapshot? You will no longer be able to compare against it.";
+export const SCENARIO_LOAD_CONFIRM =
+  "Replace your current sliders with this saved snapshot?";
+export const SCENARIO_SAVED_STATUS = "Snapshot saved in this browser.";
+export const SCENARIO_DELETED_STATUS = "Saved snapshot removed.";
+export const SCENARIO_LOADED_STATUS = "Snapshot loaded — sliders updated.";
+export const SCENARIO_SAVE_DISABLED_HINT =
+  "Adjust at least one water condition from the lake defaults before saving.";
+export const SCENARIO_LABEL_PLACEHOLDER = "Name this snapshot (optional)";
+export const SCENARIO_GROUP_SESSION = "Your current session";
+export const SCENARIO_GROUP_SESSION_DESC =
+  "Resets sliders to this lake’s usual values and clears the scenario history chart. Saved snapshots stay in the menu.";
+export const SCENARIO_GROUP_SAVE = "Save a snapshot";
+export const SCENARIO_GROUP_SAVE_DESC =
+  "Bookmarks your current sliders and predicted Secchi in this browser only.";
+export const SCENARIO_GROUP_USE_SAVED = "Use a saved snapshot";
+export const SCENARIO_GROUP_USE_SAVED_DESC =
+  "Pick a snapshot to compare on the chart (reference line). Load restores its sliders; Delete removes it.";
+export const SCENARIO_OTHER_LAKE_SAVES = (count) =>
+  count === 1
+    ? "1 saved snapshot is for another lake — switch lakes to compare it."
+    : `${count} saved snapshots are for other lakes — switch lakes to compare them.`;
 
-export function formatSavedScenarioOption(lakeId, lakeName, timestamp) {
-  const when = new Date(timestamp).toLocaleString();
-  return `${lakeId}, ${lakeName} (${when})`;
+export function formatSavedScenarioOption(scenario) {
+  const when = new Date(scenario.timestamp).toLocaleString();
+  if (scenario.label) {
+    return `${scenario.label} (${when})`;
+  }
+  const secchi =
+    typeof scenario.predictionMeters === "number"
+      ? ` — ${scenario.predictionMeters.toFixed(1)} m`
+      : "";
+  return `${when}${secchi}`;
 }
-export const COMPARE_BANNER_INTRO = "Comparing with a scenario you saved on";
-export const COMPARE_BANNER_DELTA = "Difference from that scenario";
+export const COMPARE_BANNER_INTRO = "Comparing with";
+export const COMPARE_BANNER_SAVED_ON = "saved on";
+export const COMPARE_BANNER_SAVED_VALUE = "Saved Secchi depth";
+export const COMPARE_BANNER_DELTA = "Difference from your current sliders";
 
 export const TRAJECTORY_EMPTY_PROMPT =
   "Move a slider to start a scenario history.";
