@@ -1,24 +1,41 @@
 import { Minus, Plus } from "lucide-react";
-import { formatSignedMeters } from "../../lib/formatters";
+import {
+  COMPARE_BANNER_DELTA,
+  COMPARE_BANNER_INTRO,
+  COMPARE_BANNER_SAVED_ON,
+  COMPARE_BANNER_SAVED_VALUE,
+} from "../../lib/copy";
+import { formatMeters, formatSignedMeters } from "../../lib/formatters";
 
-export function ScenarioCompareBanner({ scenario, delta }) {
-  if (!scenario) return null;
+export function ScenarioCompareBanner({ scenario, delta, lakeName }) {
+  if (!scenario || typeof delta !== "number") return null;
 
-  const isPositive = typeof delta === "number" && delta > 0;
-  const isNegative = typeof delta === "number" && delta < 0;
+  const isPositive = delta > 0;
+  const isNegative = delta < 0;
   const Icon = isPositive ? Plus : isNegative ? Minus : null;
-  const colorClass = isPositive ? "text-delta-up" : isNegative ? "text-delta-down" : "text-slate-300";
+  const colorClass = isPositive ? "text-delta-up" : isNegative ? "text-delta-down" : "text-slate-700";
+  const snapshotName = scenario.label || null;
 
   return (
-    <div className="panel p-4 text-sm text-slate-200" role="status">
+    <div className="callout-compare panel p-4 body-copy" role="status">
       <p>
-        Comparing against saved scenario from{" "}
+        {COMPARE_BANNER_INTRO}{" "}
+        {snapshotName ? (
+          <>
+            <span className="font-medium">{snapshotName}</span>, {COMPARE_BANNER_SAVED_ON}{" "}
+          </>
+        ) : (
+          <>a snapshot {COMPARE_BANNER_SAVED_ON} </>
+        )}
         <time dateTime={scenario.timestamp}>{new Date(scenario.timestamp).toLocaleString()}</time>
-        .
+        {lakeName ? ` for ${lakeName}` : ""}.
+      </p>
+      <p className="mt-2 text-slate-700">
+        {COMPARE_BANNER_SAVED_VALUE}: {formatMeters(scenario.predictionMeters)}
       </p>
       <p className={`mt-2 inline-flex items-center gap-1 font-medium ${colorClass}`}>
         {Icon && <Icon className="w-4 h-4" aria-hidden />}
-        Delta vs selected scenario: {formatSignedMeters(delta)}
+        {COMPARE_BANNER_DELTA}: {formatSignedMeters(delta, { absolute: true })}
       </p>
     </div>
   );

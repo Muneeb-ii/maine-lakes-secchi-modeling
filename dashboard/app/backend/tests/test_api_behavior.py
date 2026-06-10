@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from fastapi import HTTPException
 
 import main
+import rate_limit
 from contracts import ScenarioPayload
 
 
@@ -16,15 +17,17 @@ class ApiBehaviorTests(unittest.TestCase):
         self.original_lake_names = dict(main.lake_names_data)
         self.original_baselines = dict(main.baseline_data)
         self.original_registry = main.registry
-        self.original_rate_limit = main.PREDICT_RATE_LIMIT_PER_MINUTE
-        main._predict_request_times.clear()
+        self.original_api_limit = rate_limit._api_limiter.max_requests
+        self.original_predict_limit = rate_limit._predict_limiter.max_requests
+        rate_limit.reset_rate_limit_state_for_tests()
 
     def tearDown(self):
         main.lake_names_data = self.original_lake_names
         main.baseline_data = self.original_baselines
         main.registry = self.original_registry
-        main.PREDICT_RATE_LIMIT_PER_MINUTE = self.original_rate_limit
-        main._predict_request_times.clear()
+        rate_limit._api_limiter.max_requests = self.original_api_limit
+        rate_limit._predict_limiter.max_requests = self.original_predict_limit
+        rate_limit.reset_rate_limit_state_for_tests()
 
     def test_lake_search_returns_matches(self):
         main.lake_names_data = {
@@ -189,7 +192,8 @@ class ApiBehaviorTests(unittest.TestCase):
                 )
 
         main.registry = StubRegistry()
-        main.PREDICT_RATE_LIMIT_PER_MINUTE = 1
+        rate_limit._api_limiter.max_requests = 10
+        rate_limit._predict_limiter.max_requests = 1
         main.baseline_data = {
             "C3420": {
                 "year": 2026,
@@ -201,10 +205,15 @@ class ApiBehaviorTests(unittest.TestCase):
             }
         }
         payload = ScenarioPayload(midas_id="C3420", features={"PH": 7.0})
+        request = request_for("198.51.100.7")
 
-        main.predict_scenario(payload, request_for("198.51.100.7"))
+        rate_limit.enforce_api_rate_limit(request)
+        rate_limit.enforce_predict_rate_limit(request)
+        main.predict_scenario(payload, request)
+
+        rate_limit.enforce_api_rate_limit(request)
         with self.assertRaises(HTTPException) as error_ctx:
-            main.predict_scenario(payload, request_for("198.51.100.7"))
+            rate_limit.enforce_predict_rate_limit(request)
 
         self.assertEqual(error_ctx.exception.status_code, 429)
 

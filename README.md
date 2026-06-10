@@ -1,6 +1,6 @@
 # Maine Lakes Secchi Depth
 
-This repository is used for to iterate on Secchi-depth modeling experiments, and keep a deployment-ready dashboard layer that can consume the final model artifacts once the research path is settled.
+This repository is used to iterate on Secchi-depth modeling experiments and keep a deployment-ready dashboard layer that serves the selected model artifacts.
 
 ## Repository Map
 
@@ -8,7 +8,7 @@ This repository is used for to iterate on Secchi-depth modeling experiments, and
 - `experiments/` contains the stable experiment registry, runner, template, and the numbered experiment scripts that generate reports.
 - `reports/` contains the committed canonical report outputs and figure artifacts produced by experiments.
 - `artifacts/models/` contains dashboard-facing model artifacts, the manifest, and the model training/export script.
-- `dashboard/` contains the frontend and backend application used to serve the final selected model.
+- `dashboard/` contains the frontend and backend application used to serve the active CatBoost model.
 - `docs/` contains hosting and workflow documentation that is not tied to a single experiment run.
 
 ## Core Workflows
@@ -34,10 +34,10 @@ This repository is used for to iterate on Secchi-depth modeling experiments, and
 
 ## Current Research Status
 
-- The experiment system is the source of truth for model exploration.
+- The experiment system is the source of truth for model exploration (38 canonical experiments, `01`–`38`).
 - Reports are committed outputs, not final interpretation documents.
-- The dashboard is intentionally downstream of model selection and is structured to accept a single active artifact set today.
-- Multiple production models are not exposed yet, but the artifact-driven contract keeps that extension path open.
+- The dashboard is intentionally downstream of model selection and serves one active artifact set today.
+- A tuned native-missing CatBoost model is live in the playground; trend forecasting remains a future workspace.
 
 ## Dashboard and Model Selection
 
@@ -47,4 +47,6 @@ The dashboard is not treated as the research environment. It is a serving layer 
 - compatible serialized model assets
 - a stable feature contract shared by backend and frontend
 
-As the final model changes, the intended workflow is to regenerate or replace the contents of `artifacts/models/`, verify backend startup, and then refine the dashboard only when the research path is stable enough to justify product/UI effort.
+Local UI entry is `/` (landing); the scenario explorer runs at `/playground`. See `dashboard/README.md` for dev and deployment setup.
+
+As the served model changes, regenerate or replace the contents of `artifacts/models/`, verify backend startup, and update the dashboard UI only when the product surface needs to change.

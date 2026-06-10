@@ -1,16 +1,35 @@
-export function buildPayloadFeatures(features, baseline, featureConfig) {
+function toFiniteNumberOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+export function buildPayloadFeatures(
+  features,
+  baseline,
+  featureConfig,
+  includedEditableFeatures = featureConfig?.editable_features || []
+) {
   const canonicalOrder = featureConfig?.canonical_feature_order || [];
   const lockedBaselineFeatures = new Set(featureConfig?.locked_baseline_features || []);
+  const editableFeatures = new Set(featureConfig?.editable_features || []);
+  const includedEditable = new Set(includedEditableFeatures || []);
   const payload = {};
 
   canonicalOrder.forEach((featureName) => {
     if (lockedBaselineFeatures.has(featureName)) {
-      payload[featureName] = Number(
-        baseline?.[featureName] ?? features?.[featureName] ?? 0
+      payload[featureName] = toFiniteNumberOrNull(
+        baseline?.[featureName] ?? features?.[featureName]
       );
       return;
     }
-    payload[featureName] = Number(features?.[featureName] ?? baseline?.[featureName] ?? 0);
+    if (editableFeatures.has(featureName) && !includedEditable.has(featureName)) {
+      payload[featureName] = null;
+      return;
+    }
+    payload[featureName] = toFiniteNumberOrNull(
+      features?.[featureName] ?? baseline?.[featureName]
+    );
   });
 
   return payload;
@@ -18,7 +37,7 @@ export function buildPayloadFeatures(features, baseline, featureConfig) {
 
 export function parsePredictionResponse(payload) {
   if (!payload || typeof payload !== "object") {
-    throw new Error("Invalid prediction response payload.");
+    throw new Error("We could not read the prediction response. Please try again.");
   }
 
   const predictionMeters =
@@ -27,7 +46,7 @@ export function parsePredictionResponse(payload) {
       : payload?.prediction?.value;
 
   if (typeof predictionMeters !== "number" || Number.isNaN(predictionMeters)) {
-    throw new Error("Prediction response is missing a numeric prediction value.");
+    throw new Error("The prediction result was incomplete. Please try again.");
   }
 
   const explainability = payload.explainability || {};
@@ -63,20 +82,20 @@ export function parsePredictionResponse(payload) {
 
 export function validateFeatureConfig(featureConfig) {
   if (!featureConfig || typeof featureConfig !== "object") {
-    throw new Error("Feature config payload missing.");
+    throw new Error("Water condition settings could not be loaded.");
   }
   if (!Array.isArray(featureConfig.canonical_feature_order)) {
-    throw new Error("Feature config missing canonical_feature_order.");
+    throw new Error("Water condition settings are incomplete.");
   }
   if (!featureConfig.features || typeof featureConfig.features !== "object") {
-    throw new Error("Feature config missing features map.");
+    throw new Error("Water condition labels could not be loaded.");
   }
   return true;
 }
 
 export function parseLakeSearchResponse(payload) {
   if (!payload || typeof payload !== "object") {
-    throw new Error("Invalid lake search payload.");
+    throw new Error("Lake search results could not be loaded.");
   }
   const results = Array.isArray(payload.results) ? payload.results : [];
   return results
@@ -89,9 +108,9 @@ export function parseLakeSearchResponse(payload) {
 
 export function parseApiError(payload) {
   if (typeof payload === "string") return payload;
-  if (!payload || typeof payload !== "object") return "Unknown API error.";
+  if (!payload || typeof payload !== "object") return "Something went wrong. Please try again.";
   if (typeof payload.detail === "string") return payload.detail;
   if (payload.detail && typeof payload.detail.message === "string") return payload.detail.message;
   if (typeof payload.message === "string") return payload.message;
-  return "Request failed.";
+  return "Something went wrong. Please try again.";
 }

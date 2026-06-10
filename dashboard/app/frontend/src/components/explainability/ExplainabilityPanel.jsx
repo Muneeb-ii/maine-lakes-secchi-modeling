@@ -1,115 +1,172 @@
-import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import { Gauge } from "lucide-react";
 import { formatSignedMeters } from "../../lib/formatters";
-import { SECTION_LABELS } from "../../lib/copy";
+import {
+  ARIA_CONTRIBUTION_CLEARER,
+  ARIA_CONTRIBUTION_MURKIER,
+  EXPLAINABILITY_ADJUSTMENTS_HEADING,
+  EXPLAINABILITY_HIDE_ALL,
+  EXPLAINABILITY_LAKE_CONTEXT_HEADING,
+  EXPLAINABILITY_MISSING,
+  EXPLAINABILITY_SHOW_ALL,
+  SECTION_LABELS,
+} from "../../lib/copy";
+import {
+  EXPLAINABILITY_LAKE_CONTEXT_FEATURES,
+  getFriendlyFeatureLabel,
+} from "../../lib/featureLabels";
+import { getContributionDisplay } from "../../lib/playgroundGuards";
 import { HELP_CONTENT } from "../../lib/helpContent";
-import { useReducedMotion } from "../../lib/useReducedMotion";
+import { SECTION_ACCENTS } from "../../lib/theme";
 import { SectionHelp } from "../ui/SectionHelp";
-import { ContributorCard } from "./ContributorCard";
+import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 
-const listVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.06 },
-  },
-};
+function CompactContributorRow({ item, featureConfig, rankClass = "" }) {
+  const { tone } = getContributionDisplay(item.contribution);
+  const toneClass =
+    tone === "up"
+      ? "text-delta-up"
+      : tone === "down"
+        ? "text-delta-down"
+        : "text-slate-600";
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0 },
-};
+  return (
+    <div
+      className={`flex justify-between gap-4 border-b border-slate-200 py-1.5 text-base text-slate-700 last:border-0 ${rankClass}`}
+    >
+      <span>
+        {getFriendlyFeatureLabel(item.feature, featureConfig?.features?.[item.feature]?.label)}
+      </span>
+      <span
+        className={toneClass}
+        aria-label={
+          tone === "neutral"
+            ? undefined
+            : tone === "up"
+              ? ARIA_CONTRIBUTION_CLEARER
+              : ARIA_CONTRIBUTION_MURKIER
+        }
+      >
+        {formatSignedMeters(item.contribution)}
+      </span>
+    </div>
+  );
+}
 
-export function ExplainabilityPanel({ forecast, featureConfig }) {
+export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
   const [expanded, setExpanded] = useState(false);
-  const reducedMotion = useReducedMotion();
-
-  const topExplainability = useMemo(() => {
-    if (!forecast?.explainability?.waterfall) return [];
-    return [...forecast.explainability.waterfall]
-      .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))
-      .slice(0, 3);
-  }, [forecast]);
+  const lakeContextFeatures = useMemo(
+    () => new Set(EXPLAINABILITY_LAKE_CONTEXT_FEATURES),
+    []
+  );
+  const editableFeatures = useMemo(
+    () => new Set(featureConfig?.editable_features || []),
+    [featureConfig]
+  );
 
   const waterfall = forecast?.explainability?.waterfall || [];
 
+  const contextWaterfall = useMemo(() => {
+    return waterfall
+      .filter((item) => lakeContextFeatures.has(item.feature))
+      .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
+  }, [lakeContextFeatures, waterfall]);
+
+  const editableWaterfall = useMemo(() => {
+    return waterfall
+      .filter((item) => editableFeatures.has(item.feature))
+      .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
+  }, [editableFeatures, waterfall]);
+
+  const topEditable = useMemo(() => editableWaterfall.slice(0, 3), [editableWaterfall]);
+  const remainingEditable = useMemo(() => editableWaterfall.slice(3), [editableWaterfall]);
+
+  useEffect(() => {
+    setExpanded(false);
+  }, [lakeId, forecast?.predictionMeters, forecast?.modelVersion]);
+
+  const hasDrivers = contextWaterfall.length > 0 || editableWaterfall.length > 0;
+
   return (
-    <div className="panel p-5">
+    <div
+      data-claro-target="drivers-panel"
+      className={`panel flex h-full flex-col p-4 sm:p-5 ${SECTION_ACCENTS.drivers.panelAccentClass}`}
+    >
       <h2 className="section-heading">
-        <Gauge className="w-4 h-4 text-lake-accent" aria-hidden />
+        <SectionHeadingIcon section="drivers" icon={Gauge} />
         {SECTION_LABELS.explainability}
         <SectionHelp content={HELP_CONTENT.explainability} />
       </h2>
-      <p className="mt-2 text-xs text-slate-400">
-        Top drivers behind the current Secchi depth prediction.
-      </p>
 
-      {waterfall.length ? (
-        <>
-          <motion.ul
-            className="mt-4 space-y-3 list-none m-0 p-0"
-            variants={reducedMotion ? undefined : listVariants}
-            initial={reducedMotion ? false : "hidden"}
-            animate="visible"
-            key={topExplainability.map((i) => i.feature).join("-")}
-          >
-            {topExplainability.map((item) => (
-              <motion.li
-                key={item.feature}
-                variants={reducedMotion ? undefined : itemVariants}
-                className="list-none"
+      {hasDrivers ? (
+        <div className="mt-4 space-y-4">
+          {contextWaterfall.length > 0 && (
+            <section aria-labelledby="explainability-lake-context-heading">
+              <h3
+                id="explainability-lake-context-heading"
+                className="section-subheading"
               >
-                <ContributorCard
-                  item={item}
-                  label={featureConfig?.features?.[item.feature]?.label}
-                  unit={featureConfig?.features?.[item.feature]?.unit}
-                />
-              </motion.li>
-            ))}
-          </motion.ul>
+                {EXPLAINABILITY_LAKE_CONTEXT_HEADING}
+              </h3>
+              <div className="mt-2 space-y-0">
+                {contextWaterfall.map((item) => (
+                  <CompactContributorRow
+                    key={item.feature}
+                    item={item}
+                    featureConfig={featureConfig}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
 
-          <button
-            type="button"
-            className="mt-4 text-sm text-lake-accent hover:text-teal-200 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent rounded px-1"
-            onClick={() => setExpanded((previous) => !previous)}
-            aria-expanded={expanded}
-          >
-            {expanded ? "Hide technical breakdown" : "Show technical breakdown"}
-          </button>
-
-          <AnimatePresence>
-            {expanded && (
-              <motion.div
-                initial={reducedMotion ? false : { opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={reducedMotion ? undefined : { opacity: 0, height: 0 }}
-                className="mt-4 space-y-2 max-h-56 overflow-y-auto pr-1"
+          {editableWaterfall.length > 0 && (
+            <section aria-labelledby="explainability-adjustments-heading">
+              <h3
+                id="explainability-adjustments-heading"
+                className="section-subheading"
               >
-                {waterfall.map((item, index) => {
-                  const isPositive = item.contribution >= 0;
-                  return (
-                    <div
-                      key={`${item.feature}-${index}`}
-                      className="text-xs text-slate-300 flex justify-between gap-4 py-1 border-b border-slate-800/50 last:border-0"
-                    >
-                      <span>{featureConfig?.features?.[item.feature]?.label || item.feature}</span>
-                      <span
-                        className={isPositive ? "text-delta-up" : "text-delta-down"}
-                        aria-label={isPositive ? "positive contribution" : "negative contribution"}
-                      >
-                        {formatSignedMeters(item.contribution)}
-                      </span>
+                {EXPLAINABILITY_ADJUSTMENTS_HEADING}
+              </h3>
+              <div className="mt-2 space-y-0">
+                {topEditable.map((item, index) => (
+                  <CompactContributorRow
+                    key={item.feature}
+                    item={item}
+                    featureConfig={featureConfig}
+                    rankClass={`driver-row-ranked-${index + 1}`}
+                  />
+                ))}
+              </div>
+
+              {remainingEditable.length > 0 && (
+                <>
+                  <button
+                    type="button"
+                    className="mt-3 rounded px-1 text-base font-semibold text-lake-accent transition hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
+                    onClick={() => setExpanded((previous) => !previous)}
+                    aria-expanded={expanded}
+                  >
+                    {expanded ? EXPLAINABILITY_HIDE_ALL : EXPLAINABILITY_SHOW_ALL}
+                  </button>
+                  {expanded && (
+                    <div className="mt-2 space-y-0">
+                      {remainingEditable.map((item) => (
+                        <CompactContributorRow
+                          key={item.feature}
+                          item={item}
+                          featureConfig={featureConfig}
+                        />
+                      ))}
                     </div>
-                  );
-                })}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </>
+                  )}
+                </>
+              )}
+            </section>
+          )}
+        </div>
       ) : (
-        <p className="mt-4 text-sm text-amber-200/90">
-          Driver details were not provided for this prediction.
-        </p>
+        <p className="mt-4 text-base text-lake-amber">{EXPLAINABILITY_MISSING}</p>
       )}
     </div>
   );

@@ -9,7 +9,7 @@ export function useDashboardBoot({ onLakeLoaded }) {
   const [featureConfig, setFeatureConfig] = useState(null);
 
   const loadLakeBaseline = useCallback(
-    async (midasId, nameHint) => {
+    async (midasId, nameHint, config = null) => {
       const normalized = String(midasId || "").trim().toUpperCase();
       if (!normalized) {
         throw new Error("Please provide a MIDAS ID.");
@@ -30,7 +30,7 @@ export function useDashboardBoot({ onLakeLoaded }) {
         isFallback: payload.status === "fallback",
       };
 
-      onLakeLoaded(normalized, name, payload.baseline, lakeSupport);
+      onLakeLoaded(normalized, name, payload.baseline, lakeSupport, config);
       return { normalized, name, lakeSupport };
     },
     [onLakeLoaded]
@@ -62,7 +62,7 @@ export function useDashboardBoot({ onLakeLoaded }) {
 
         setFeatureConfig(featureData);
         setBootState("ready");
-        await loadLakeBaseline("C3420");
+        await loadLakeBaseline("C3420", undefined, featureData);
       } catch (error) {
         setBootError(error.message || "Failed to initialize dashboard.");
         setBootState("error");

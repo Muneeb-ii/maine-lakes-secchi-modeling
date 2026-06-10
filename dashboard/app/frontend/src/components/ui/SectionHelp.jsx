@@ -70,7 +70,7 @@ export function SectionHelp({ content, placement = "bottom" }) {
       <button
         ref={buttonRef}
         type="button"
-        className="inline-flex p-1 ml-1.5 rounded-full text-slate-500 hover:text-lake-accent hover:bg-slate-800/60 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent align-middle"
+        className="inline-flex p-1 ml-1.5 rounded-full text-slate-600 hover:text-lake-accent hover:bg-blue-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent align-middle"
         aria-describedby={open ? tooltipId : undefined}
         aria-label={`Help: ${content.title}`}
         onMouseEnter={show}
@@ -95,8 +95,8 @@ export function SectionHelp({ content, placement = "bottom" }) {
             }}
             className="help-tooltip w-64 max-w-[calc(100vw-2rem)] p-4 rounded-lg text-left"
           >
-            <p className="text-sm font-semibold text-slate-50">{content.title}</p>
-            <p className="text-sm text-slate-300 mt-2 leading-relaxed">{content.body}</p>
+            <p className="text-base font-semibold text-slate-950">{content.title}</p>
+            <p className="text-base text-slate-700 mt-2 leading-relaxed">{content.body}</p>
           </div>,
           document.body
         )}

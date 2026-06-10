@@ -68,6 +68,19 @@ Recommended Render setup:
 
 The GitHub Actions workflow at `.github/workflows/dashboard-ci.yml` runs backend tests, frontend contract/build checks, report validation, and Docker image build checks before Render deploys.
 
+## API rate limiting
+
+The FastAPI backend applies per-IP sliding-window limits (60-second window):
+
+| Env var | Default | Applies to |
+|---------|---------|------------|
+| `API_RATE_LIMIT_PER_MINUTE` | `180` | All API routes (health, config, lake lookup, search, predict) |
+| `PREDICT_RATE_LIMIT_PER_MINUTE` | `60` | `POST /predict_scenario` only (stricter; counts toward the API total too) |
+
+Set either variable to `0` to disable that limit (not recommended in production). Over-limit responses return HTTP `429` with a `Retry-After` header (seconds).
+
+Behind Render/Nginx, limits use the client IP from `X-Forwarded-For`.
+
 ## Artifact Contract
 
 - The backend loads its active model from `MODEL_ARTIFACTS_PATH`.

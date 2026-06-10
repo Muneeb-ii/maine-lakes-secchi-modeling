@@ -9,9 +9,24 @@ export const TRAJECTORY_RESET_CONFIRM_THRESHOLD = 5;
 export const PARAMETER_GROUPS = [{ key: "chemistry", label: "Chemistry" }];
 
 export const CLARITY_BANDS = [
-  { max: 2, label: "Turbid", description: "Under 2 m — limited visibility" },
-  { max: 4, label: "Moderate", description: "2–4 m — typical inland lakes" },
-  { max: Infinity, label: "Clearer", description: "Over 4 m — high clarity" },
+  {
+    max: 2,
+    tone: "turbid",
+    label: "Turbid",
+    description: "Under 2 m, hard to see into the water",
+  },
+  {
+    max: 4,
+    tone: "moderate",
+    label: "Moderate",
+    description: "2 to 4 m, common for many Maine lakes",
+  },
+  {
+    max: Infinity,
+    tone: "clearer",
+    label: "Clearer",
+    description: "Over 4 m, unusually clear",
+  },
 ];
 
 export const ICON_MAP_KEYS = ["Beaker", "Droplet", "Activity", "Gauge", "Thermometer"];

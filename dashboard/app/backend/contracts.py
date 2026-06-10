@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 class ScenarioPayload(BaseModel):
     midas_id: str = Field(..., min_length=1, max_length=32)
-    features: Dict[str, float]
+    features: Dict[str, Optional[float]]
     model_id: Optional[str] = None
     requested_outputs: Optional[List[str]] = None
 

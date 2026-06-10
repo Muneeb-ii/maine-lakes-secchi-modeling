@@ -1,8 +1,7 @@
 import json
 import math
 import os
-import time
-from collections import defaultdict, deque
+from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,9 +23,8 @@ from feature_contract import (
     get_feature_config_response,
 )
 from model_registry import ModelRegistry
+from rate_limit import enforce_api_rate_limit, enforce_predict_rate_limit
 
-
-app = FastAPI(title="Lake Predictive Engine API")
 
 def _dashboard_debug() -> bool:
     return os.getenv("DASHBOARD_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
@@ -39,7 +37,48 @@ def _allowed_origins() -> tuple[list[str], bool]:
     return [origin.strip() for origin in raw_origins.split(",") if origin.strip()], True
 
 
+DEFAULT_MODELS_PATH = Path(__file__).resolve().parents[3] / "artifacts" / "models"
+models_path = Path(os.getenv("MODEL_ARTIFACTS_PATH", str(DEFAULT_MODELS_PATH))).resolve()
+baseline_data = {}
+lake_names_data = {}
+support_policy_data = {}
+registry = ModelRegistry(models_path=models_path)
+SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global baseline_data, lake_names_data, support_policy_data
+    print("Mounting ML memory and model registry...")
+
+    registry.load()
+
+    baseline_file = models_path / "baseline_lakes_summary.json"
+    names_file = models_path / "lake_names.json"
+    support_file = models_path / "supported_lakes_policy.json"
+
+    if baseline_file.exists():
+        with open(baseline_file, "r") as f:
+            baseline_data = json.load(f)
+        print("Loaded baseline geometries from artifact.")
+
+    if names_file.exists():
+        with open(names_file, "r") as f:
+            raw_lake_names = json.load(f)
+        lake_names_data = {str(key).upper(): value for key, value in raw_lake_names.items()}
+        print("Loaded lake name mapping dictionary.")
+
+    if support_file.exists():
+        with open(support_file, "r") as f:
+            support_policy_data = json.load(f)
+        print("Loaded supported-lake policy metadata.")
+
+    yield
+
+
 allowed_origins, allow_cors_credentials = _allowed_origins()
+
+app = FastAPI(title="Lake Predictive Engine API", lifespan=lifespan)
 
 # Setup CORS for local development with explicit production override support.
 app.add_middleware(
@@ -50,52 +89,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DEFAULT_MODELS_PATH = Path(__file__).resolve().parents[3] / "artifacts" / "models"
-models_path = Path(os.getenv("MODEL_ARTIFACTS_PATH", str(DEFAULT_MODELS_PATH))).resolve()
-baseline_data = {}
-lake_names_data = {}
-support_policy_data = {}
-registry = ModelRegistry(models_path=models_path)
-SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
-RATE_LIMIT_WINDOW_SECONDS = 60
-PREDICT_RATE_LIMIT_PER_MINUTE = int(os.getenv("PREDICT_RATE_LIMIT_PER_MINUTE", "60"))
-_predict_request_times = defaultdict(deque)
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    if request.method != "OPTIONS":
+        enforce_api_rate_limit(request)
+        if request.method == "POST" and request.url.path == "/predict_scenario":
+            enforce_predict_rate_limit(request)
+    return await call_next(request)
 
 
 def _public_startup_errors() -> list[str]:
     return registry.startup_errors() if _dashboard_debug() else []
 
 
-def _client_ip(request: Request) -> str:
-    forwarded_for = request.headers.get("x-forwarded-for", "")
-    if forwarded_for:
-        return forwarded_for.split(",", 1)[0].strip() or "unknown"
-    return request.client.host if request.client else "unknown"
-
-
-def _enforce_rate_limit(request: Request) -> None:
-    if PREDICT_RATE_LIMIT_PER_MINUTE <= 0:
-        return
-    now = time.monotonic()
-    key = _client_ip(request)
-    request_times = _predict_request_times[key]
-    while request_times and now - request_times[0] > RATE_LIMIT_WINDOW_SECONDS:
-        request_times.popleft()
-    if len(request_times) >= PREDICT_RATE_LIMIT_PER_MINUTE:
-        raise HTTPException(status_code=429, detail="Prediction rate limit exceeded. Try again shortly.")
-    request_times.append(now)
-
-
 def _normalize_midas_id(midas_id: str) -> str:
     normalized = str(midas_id or "").upper().strip()
     if not normalized or len(normalized) > 32:
-        raise HTTPException(status_code=400, detail="Invalid MIDAS ID.")
+        raise HTTPException(status_code=400, detail="Please choose a valid lake.")
     return normalized
 
 
 def _locked_baseline_for_prediction(midas_id: str) -> dict:
     if midas_id not in baseline_data or midas_id == "GLOBAL_FALLBACK":
-        raise HTTPException(status_code=400, detail="Predictions require a supported lake MIDAS ID with baseline data.")
+        raise HTTPException(status_code=400, detail="Please choose a lake with enough information for predictions.")
     baseline = baseline_data[midas_id]
     missing_locked = [name for name in LOCKED_BASELINE_FEATURES if name not in baseline]
     if missing_locked:
@@ -126,6 +143,9 @@ def _prediction_features(payload: ScenarioPayload) -> dict:
             normalized_features[feature_name] = float(baseline[feature_name])
             continue
         raw_value = payload.features.get(feature_name, baseline.get(feature_name, 0.0))
+        if raw_value is None:
+            normalized_features[feature_name] = float("nan")
+            continue
         try:
             value = float(raw_value)
         except (TypeError, ValueError):
@@ -134,32 +154,6 @@ def _prediction_features(payload: ScenarioPayload) -> dict:
         normalized_features[feature_name] = value
     return normalized_features
 
-@app.on_event("startup")
-async def load_ml_objects():
-    global baseline_data, lake_names_data, support_policy_data
-    print("Mounting ML memory and model registry...")
-
-    registry.load()
-
-    baseline_file = models_path / "baseline_lakes_summary.json"
-    names_file = models_path / "lake_names.json"
-    support_file = models_path / "supported_lakes_policy.json"
-
-    if baseline_file.exists():
-        with open(baseline_file, "r") as f:
-            baseline_data = json.load(f)
-        print("Loaded baseline geometries from artifact.")
-
-    if names_file.exists():
-        with open(names_file, "r") as f:
-            raw_lake_names = json.load(f)
-        lake_names_data = {str(key).upper(): value for key, value in raw_lake_names.items()}
-        print("Loaded lake name mapping dictionary.")
-
-    if support_file.exists():
-        with open(support_file, "r") as f:
-            support_policy_data = json.load(f)
-        print("Loaded supported-lake policy metadata.")
 
 @app.get("/")
 def read_root():
@@ -212,7 +206,7 @@ def get_lake_baseline(midas_id: str):
             "lake_quality": quality,
         }
     else:
-        raise HTTPException(status_code=404, detail="No baseline mapping available.")
+        raise HTTPException(status_code=404, detail="We could not find enough information for that lake.")
 
 
 @app.get("/lakes/search")
@@ -264,7 +258,6 @@ def predict_scenario(payload: ScenarioPayload, request: Request):
                 },
             )
 
-        _enforce_rate_limit(request)
         normalized_features = _prediction_features(payload)
 
         include_explainability = "explainability" in requested_outputs

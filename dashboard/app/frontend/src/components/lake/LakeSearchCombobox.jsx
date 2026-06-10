@@ -1,7 +1,17 @@
 import { useId } from "react";
 import { Search } from "lucide-react";
+import {
+  SEARCH_ARIA_LABEL,
+  SEARCH_LOADING,
+  SEARCH_NO_MATCHES,
+  SEARCH_PLACEHOLDER,
+  SEARCH_RECENT_HEADING,
+  formatLakeSearchDisplay,
+} from "../../lib/copy";
 
 export function LakeSearchCombobox({
+  lakeId,
+  lakeName,
   searchQuery,
   onSearchQueryChange,
   searchResults,
@@ -18,6 +28,9 @@ export function LakeSearchCombobox({
   const listboxId = useId();
   const activeOptionId =
     activeSuggestion >= 0 ? `${listboxId}-option-${activeSuggestion}` : undefined;
+  const displayValue = searchFocused
+    ? searchQuery
+    : formatLakeSearchDisplay(lakeId, lakeName) || searchQuery;
 
   return (
     <div className="w-full relative">
@@ -29,16 +42,21 @@ export function LakeSearchCombobox({
         aria-controls={listboxId}
         aria-activedescendant={activeOptionId}
         aria-autocomplete="list"
-        aria-label="Search lake by MIDAS ID or name"
-        value={searchQuery}
+        aria-label={SEARCH_ARIA_LABEL}
+        value={displayValue}
         onChange={(event) => {
           onSearchQueryChange(event.target.value);
           onActiveSuggestionChange(-1);
         }}
-        onFocus={() => onSearchFocusedChange(true)}
+        onFocus={() => {
+          onSearchFocusedChange(true);
+          if (!searchQuery) {
+            onSearchQueryChange(lakeName || "");
+          }
+        }}
         onBlur={() => setTimeout(() => onSearchFocusedChange(false), 150)}
         onKeyDown={onSearchKeyDown}
-        placeholder="Search by MIDAS or lake name..."
+        placeholder={SEARCH_PLACEHOLDER}
         className="input-field"
       />
       {searchFocused && (
@@ -48,12 +66,12 @@ export function LakeSearchCombobox({
           className="absolute z-20 mt-2 w-full panel p-2 max-h-72 overflow-auto list-none m-0"
         >
           {isSearching && (
-            <li className="p-2 text-xs text-slate-400" role="status">
-              Searching...
+            <li className="p-2 text-base text-slate-700" role="status">
+              {SEARCH_LOADING}
             </li>
           )}
           {searchError && (
-            <li className="p-2 text-xs text-red-300" role="alert">
+            <li className="p-2 text-base text-delta-down" role="alert">
               {searchError}
             </li>
           )}
@@ -65,34 +83,34 @@ export function LakeSearchCombobox({
                   id={`${listboxId}-option-${index}`}
                   role="option"
                   aria-selected={index === activeSuggestion}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition ${
+                  className={`min-h-12 w-full rounded-lg px-3 py-2.5 text-left text-base transition ${
                     index === activeSuggestion
-                      ? "bg-lake-accent/20 text-teal-100"
-                      : "hover:bg-slate-800/80"
+                      ? "bg-lake-accent/10 text-lake-accent"
+                      : "hover:bg-slate-100"
                   }`}
                   onMouseDown={() => onSelectLake(result.midasId, result.lakeName)}
                 >
                   <div className="font-medium">{result.lakeName}</div>
-                  <div className="text-xs text-slate-400">{result.midasId}</div>
+                  <div className="text-base text-slate-700">{result.midasId}</div>
                 </button>
               </li>
             ))}
           {!isSearching && searchResults.length === 0 && searchQuery.trim() && !searchError && (
-            <li className="p-2 text-xs text-slate-400">No matches found.</li>
+            <li className="p-2 text-base text-slate-700">{SEARCH_NO_MATCHES}</li>
           )}
           {!searchQuery.trim() && recentLakes.length > 0 && (
             <li>
-              <div className="px-2 py-1 text-xs font-medium text-slate-500">Recent lakes</div>
+              <div className="px-2 py-1 text-base font-medium text-slate-700">{SEARCH_RECENT_HEADING}</div>
               <ul className="list-none m-0 p-0">
                 {recentLakes.map((item) => (
                   <li key={item.midasId} role="presentation">
                     <button
                       type="button"
-                      className="w-full text-left px-3 py-2.5 rounded-lg text-sm hover:bg-slate-800/80 transition"
+                      className="min-h-12 w-full rounded-lg px-3 py-2.5 text-left text-base transition hover:bg-slate-100"
                       onMouseDown={() => onSelectLake(item.midasId, item.lakeName)}
                     >
                       <div className="font-medium">{item.lakeName}</div>
-                      <div className="text-xs text-slate-400">{item.midasId}</div>
+                      <div className="text-base text-slate-700">{item.midasId}</div>
                     </button>
                   </li>
                 ))}
