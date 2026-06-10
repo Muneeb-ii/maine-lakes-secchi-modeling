@@ -5,12 +5,10 @@ import {
   FlaskConical,
   Layers,
   LineChart,
-  Waves,
 } from "lucide-react";
 import {
   LANDING_DESTINATIONS,
-  LANDING_EYEBROW,
-  LANDING_HEADER_HOOK,
+  LANDING_HEADER_HOOK_LINES,
   LANDING_HEADER_STATS,
   LANDING_HIGHLIGHTS,
   LANDING_HOW_IT_WORKS_TITLE,
@@ -20,6 +18,7 @@ import {
 import { PAGE_CONTAINER } from "../../lib/layoutClasses";
 import { ROUTES } from "../../lib/routes";
 import { useReducedMotion } from "../../lib/useReducedMotion";
+import { DashboardLogo } from "../brand/DashboardLogo";
 import { AppFooter } from "./AppFooter";
 import { ClarityScaleBar } from "./ClarityScaleBar";
 
@@ -75,21 +74,23 @@ export function LandingPage() {
       <main className="flex-1">
         <div className={`${PAGE_CONTAINER} space-y-4 py-4 sm:py-6 lg:py-8`}>
           <MotionBlock reducedMotion={reducedMotion}>
-            <header className="landing-hero-panel hero-column-wash overflow-hidden p-4 sm:p-5">
-              <p className="inline-flex items-center gap-2 rounded-full border border-lake-accent/25 bg-white px-3 py-1 text-sm font-semibold uppercase tracking-wide text-lake-accent">
-                <Waves className="h-4 w-4 shrink-0" aria-hidden />
-                {LANDING_EYEBROW}
-              </p>
-
-              <div className="mt-3 space-y-4">
-                <div className="min-w-0 space-y-2">
-                  <h1 className="display-title text-2xl leading-tight sm:text-3xl lg:text-4xl">
-                    {LANDING_TITLE}
-                  </h1>
-                  <p className="body-copy max-w-3xl">{LANDING_HEADER_HOOK}</p>
+            <header className="landing-hero-panel hero-column-wash overflow-hidden p-4 sm:p-5 lg:p-6">
+              <div className="grid gap-5 max-md:grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-6 lg:gap-8">
+                <div className="flex min-w-0 flex-col items-center gap-4 max-md:text-center md:flex-row md:items-center md:gap-5 md:text-left">
+                  <DashboardLogo className="h-14 w-14 shrink-0 md:h-16 md:w-16" />
+                  <div className="min-w-0 flex-1">
+                    <h1 className="display-title text-2xl leading-tight sm:text-3xl lg:text-4xl">
+                      {LANDING_TITLE}
+                    </h1>
+                    <p className="body-copy mt-2 leading-snug">
+                      {LANDING_HEADER_HOOK_LINES[0]}
+                      <br />
+                      {LANDING_HEADER_HOOK_LINES[1]}
+                    </p>
+                  </div>
                 </div>
 
-                <dl className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
+                <dl className="grid min-w-0 grid-cols-3 gap-2 sm:gap-3 max-md:w-full md:min-w-[18rem] md:max-w-md md:shrink-0 lg:min-w-[20rem] lg:max-w-lg lg:gap-4">
                   {LANDING_HEADER_STATS.map((stat) => (
                     <div key={stat.label} className="landing-stat-card info-card-accent">
                       <dt className="info-label">{stat.label}</dt>
@@ -99,7 +100,7 @@ export function LandingPage() {
                 </dl>
               </div>
 
-              <ClarityScaleBar className="mt-3 border-t border-lake-border/70 pt-3 sm:pt-3.5" />
+              <ClarityScaleBar className="mt-5 border-t border-lake-border/70 pt-4 sm:pt-5" />
             </header>
           </MotionBlock>
 

@@ -285,11 +285,15 @@
   }
 
   .landing-stat-card {
-    @apply min-w-0 px-2.5 py-2.5 text-center sm:px-3 sm:py-3 lg:px-4;
+    @apply min-w-0 overflow-hidden px-2 py-2.5 text-center sm:px-2.5 sm:py-3 lg:px-3;
   }
 
   .landing-stat-card .info-label {
-    @apply leading-snug;
+    @apply text-sm font-medium leading-snug text-balance break-words text-slate-600 lg:text-base;
+  }
+
+  .landing-stat-card .info-value {
+    @apply mt-0.5 text-lg font-medium text-slate-900 lg:text-xl;
   }
 
   .clarity-list-item-turbid {
