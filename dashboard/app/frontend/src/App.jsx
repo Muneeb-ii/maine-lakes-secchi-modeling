@@ -326,10 +326,12 @@ function PlaygroundPage() {
       window.clearTimeout(featureCommitTimerRef.current);
       featureCommitTimerRef.current = null;
     }
+    const baselineIncluded = finiteEditableFeatures(featureConfig, baseline);
+    const nextCommitVersion = featureCommitVersion + 1;
     setFeatures({ ...baseline });
-    setIncludedFeatures(finiteEditableFeatures(featureConfig, baseline));
-    setFeatureCommitVersion((previous) => previous + 1);
-    resetChart({ ...baseline });
+    setIncludedFeatures(baselineIncluded);
+    setFeatureCommitVersion(nextCommitVersion);
+    resetChart({ ...baseline }, baselineIncluded, nextCommitVersion);
   };
 
   const clearTrajectory = () => {

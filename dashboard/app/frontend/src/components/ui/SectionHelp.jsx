@@ -20,7 +20,7 @@ function getTooltipPosition(rect, placement) {
   };
 }
 
-export function SectionHelp({ content, placement = "bottom" }) {
+export function SectionHelp({ content, placement = "bottom", className = "" }) {
   const tooltipId = useId();
   const buttonRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -70,7 +70,7 @@ export function SectionHelp({ content, placement = "bottom" }) {
       <button
         ref={buttonRef}
         type="button"
-        className="inline-flex p-1 ml-1.5 rounded-full text-slate-600 hover:text-lake-accent hover:bg-blue-50 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent align-middle"
+        className={`inline-flex rounded-full p-1 text-slate-600 transition hover:bg-blue-50 hover:text-lake-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent align-middle ml-1.5 ${className}`}
         aria-describedby={open ? tooltipId : undefined}
         aria-label={`Help: ${content.title}`}
         onMouseEnter={show}

@@ -98,10 +98,16 @@ export function ParameterSlider({
             }`}
             aria-hidden
           />
-          <span className="min-w-0 pt-1.5 text-base leading-6 text-slate-900 sm:pt-0">
-            {label}
-          </span>
-          <SectionHelp content={FEATURE_HELP_CONTENT[featureKey]} placement="top" />
+          <div className="flex min-w-0 flex-1 items-start gap-0.5 pt-1.5 sm:pt-0">
+            <span className="min-w-0 flex-1 text-base leading-6 text-slate-900">{label}</span>
+            <span className="shrink-0">
+              <SectionHelp
+                content={FEATURE_HELP_CONTENT[featureKey]}
+                placement="top"
+                className="ml-0"
+              />
+            </span>
+          </div>
         </div>
         <div className="parameter-slider-value">
           <input

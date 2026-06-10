@@ -301,13 +301,17 @@ export function useScenarioPrediction({
     return formatLatestChange(chartHistory[chartHistory.length - 1]);
   }, [chartHistory]);
 
-  const resetChart = (seedFeatures = features) => {
+  const resetChart = (
+    seedFeatures = features,
+    seedIncludedFeatures = includedFeatures,
+    commitVersion = featureCommitVersion
+  ) => {
     setChartHistory([]);
     previousScenarioStateRef.current =
       seedFeatures && Object.keys(seedFeatures).length > 0 && featureConfig
-        ? buildComparableFeatureState(seedFeatures, featureConfig, includedFeatures)
+        ? buildComparableFeatureState(seedFeatures, featureConfig, seedIncludedFeatures)
         : null;
-    lastRecordedCommitRef.current = featureCommitVersion;
+    lastRecordedCommitRef.current = commitVersion;
   };
 
   const clearForecast = () => {
