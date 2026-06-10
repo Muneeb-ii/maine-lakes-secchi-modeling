@@ -56,7 +56,7 @@ export const claroTourRoutes = {
         target: "prediction-card",
         title: "Read predicted clarity",
         body:
-          "This is the model’s current Secchi-depth estimate. Larger values mean clearer water. Typical for this lake and change from typical beside it summarize how your scenario compares to the baseline.",
+          "This is the model’s current Secchi-depth estimate. Larger values mean clearer water. Beside it, Typical for this lake is this lake’s usual prediction, and Change from typical shows how far your scenario sits above or below that reference.",
         placement: "bottom",
       },
       {
