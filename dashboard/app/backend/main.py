@@ -52,6 +52,11 @@ async def lifespan(app: FastAPI):
     print("Mounting ML memory and model registry...")
 
     registry.load()
+    if registry.is_ready():
+        print("Active prediction model loaded.")
+    else:
+        for error in registry.startup_errors():
+            print(f"Model startup error: {error}")
 
     baseline_file = models_path / "baseline_lakes_summary.json"
     names_file = models_path / "lake_names.json"
@@ -100,7 +105,14 @@ async def rate_limit_middleware(request: Request, call_next):
 
 
 def _public_startup_errors() -> list[str]:
-    return registry.startup_errors() if _dashboard_debug() else []
+    errors = registry.startup_errors()
+    if _dashboard_debug():
+        return errors
+    if not errors:
+        return []
+    return [
+        "Active model failed to load. Check backend startup logs and run the API from the project virtualenv."
+    ]
 
 
 def _normalize_midas_id(midas_id: str) -> str:

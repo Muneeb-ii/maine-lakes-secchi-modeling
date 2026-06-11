@@ -7,15 +7,74 @@ export const CONTRIBUTORS_PAGE = {
   eyebrow: "Contributors",
   title: "People and partners behind this dashboard",
   intro:
-    "This tool was built at Colby College to make Maine lake clarity research easier to explore.",
+    "This dashboard reflects an interdisciplinary collaboration between Colby faculty and student researchers working across lake science, machine learning, and software development.",
   developers: {
-    title: "Developers",
-    names: [
-      "Tahiya Chowdhury",
-      "Muneeb Nafees",
-      "Anthony Yeh",
-      "Danielle Wain",
-      "Bianca Hulub",
+    title: "Project contributors",
+    sections: [
+      {
+        title: "Faculty leadership",
+        accent: "lake",
+        people: [
+          {
+            name: "Dr. Tahiya Chowdhury",
+            role: "Clare Boothe Luce Assistant Professor of Computer Science",
+            detail:
+              "Led the computer science direction and supervised student modeling and dashboard development.",
+          },
+          {
+            name: "Dr. Danielle Wain",
+            role: "Lake Science Director; Research Scientist, Colby College",
+            detail:
+              "Leads lake science contributions, curates the lake dataset, and supervised student modeling and dashboard development.",
+          },
+          {
+            name: "Dr. Whitney King",
+            role: "Frank and Theodora Miselis Professor of Chemistry",
+            detail:
+              "Advised the original dataset development and contributed to the project design.",
+          },
+        ],
+      },
+      {
+        title: "Student research and development",
+        accent: "drivers",
+        people: [
+          {
+            name: "Muneeb Nafees",
+            role: "Dashboard development and initial modeling",
+            detail:
+              "Developed the dashboard experience and contributed early modeling work for interactive lake clarity prediction.",
+          },
+          {
+            name: "Adrian Gellert",
+            role: "Dataset development",
+            detail:
+              "Generated the first version of the lake science dataset used by the project.",
+          },
+          {
+            name: "Gent Maksutaj",
+            role: "Water quality forecasting",
+            detail:
+              "Contributed to early versions of the water quality forecasting models.",
+          },
+          {
+            name: "Rishit Chatterjee",
+            role: "Water quality forecasting",
+            detail:
+              "Contributed to early versions of the water quality forecasting models.",
+          },
+          {
+            name: "Anthony Yeh",
+            role: "Dashboard development",
+            detail: "Contributed to early dashboard development.",
+          },
+          {
+            name: "Bianca Hulub",
+            role: "Dashboard development",
+            detail: "Contributed to early dashboard development.",
+          },
+        ],
+      },
     ],
     affiliation: "Colby College",
   },
