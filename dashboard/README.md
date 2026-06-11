@@ -12,9 +12,14 @@ The dashboard is a serving layer for finalized research artifacts. It is intenti
 
 ### Backend
 
+From the repository root, use the project virtualenv so CatBoost and other backend deps resolve correctly:
+
+- `python -m venv .venv && source .venv/bin/activate` (first time only)
+- `pip install -r dashboard/app/backend/requirements.txt`
 - `cd dashboard/app/backend`
-- `pip install -r requirements.txt`
-- `uvicorn main:app --reload --port 8000`
+- `python -m uvicorn main:app --reload --port 8000`
+
+Use `python -m uvicorn` (not a global `uvicorn` on your PATH). A global install often runs without CatBoost and the API will report `models_loaded: false`.
 
 ### Frontend
 

@@ -317,6 +317,36 @@
     background: rgba(0, 114, 178, 0.05);
   }
 
+  .contributor-section {
+    @apply border-t pt-4;
+  }
+
+  .contributor-section-title {
+    @apply inline-flex border-b-2 pb-1 text-base font-semibold text-slate-950;
+  }
+
+  .contributor-section-lake .contributor-section-title {
+    border-bottom-color: rgba(0, 114, 178, 0.45);
+  }
+
+  .contributor-section-drivers .contributor-section-title {
+    border-bottom-color: rgba(0, 158, 115, 0.45);
+  }
+
+  .contributor-card {
+    @apply info-card border-l-4;
+  }
+
+  .contributor-card-lake {
+    border-left-color: rgba(0, 114, 178, 0.5);
+    background: rgba(0, 114, 178, 0.05);
+  }
+
+  .contributor-card-drivers {
+    border-left-color: rgba(0, 158, 115, 0.5);
+    background: rgba(0, 158, 115, 0.06);
+  }
+
   .info-card-turbid {
     @apply info-card border-l-4;
     border-left-color: var(--band-turbid-border);
