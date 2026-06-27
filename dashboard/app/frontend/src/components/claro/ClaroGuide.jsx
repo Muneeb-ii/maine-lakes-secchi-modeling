@@ -10,10 +10,8 @@ import {
   getAvailableClaroSteps,
   getClaroRouteConfig,
   getStepIndexByDirection,
-  markClaroPromptDismissed,
   markClaroTourCompleted,
   normalizeClaroState,
-  shouldShowClaroPrompt,
 } from "../../lib/claroTourContent";
 import { useClaroFooterOffset } from "../../hooks/useClaroFooterOffset";
 import { useReducedMotion } from "../../lib/useReducedMotion";
@@ -208,43 +206,27 @@ function ClaroOverlay({ steps, stepIndex, onPrevious, onNext, onEnd }) {
   );
 }
 
-const LAUNCHER_HEIGHT_MOBILE = 48;
-const LAUNCHER_HEIGHT_DESKTOP = 56;
-const PROMPT_GAP_ABOVE_LAUNCHER = 12;
-
 export function ClaroGuide({ routeId }) {
   const routeConfig = getClaroRouteConfig(routeId);
   const [state, setState] = useState(() => readClaroState());
   const [tourOpen, setTourOpen] = useState(false);
+  const [promptOpen, setPromptOpen] = useState(Boolean(routeConfig));
   const [stepIndex, setStepIndex] = useState(0);
   const [targetVersion, setTargetVersion] = useState(0);
   const footerBottomOffset = useClaroFooterOffset();
-  const [launcherTier, setLauncherTier] = useState("mobile");
 
-  useEffect(() => {
-    const media = window.matchMedia("(min-width: 1024px)");
-    const sync = () => setLauncherTier(media.matches ? "desktop" : "mobile");
-    sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
-  }, []);
-
-  const launcherHeight =
-    launcherTier === "desktop" ? LAUNCHER_HEIGHT_DESKTOP : LAUNCHER_HEIGHT_MOBILE;
   const dockStyle = { bottom: `${footerBottomOffset}px` };
-  const promptStyle = {
-    bottom: `${footerBottomOffset + launcherHeight + PROMPT_GAP_ABOVE_LAUNCHER}px`,
-  };
 
   const steps = useMemo(() => {
     if (!routeConfig) return [];
     return getAvailableClaroSteps(routeConfig.steps, (target) => Boolean(getTargetElement(target)));
   }, [routeConfig, targetVersion]);
 
-  const promptVisible = routeConfig && shouldShowClaroPrompt(state, routeId) && !tourOpen;
+  const promptVisible = routeConfig && promptOpen && !tourOpen;
 
   useEffect(() => {
     setTourOpen(false);
+    setPromptOpen(Boolean(getClaroRouteConfig(routeId)));
     setStepIndex(0);
     setState(readClaroState());
   }, [routeId]);
@@ -264,11 +246,12 @@ export function ClaroGuide({ routeId }) {
   const openTour = () => {
     setTargetVersion((previous) => previous + 1);
     setStepIndex(0);
+    setPromptOpen(false);
     setTourOpen(true);
   };
 
   const closePrompt = () => {
-    persistState(markClaroPromptDismissed(state, routeId));
+    setPromptOpen(false);
   };
 
   const completeTour = () => {
@@ -292,26 +275,32 @@ export function ClaroGuide({ routeId }) {
   return (
     <>
       {promptVisible && (
-        <aside
-          className="claro-prompt"
-          style={promptStyle}
-          aria-label="Claro guided tour invitation"
-        >
-          <p className="claro-kicker">
-            <ClaroMascot className="h-4 w-4" />
-            {CLARO_PERSONA.name}
-          </p>
-          <h2 className="mt-2 text-lg font-semibold leading-snug text-slate-950">{routeConfig.promptTitle}</h2>
-          <p className="mt-2 text-base leading-relaxed text-slate-700">{routeConfig.promptBody}</p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button type="button" className="claro-button px-3" onClick={openTour}>
-              Start tour
-            </button>
-            <button type="button" className="action-button h-11 px-3" onClick={closePrompt}>
-              Dismiss
-            </button>
-          </div>
-        </aside>
+        <div className="claro-prompt-layer" role="dialog" aria-modal="true" aria-label="Claro guided tour invitation">
+          <div className="claro-prompt-scrim" aria-hidden />
+          <aside className="claro-prompt">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="claro-kicker">
+                  <ClaroMascot className="h-4 w-4" />
+                  {CLARO_PERSONA.name}
+                </p>
+                <h2 className="mt-2 text-lg font-semibold leading-snug text-slate-950">{routeConfig.promptTitle}</h2>
+              </div>
+              <button type="button" className="claro-icon-button" onClick={closePrompt} aria-label="End Claro tour invitation">
+                <X className="h-5 w-5" aria-hidden />
+              </button>
+            </div>
+            <p className="mt-2 text-base leading-relaxed text-slate-700">{routeConfig.promptBody}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button type="button" className="claro-button px-3" onClick={openTour}>
+                Start tour
+              </button>
+              <button type="button" className="action-button h-11 px-3" onClick={closePrompt}>
+                End tour
+              </button>
+            </div>
+          </aside>
+        </div>
       )}
       <button
         type="button"
