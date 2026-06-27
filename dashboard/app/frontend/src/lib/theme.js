@@ -1,4 +1,15 @@
-import { CLARITY_BANDS } from "./constants";
+import { CLARITY_BANDS } from "./constants.js";
+import { DEFAULT_UNIT_SYSTEM, displayUnitFor, toDisplay } from "./units.js";
+
+// Render a canonical-meters Secchi threshold in the active unit system. Rounds
+// to one decimal and drops a trailing ".0" so metric stays clean (e.g. "2 m")
+// while US shows the converted value (e.g. "6.6 ft").
+export function formatSecchiThreshold(meters, system = DEFAULT_UNIT_SYSTEM) {
+  const value = toDisplay(meters, "m", system);
+  const rounded = Math.round(value * 10) / 10;
+  const text = Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+  return `${text} ${displayUnitFor("m", system)}`;
+}
 
 export const CLARITY_TONE_KEYS = ["turbid", "moderate", "clearer"];
 
@@ -94,4 +105,24 @@ export function getClarityToneByKey(toneKey) {
   const band = CLARITY_BANDS.find((entry) => entry.tone === toneKey);
   if (!band) return null;
   return { ...band, ...getClarityToneStyles(band.tone) };
+}
+
+// Short range chip text, e.g. "<2 m", "2–4 m", ">4 m" (US: ft equivalents).
+export function getClarityRangeLabel(band, system = DEFAULT_UNIT_SYSTEM) {
+  const index = CLARITY_BANDS.findIndex((entry) => entry.tone === band.tone);
+  if (index <= 0) return `<${formatSecchiThreshold(band.max, system)}`;
+  const prev = CLARITY_BANDS[index - 1];
+  if (!Number.isFinite(band.max)) return `>${formatSecchiThreshold(prev.max, system)}`;
+  return `${formatSecchiThreshold(prev.max, system)}–${formatSecchiThreshold(band.max, system)}`;
+}
+
+// Full sentence for the prediction hero, e.g. "2 to 4 m, common for many Maine lakes".
+export function getClarityDescription(band, system = DEFAULT_UNIT_SYSTEM) {
+  const index = CLARITY_BANDS.findIndex((entry) => entry.tone === band.tone);
+  if (index <= 0) return `Under ${formatSecchiThreshold(band.max, system)}, ${band.note}`;
+  const prev = CLARITY_BANDS[index - 1];
+  if (!Number.isFinite(band.max)) {
+    return `Over ${formatSecchiThreshold(prev.max, system)}, ${band.note}`;
+  }
+  return `${formatSecchiThreshold(prev.max, system)} to ${formatSecchiThreshold(band.max, system)}, ${band.note}`;
 }

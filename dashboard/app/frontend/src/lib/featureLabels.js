@@ -1,3 +1,5 @@
+import { displayUnitFor } from "./units.js";
+
 /** User-facing labels for model features (playground sliders, explainability, tooltips). */
 export const FRIENDLY_FEATURE_LABELS = {
   LATITUDE: "Latitude",
@@ -57,6 +59,18 @@ export const EXPLAINABILITY_LAKE_CONTEXT_FEATURES = [
   "DEPTH_MAX_FEET",
 ];
 
-export function getFriendlyFeatureLabel(featureKey, fallbackLabel) {
+// Convertible lake-trait features: base label + canonical unit for the
+// unit-aware label path. Their FRIENDLY_FEATURE_LABELS entries bake the
+// canonical (US) unit and remain the fallback when no system is passed.
+const CONVERTIBLE_FEATURE_UNITS = {
+  AREA_ACRES: { base: "Lake area", canonicalUnit: "acres" },
+  DEPTH_MAX_FEET: { base: "Maximum depth", canonicalUnit: "ft" },
+};
+
+export function getFriendlyFeatureLabel(featureKey, fallbackLabel, system) {
+  if (system && CONVERTIBLE_FEATURE_UNITS[featureKey]) {
+    const { base, canonicalUnit } = CONVERTIBLE_FEATURE_UNITS[featureKey];
+    return `${base} (${displayUnitFor(canonicalUnit, system)})`;
+  }
   return FRIENDLY_FEATURE_LABELS[featureKey] || fallbackLabel || featureKey;
 }

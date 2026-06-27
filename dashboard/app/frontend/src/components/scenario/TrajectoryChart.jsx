@@ -14,23 +14,23 @@ import { Activity, RotateCcw } from "lucide-react";
 import {
   METRIC_LABELS,
   SECTION_LABELS,
-  TRAJECTORY_AXIS_SECCHI,
   TRAJECTORY_AXIS_SESSION,
   TRAJECTORY_CHART_EMPTY_SUMMARY,
   TRAJECTORY_EMPTY_PROMPT,
-  TRAJECTORY_LEGEND,
   TRAJECTORY_RESET_BUTTON,
   TRAJECTORY_RESET_CONFIRM,
   TRAJECTORY_SCALE_DETAIL,
   TRAJECTORY_SCALE_FULL,
   TRAJECTORY_SCALE_LABEL,
   TRAJECTORY_SCALE_NOTE_DETAIL,
-  TRAJECTORY_SCALE_NOTE_FULL,
   TRAJECTORY_STEP_NOTE,
   TRAJECTORY_TOOLTIP_VS_PREVIOUS,
   TRAJECTORY_TOOLTIP_VS_BASELINE,
   formatTrajectoryChartLiveSummary,
   formatTrajectorySteps,
+  getTrajectoryAxisSecchi,
+  getTrajectoryLegend,
+  getTrajectoryScaleNoteFull,
 } from "../../lib/copy";
 import { TRAJECTORY_MAX_STEPS } from "../../lib/constants";
 import { formatMeters, formatSignedMeters } from "../../lib/formatters";
@@ -45,12 +45,14 @@ import {
   isPlausibleSecchiMeters,
   needsResetConfirmation,
 } from "../../lib/trajectory";
-import { SECTION_ACCENTS } from "../../lib/theme";
+import { formatSecchiThreshold, SECTION_ACCENTS } from "../../lib/theme";
+import { toDisplay } from "../../lib/units";
 import { useReducedMotion } from "../../lib/useReducedMotion";
+import { useUnitSystem } from "../../context/UnitSystemContext";
 import { SectionHelp } from "../ui/SectionHelp";
 import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 
-function TrajectoryTooltip({ active, payload }) {
+function TrajectoryTooltip({ active, payload, system }) {
   if (!active || !payload?.length) return null;
   const point = payload[0]?.payload;
   if (!point) return null;
@@ -60,13 +62,13 @@ function TrajectoryTooltip({ active, payload }) {
       <p className="font-medium text-slate-950">
         Change {point.step}: {point.label}
       </p>
-      <p className="text-slate-700 mt-1">Secchi {formatMeters(point.prediction)}</p>
+      <p className="text-slate-700 mt-1">Secchi {formatMeters(point.prediction, system)}</p>
       <p className="text-slate-600 mt-0.5">
-        {TRAJECTORY_TOOLTIP_VS_BASELINE}: {formatSignedMeters(point.deltaFromBaseline)}
+        {TRAJECTORY_TOOLTIP_VS_BASELINE}: {formatSignedMeters(point.deltaFromBaseline, { system })}
       </p>
       {typeof point.deltaFromPrevious === "number" && (
         <p className="text-slate-600 mt-0.5">
-          {TRAJECTORY_TOOLTIP_VS_PREVIOUS}: {formatSignedMeters(point.deltaFromPrevious)}
+          {TRAJECTORY_TOOLTIP_VS_PREVIOUS}: {formatSignedMeters(point.deltaFromPrevious, { system })}
         </p>
       )}
       {point.changedFeatures?.length > 0 && (
@@ -103,28 +105,33 @@ function LegendSwatch({ label, color, dashed = false, dot = false }) {
   );
 }
 
-function ScenarioLegend({ hasCompare, showClarityReferences }) {
+function ScenarioLegend({ hasCompare, showClarityReferences, system }) {
+  const legend = getTrajectoryLegend(system);
   return (
     <div className="mb-3 flex flex-wrap gap-x-5 gap-y-2" aria-label="Chart legend">
-      <LegendSwatch label={TRAJECTORY_LEGEND.prediction} color="#005AB5" dot />
-      <LegendSwatch label={TRAJECTORY_LEGEND.baselineRef} color="#E69F00" dashed />
-      {hasCompare && <LegendSwatch label={TRAJECTORY_LEGEND.compareRef} color="#CC79A7" dashed />}
+      <LegendSwatch label={legend.prediction} color="#005AB5" dot />
+      <LegendSwatch label={legend.baselineRef} color="#E69F00" dashed />
+      {hasCompare && <LegendSwatch label={legend.compareRef} color="#CC79A7" dashed />}
       {showClarityReferences && (
-        <LegendSwatch label="2 m and 4 m clarity references" color="#64748B" dashed />
+        <LegendSwatch
+          label={`${formatSecchiThreshold(2, system)} and ${formatSecchiThreshold(4, system)} clarity references`}
+          color="#64748B"
+          dashed
+        />
       )}
     </div>
   );
 }
 
-function ChangeTone({ value }) {
+function ChangeTone({ value, system }) {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return <span className="text-slate-600">Start</span>;
   }
   const toneClass = value > 0 ? "text-delta-up" : value < 0 ? "text-delta-down" : "text-slate-600";
-  return <span className={`font-medium ${toneClass}`}>{formatSignedMeters(value)}</span>;
+  return <span className={`font-medium ${toneClass}`}>{formatSignedMeters(value, { system })}</span>;
 }
 
-function TrajectoryChangeTable({ rows }) {
+function TrajectoryChangeTable({ rows, system }) {
   if (!rows.length) {
     return (
       <div className="flex h-full min-h-[220px] flex-col justify-center rounded-lg border border-dashed border-lake-accent/35 bg-lake-accentSoft/50 px-4 text-center">
@@ -163,9 +170,9 @@ function TrajectoryChangeTable({ rows }) {
                     {row.extraChangeCount > 0 ? ` + ${row.extraChangeCount} more` : ""}
                   </div>
                 </td>
-                <td className="px-3 py-2 tabular-nums text-slate-900">{formatMeters(row.prediction)}</td>
+                <td className="px-3 py-2 tabular-nums text-slate-900">{formatMeters(row.prediction, system)}</td>
                 <td className="px-3 py-2 tabular-nums">
-                  <ChangeTone value={row.deltaFromPrevious} />
+                  <ChangeTone value={row.deltaFromPrevious} system={system} />
                 </td>
               </tr>
             ))}
@@ -183,6 +190,7 @@ export function TrajectoryChart({
   latestChange,
   onClearTrajectory,
 }) {
+  const { system } = useUnitSystem();
   const reducedMotion = useReducedMotion();
   const [scaleMode, setScaleMode] = useState("detail");
   const summary = useMemo(() => computeTrajectorySummary(chartData), [chartData]);
@@ -216,10 +224,10 @@ export function TrajectoryChart({
     const latest = chartData[chartData.length - 1];
     return formatTrajectoryChartLiveSummary(
       chartData.length,
-      formatMeters(latest.prediction),
-      formatSignedMeters(latest.deltaFromBaseline)
+      formatMeters(latest.prediction, system),
+      formatSignedMeters(latest.deltaFromBaseline, { system })
     );
-  }, [chartData]);
+  }, [chartData, system]);
 
   const handleClear = () => {
     if (needsResetConfirmation(chartData.length)) {
@@ -278,17 +286,17 @@ export function TrajectoryChart({
           </div>
           <div className="info-card">
             <div className="info-label">{METRIC_LABELS.latestSecchi}</div>
-            <div className="info-value">{formatMeters(summary.latest)}</div>
+            <div className="info-value">{formatMeters(summary.latest, system)}</div>
           </div>
           <div className="info-card">
             <div className="info-label">{METRIC_LABELS.latestVsBaseline}</div>
-            <div className="info-value">{formatSignedMeters(summary.latestDeltaFromBaseline)}</div>
+            <div className="info-value">{formatSignedMeters(summary.latestDeltaFromBaseline, { system })}</div>
           </div>
           <div className="info-card">
             <div className="info-label">{METRIC_LABELS.latestVsPrevious}</div>
             <div className="info-value">
               {typeof summary.latestDeltaFromPrevious === "number"
-                ? formatSignedMeters(summary.latestDeltaFromPrevious)
+                ? formatSignedMeters(summary.latestDeltaFromPrevious, { system })
                 : "Start"}
             </div>
           </div>
@@ -296,7 +304,7 @@ export function TrajectoryChart({
             <div className="info-label">{METRIC_LABELS.largestMove}</div>
             <div className="info-value">
               {typeof summary.largestMove === "number"
-                ? formatSignedMeters(summary.largestMove)
+                ? formatSignedMeters(summary.largestMove, { system })
                 : "Start"}
             </div>
           </div>
@@ -314,7 +322,7 @@ export function TrajectoryChart({
             <p className="text-base text-slate-700">
               {scaleMode === "detail"
                 ? TRAJECTORY_SCALE_NOTE_DETAIL
-                : TRAJECTORY_SCALE_NOTE_FULL}
+                : getTrajectoryScaleNoteFull(system)}
             </p>
           </div>
           <div className="inline-grid grid-cols-2 rounded-lg border border-lake-border bg-white p-1">
@@ -348,6 +356,7 @@ export function TrajectoryChart({
         <ScenarioLegend
           hasCompare={typeof chartCompareValue === "number"}
           showClarityReferences={showClarityReferences}
+          system={system}
         />
       )}
 
@@ -385,12 +394,12 @@ export function TrajectoryChart({
                 domain={[() => yDomain[0], () => yDomain[1]]}
                 ticks={yTicks}
                 allowDataOverflow
-                tickFormatter={(value) => formatYAxisTick(value, scaleMode)}
+                tickFormatter={(value) => formatYAxisTick(toDisplay(value, "m", system), scaleMode)}
                 tick={{ fill: "#334155", fontSize: 13, fontWeight: 600 }}
                 axisLine={{ stroke: "#94A3B8" }}
                 tickLine={{ stroke: "#94A3B8" }}
                 label={{
-                  value: TRAJECTORY_AXIS_SECCHI,
+                  value: getTrajectoryAxisSecchi(system),
                   angle: -90,
                   position: "insideLeft",
                   offset: 14,
@@ -400,7 +409,7 @@ export function TrajectoryChart({
                   style: { textAnchor: "middle" },
                 }}
               />
-              <RechartsTooltip content={<TrajectoryTooltip />} />
+              <RechartsTooltip content={<TrajectoryTooltip system={system} />} />
               {showClarityReferences && (
                 <>
                   <ReferenceLine
@@ -409,7 +418,7 @@ export function TrajectoryChart({
                     strokeDasharray="2 6"
                     ifOverflow="discard"
                     name="clarity2m"
-                    label={{ value: "2 m", position: "insideRight", fill: "#475569", fontSize: 13 }}
+                    label={{ value: formatSecchiThreshold(2, system), position: "insideRight", fill: "#475569", fontSize: 13 }}
                   />
                   <ReferenceLine
                     y={4}
@@ -417,7 +426,7 @@ export function TrajectoryChart({
                     strokeDasharray="2 6"
                     ifOverflow="discard"
                     name="clarity4m"
-                    label={{ value: "4 m", position: "insideRight", fill: "#475569", fontSize: 13 }}
+                    label={{ value: formatSecchiThreshold(4, system), position: "insideRight", fill: "#475569", fontSize: 13 }}
                   />
                 </>
               )}
@@ -429,7 +438,7 @@ export function TrajectoryChart({
                   ifOverflow="discard"
                   name="baselineRef"
                   label={{
-                    value: `${formatMeters(chartBaseline)} typical`,
+                    value: `${formatMeters(chartBaseline, system)} typical`,
                     position: "insideTopLeft",
                     fill: "#A16207",
                     fontSize: 12,
@@ -482,7 +491,7 @@ export function TrajectoryChart({
             </ResponsiveContainer>
           )}
         </div>
-        <TrajectoryChangeTable rows={changeRows} />
+        <TrajectoryChangeTable rows={changeRows} system={system} />
       </div>
     </div>
   );

@@ -10,8 +10,9 @@ export function InfoPageNav({
   eyebrow,
   eyebrowTone = "accent",
   eyebrowIcon: EyebrowIcon,
+  actions,
 }) {
-  if (!eyebrow) {
+  if (!eyebrow && !actions) {
     return <SiteBrand className={className} />;
   }
 
@@ -20,12 +21,17 @@ export function InfoPageNav({
   return (
     <div className={`flex flex-wrap items-center justify-between gap-3 ${className}`}>
       <SiteBrand className="mb-0" />
-      <p
-        className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold uppercase tracking-wide ${toneClass}`}
-      >
-        {EyebrowIcon ? <EyebrowIcon className="h-4 w-4 shrink-0" aria-hidden /> : null}
-        {eyebrow}
-      </p>
+      <div className="flex flex-wrap items-center gap-3">
+        {eyebrow ? (
+          <p
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold uppercase tracking-wide ${toneClass}`}
+          >
+            {EyebrowIcon ? <EyebrowIcon className="h-4 w-4 shrink-0" aria-hidden /> : null}
+            {eyebrow}
+          </p>
+        ) : null}
+        {actions}
+      </div>
     </div>
   );
 }
