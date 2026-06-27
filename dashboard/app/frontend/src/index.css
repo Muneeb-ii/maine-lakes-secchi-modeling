@@ -511,11 +511,22 @@
   }
 
   .claro-prompt {
-    @apply fixed right-4 w-[min(24rem,calc(100vw-2rem))] rounded-lg border bg-white p-4 shadow-panel sm:right-5 lg:p-5;
-    z-index: 240;
+    @apply fixed left-1/2 top-1/2 w-[min(24rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-white p-4 shadow-panel lg:p-5;
+    z-index: 252;
     border-color: var(--claro-border);
     border-left-width: 4px;
     border-left-color: var(--claro);
+  }
+
+  .claro-prompt-layer {
+    @apply fixed inset-0;
+    z-index: 250;
+  }
+
+  .claro-prompt-scrim {
+    @apply fixed inset-0;
+    background: rgba(15, 23, 42, 0.42);
+    backdrop-filter: blur(6px);
   }
 
   .claro-tour-layer {
@@ -591,6 +602,67 @@
 
   .claro-cursor-hint-motion {
     animation: claro-cursor-pulse 1.4s ease-in-out infinite;
+  }
+
+  .lake-map-layer {
+    @apply fixed inset-0;
+    z-index: 270;
+  }
+
+  .lake-map-scrim {
+    @apply fixed inset-0;
+    background: rgba(15, 23, 42, 0.44);
+    backdrop-filter: blur(6px);
+  }
+
+  .lake-map-modal {
+    @apply fixed left-1/2 top-1/2 w-[min(64rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-white p-4 shadow-panel sm:p-5;
+    border-color: var(--panel-border);
+  }
+
+  .lake-map-canvas {
+    @apply h-[min(68vh,36rem)] min-h-[24rem] w-full overflow-hidden rounded-lg border;
+    border-color: var(--panel-border);
+  }
+
+  .lake-map-status {
+    @apply absolute left-1/2 top-1/2 rounded-lg border bg-white px-4 py-3 text-base font-medium text-slate-700 shadow-panel;
+    border-color: var(--panel-border);
+    transform: translate(-50%, -50%);
+  }
+
+  .lake-map-pin {
+    @apply rounded-full border-2 border-white;
+    background: #dc2626;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.35);
+  }
+
+  .lake-map-pin-current {
+    background: var(--accent);
+  }
+
+  .lake-map-popup {
+    @apply min-w-[11rem] space-y-1;
+  }
+
+  .lake-map-popup-title {
+    @apply text-base font-semibold text-slate-950;
+  }
+
+  .lake-map-popup-meta {
+    @apply text-sm font-medium text-slate-600;
+  }
+
+  .lake-map-popup-button {
+    @apply mt-2 inline-flex h-9 items-center justify-center rounded-lg border px-3 text-sm font-semibold transition;
+    border-color: rgba(26, 155, 110, 0.45);
+    background: var(--claro-soft);
+    color: var(--claro-text);
+  }
+
+  .lake-map-popup-button:hover {
+    border-color: var(--claro);
+    background: #dff3ea;
   }
 }
 

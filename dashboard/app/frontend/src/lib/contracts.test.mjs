@@ -90,10 +90,23 @@ test("validateFeatureConfig rejects invalid contract", () => {
 
 test("parseLakeSearchResponse normalizes list", () => {
   const results = parseLakeSearchResponse({
-    results: [{ midas_id: "C3420", lake_name: "Crystal Lake" }],
+    results: [
+      {
+        midas_id: "C3420",
+        lake_name: "Crystal Lake",
+        latitude: 44.12345,
+        longitude: -69.98765,
+        area_acres: 120.5,
+      },
+      { midas_id: "A1200", lake_name: "Alpha Pond" },
+    ],
   });
   assert.equal(results[0].midasId, "C3420");
   assert.equal(results[0].lakeName, "Crystal Lake");
+  assert.equal(results[0].latitude, 44.12345);
+  assert.equal(results[0].longitude, -69.98765);
+  assert.equal(results[0].areaAcres, 120.5);
+  assert.equal(results[1].latitude, undefined);
 });
 
 test("parseApiError handles structured detail", () => {
