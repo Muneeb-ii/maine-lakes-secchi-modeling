@@ -31,6 +31,31 @@ At 16×16 favicon size the thin white separator ring may vanish — acceptable; 
 
 Playground `DashboardHeader` no longer repeats the workspace eyebrow — the nav row above it owns that label.
 
+Playground `InfoPageNav` also exposes an **`actions`** slot (right side) for the unit-system toggle beside the workspace eyebrow.
+
+---
+
+## Display unit system
+
+| System | Length | Area | Default |
+|--------|--------|------|---------|
+| Metric | m | ha | yes |
+| US | ft | acres | |
+
+- **UI only** — sliders, hero, trajectory chart, clarity bands, lake profile fields, and saved-scenario labels convert for display. Chemistry units (ppm, ppb, SPU, µS/cm, pH, alkalinity) are not converted.
+- **Canonical model units never change** — Secchi stays meters in state and API payloads; max depth stays feet; area stays acres. Use `toDisplay` / `toCanonical` at input boundaries (`lib/units.js`).
+- Toggle: `UnitSystemToggle` in playground nav; persistence key `dashboardUnitSystem` (`UNIT_SYSTEM_KEY` in `lib/constants.js`).
+- Clarity band thresholds (`CLARITY_BANDS.max`) stay in meters internally; `getClarityRangeLabel` and chart reference lines render converted labels.
+
+---
+
+## Lake map picker
+
+- **Entry points:** “Show on map” in lake search results and lake profile card; opens a centered modal over a scrim (`lake-map-layer`, z-index 270).
+- **Data:** `GET /lakes/locations` returns all baseline lakes with finite `latitude` / `longitude` (and optional `area_acres`). Search results use the same `LakeSearchItem` shape.
+- **Map:** Leaflet (`leaflet` npm dep); default center Maine `[44.35, -69.2]`, zoom 7; focused lake zoom 12. Pins use `lake-map-pin`; current lake uses `lake-map-pin-current`.
+- **Selection:** popup “Use this lake” calls the same `onSelectLake` handler as search.
+
 ---
 
 ## Info-page draft state
@@ -78,7 +103,9 @@ Body copy on tinted surfaces stays `text-slate-900` / `text-slate-700`. Status n
 
 **Launcher:** white pill + `claro-launcher-mark` (white disk behind mascot) so the Secchi icon stays readable. Sized `h-12` mobile, `h-14` + `text-lg` on `lg+`.
 
-**Footer dock:** `useClaroFooterOffset` lifts the launcher and first-visit prompt when `#app-footer` enters the viewport so Claro does not cover partner logos.
+**Footer dock:** `useClaroFooterOffset` lifts the fixed launcher when `#app-footer` enters the viewport so Claro does not cover partner logos.
+
+**First-visit prompt:** centered modal with scrim (`claro-prompt-layer` / `claro-prompt-scrim`, z-index 250–252) instead of a card stacked above the launcher. Session-local open state; dismiss does not persist to `localStorage` (tour completion still does).
 
 ### Claro vs workspace buttons
 
