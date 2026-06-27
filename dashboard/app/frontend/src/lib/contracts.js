@@ -4,6 +4,11 @@ function toFiniteNumberOrNull(value) {
   return Number.isFinite(numeric) ? numeric : null;
 }
 
+function toOptionalFiniteNumber(value) {
+  const numeric = toFiniteNumberOrNull(value);
+  return numeric === null ? undefined : numeric;
+}
+
 export function buildPayloadFeatures(
   features,
   baseline,
@@ -103,6 +108,9 @@ export function parseLakeSearchResponse(payload) {
     .map((item) => ({
       midasId: String(item.midas_id),
       lakeName: String(item.lake_name || "Unknown Lake"),
+      latitude: toOptionalFiniteNumber(item.latitude),
+      longitude: toOptionalFiniteNumber(item.longitude),
+      areaAcres: toOptionalFiniteNumber(item.area_acres),
     }));
 }
 

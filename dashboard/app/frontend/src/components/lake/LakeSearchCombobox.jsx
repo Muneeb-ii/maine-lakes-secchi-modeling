@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { Search } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import {
   SEARCH_ARIA_LABEL,
   SEARCH_LOADING,
@@ -23,6 +23,7 @@ export function LakeSearchCombobox({
   onActiveSuggestionChange,
   recentLakes,
   onSelectLake,
+  onShowLakeOnMap,
   onSearchKeyDown,
 }) {
   const listboxId = useId();
@@ -31,6 +32,18 @@ export function LakeSearchCombobox({
   const displayValue = searchFocused
     ? searchQuery
     : formatLakeSearchDisplay(lakeId, lakeName) || searchQuery;
+  const formatLocation = (result) => {
+    if (typeof result.latitude !== "number" || typeof result.longitude !== "number") {
+      return "";
+    }
+    const coordinates = `${result.latitude.toFixed(4)}, ${result.longitude.toFixed(4)}`;
+    if (typeof result.areaAcres === "number") {
+      return `${coordinates} · ${result.areaAcres.toLocaleString(undefined, {
+        maximumFractionDigits: 1,
+      })} acres`;
+    }
+    return coordinates;
+  };
 
   return (
     <div className="w-full relative">
@@ -78,21 +91,42 @@ export function LakeSearchCombobox({
           {!isSearching &&
             searchResults.map((result, index) => (
               <li key={result.midasId} role="presentation">
-                <button
-                  type="button"
-                  id={`${listboxId}-option-${index}`}
-                  role="option"
-                  aria-selected={index === activeSuggestion}
-                  className={`min-h-12 w-full rounded-lg px-3 py-2.5 text-left text-base transition ${
+                <div
+                  className={`flex min-h-12 items-center gap-2 rounded-lg text-base transition ${
                     index === activeSuggestion
                       ? "bg-lake-accent/10 text-lake-accent"
                       : "hover:bg-slate-100"
                   }`}
-                  onMouseDown={() => onSelectLake(result.midasId, result.lakeName)}
                 >
-                  <div className="font-medium">{result.lakeName}</div>
-                  <div className="text-base text-slate-700">{result.midasId}</div>
-                </button>
+                  <button
+                    type="button"
+                    id={`${listboxId}-option-${index}`}
+                    role="option"
+                    aria-selected={index === activeSuggestion}
+                    className="min-w-0 flex-1 px-3 py-2.5 text-left"
+                    onMouseDown={() => onSelectLake(result.midasId, result.lakeName)}
+                  >
+                    <div className="font-medium">{result.lakeName}</div>
+                    <div className="text-base text-slate-700">{result.midasId}</div>
+                    {formatLocation(result) && (
+                      <div className="text-sm font-medium text-slate-600">{formatLocation(result)}</div>
+                    )}
+                  </button>
+                  {typeof result.latitude === "number" && typeof result.longitude === "number" && (
+                    <button
+                      type="button"
+                      className="mr-2 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-slate-600 transition hover:bg-white hover:text-lake-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
+                      aria-label={`Show ${result.lakeName} on map`}
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onShowLakeOnMap?.(result);
+                      }}
+                    >
+                      <MapPin className="h-4 w-4" aria-hidden />
+                    </button>
+                  )}
+                </div>
               </li>
             ))}
           {!isSearching && searchResults.length === 0 && searchQuery.trim() && !searchError && (
