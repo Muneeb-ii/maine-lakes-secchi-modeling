@@ -18,10 +18,11 @@ import {
 import { getContributionDisplay } from "../../lib/playgroundGuards";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { SECTION_ACCENTS } from "../../lib/theme";
+import { useUnitSystem } from "../../context/UnitSystemContext";
 import { SectionHelp } from "../ui/SectionHelp";
 import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 
-function CompactContributorRow({ item, featureConfig, rankClass = "" }) {
+function CompactContributorRow({ item, featureConfig, system, rankClass = "" }) {
   const { tone } = getContributionDisplay(item.contribution);
   const toneClass =
     tone === "up"
@@ -35,7 +36,7 @@ function CompactContributorRow({ item, featureConfig, rankClass = "" }) {
       className={`flex justify-between gap-4 border-b border-slate-200 py-1.5 text-base text-slate-700 last:border-0 ${rankClass}`}
     >
       <span>
-        {getFriendlyFeatureLabel(item.feature, featureConfig?.features?.[item.feature]?.label)}
+        {getFriendlyFeatureLabel(item.feature, featureConfig?.features?.[item.feature]?.label, system)}
       </span>
       <span
         className={toneClass}
@@ -47,13 +48,14 @@ function CompactContributorRow({ item, featureConfig, rankClass = "" }) {
               : ARIA_CONTRIBUTION_MURKIER
         }
       >
-        {formatSignedMeters(item.contribution)}
+        {formatSignedMeters(item.contribution, { system })}
       </span>
     </div>
   );
 }
 
 export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
+  const { system } = useUnitSystem();
   const [expanded, setExpanded] = useState(false);
   const lakeContextFeatures = useMemo(
     () => new Set(EXPLAINABILITY_LAKE_CONTEXT_FEATURES),
@@ -114,6 +116,7 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
                     key={item.feature}
                     item={item}
                     featureConfig={featureConfig}
+                    system={system}
                   />
                 ))}
               </div>
@@ -134,6 +137,7 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
                     key={item.feature}
                     item={item}
                     featureConfig={featureConfig}
+                    system={system}
                     rankClass={`driver-row-ranked-${index + 1}`}
                   />
                 ))}
@@ -156,6 +160,7 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
                           key={item.feature}
                           item={item}
                           featureConfig={featureConfig}
+                          system={system}
                         />
                       ))}
                     </div>

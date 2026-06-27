@@ -8,12 +8,13 @@ import {
 } from "../../lib/copy";
 import { formatMeters, formatSignedMeters, getClarityBand } from "../../lib/formatters";
 import { HELP_CONTENT } from "../../lib/helpContent";
-import { SECTION_ACCENTS } from "../../lib/theme";
+import { getClarityDescription, SECTION_ACCENTS } from "../../lib/theme";
 import { useReducedMotion } from "../../lib/useReducedMotion";
+import { useUnitSystem } from "../../context/UnitSystemContext";
 import { SectionHelp } from "../ui/SectionHelp";
 import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 
-function DeltaValue({ value }) {
+function DeltaValue({ value, system }) {
   if (typeof value !== "number" || Number.isNaN(value)) {
     return <span className="text-2xl font-medium text-slate-600">--</span>;
   }
@@ -25,12 +26,13 @@ function DeltaValue({ value }) {
   return (
     <span className={`inline-flex items-center gap-1 text-xl font-medium sm:text-2xl ${colorClass}`}>
       {Icon && <Icon className="w-5 h-5" aria-hidden />}
-      {formatSignedMeters(value, { absolute: true })}
+      {formatSignedMeters(value, { absolute: true, system })}
     </span>
   );
 }
 
 export function PredictionHero({ forecast, predictionError, isPredicting }) {
+  const { system } = useUnitSystem();
   const reducedMotion = useReducedMotion();
   const prediction = forecast?.predictionMeters;
   const baseline = forecast?.explainability?.base_value;
@@ -68,7 +70,7 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
                 exit={reducedMotion ? undefined : { opacity: 0, y: -8 }}
                 transition={{ duration: 0.25 }}
               >
-                {forecast ? formatMeters(prediction) : "--"}
+                {forecast ? formatMeters(prediction, system) : "--"}
               </motion.span>
             </AnimatePresence>
           </div>
@@ -76,7 +78,7 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
           {clarityBand && forecast && (
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <span className={clarityBand.pillClass}>{clarityBand.label}</span>
-              <span className="body-copy">{clarityBand.description}</span>
+              <span className="body-copy">{getClarityDescription(clarityBand, system)}</span>
             </div>
           )}
         </div>
@@ -91,7 +93,7 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
               <SectionHelp content={HELP_CONTENT.modelBaseline} placement="bottom" />
             </div>
             <div className="mt-1 text-xl font-medium tabular-nums sm:text-2xl">
-              {forecast ? formatMeters(baseline) : "--"}
+              {forecast ? formatMeters(baseline, system) : "--"}
             </div>
           </div>
           <div className="min-w-0">
@@ -100,7 +102,7 @@ export function PredictionHero({ forecast, predictionError, isPredicting }) {
               <SectionHelp content={HELP_CONTENT.deltaFromBaseline} placement="bottom" />
             </div>
             <div className="mt-1">
-              <DeltaValue value={delta} />
+              <DeltaValue value={delta} system={system} />
             </div>
           </div>
         </div>

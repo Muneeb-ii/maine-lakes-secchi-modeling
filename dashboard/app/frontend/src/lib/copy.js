@@ -1,3 +1,6 @@
+import { DEFAULT_UNIT_SYSTEM, displayUnitFor } from "./units.js";
+import { formatSecchiThreshold } from "./theme.js";
+
 export const DASHBOARD_TITLE = "Maine Lake Water Clarity Dashboard";
 export const DASHBOARD_TAGLINE =
   "See how water conditions may affect Secchi depth for lakes across Maine.";
@@ -81,12 +84,17 @@ export const METRIC_LABELS = {
   latestVsBaseline: "Latest vs typical",
 };
 
-export const LAKE_FIELD_LABELS = {
-  latitude: "Latitude",
-  longitude: "Longitude",
-  areaAcres: "Area (acres)",
-  maxDepth: "Max depth (ft)",
-};
+// Area/depth labels follow the active unit system; lat/long are unitless.
+// Canonical units are acres (area) and ft (depth) — displayUnitFor maps them
+// to ha / m under metric.
+export function getLakeFieldLabels(system = DEFAULT_UNIT_SYSTEM) {
+  return {
+    latitude: "Latitude",
+    longitude: "Longitude",
+    areaAcres: `Area (${displayUnitFor("acres", system)})`,
+    maxDepth: `Max depth (${displayUnitFor("ft", system)})`,
+  };
+}
 
 export const UNKNOWN_LAKE_NAME = "Unknown lake";
 
@@ -145,14 +153,14 @@ export const SCENARIO_OTHER_LAKE_SAVES = (count) =>
     ? "1 saved snapshot is for another lake — switch lakes to compare it."
     : `${count} saved snapshots are for other lakes — switch lakes to compare them.`;
 
-export function formatSavedScenarioOption(scenario) {
+export function formatSavedScenarioOption(scenario, system = DEFAULT_UNIT_SYSTEM) {
   const when = new Date(scenario.timestamp).toLocaleString();
   if (scenario.label) {
     return `${scenario.label} (${when})`;
   }
   const secchi =
     typeof scenario.predictionMeters === "number"
-      ? ` — ${scenario.predictionMeters.toFixed(1)} m`
+      ? ` — ${formatSecchiThreshold(scenario.predictionMeters, system)}`
       : "";
   return `${when}${secchi}`;
 }
@@ -174,16 +182,21 @@ export const TRAJECTORY_STEP_LABEL_START = "Typical lake condition";
 export const TRAJECTORY_STEP_LABEL_ADJUSTMENT = "Slider adjustment";
 export const TRAJECTORY_STEP_LABEL_MULTI = (count) => `${count} measurements changed`;
 
-export const TRAJECTORY_LEGEND = {
-  prediction: "Your scenario",
-  baselineRef: "Typical for this lake",
-  compareRef: "Saved scenario",
-  clarity2m: "2 m, turbid reference",
-  clarity4m: "4 m, moderate reference",
-};
+// Clarity reference labels track the active unit system (2 m / 4 m -> ft).
+export function getTrajectoryLegend(system = DEFAULT_UNIT_SYSTEM) {
+  return {
+    prediction: "Your scenario",
+    baselineRef: "Typical for this lake",
+    compareRef: "Saved scenario",
+    clarity2m: `${formatSecchiThreshold(2, system)}, turbid reference`,
+    clarity4m: `${formatSecchiThreshold(4, system)}, moderate reference`,
+  };
+}
 
 export const TRAJECTORY_AXIS_SESSION = "Scenario history";
-export const TRAJECTORY_AXIS_SECCHI = "Secchi depth (m)";
+export function getTrajectoryAxisSecchi(system = DEFAULT_UNIT_SYSTEM) {
+  return `Secchi depth (${displayUnitFor("m", system)})`;
+}
 export const TRAJECTORY_TOOLTIP_VS_BASELINE = "vs typical";
 export const TRAJECTORY_TOOLTIP_VS_PREVIOUS = "vs previous change";
 export const TRAJECTORY_SCALE_LABEL = "Chart scale";
@@ -191,8 +204,9 @@ export const TRAJECTORY_SCALE_DETAIL = "Detail";
 export const TRAJECTORY_SCALE_FULL = "Full context";
 export const TRAJECTORY_SCALE_NOTE_DETAIL =
   "Detail scale zooms in around your scenario so small changes are easier to see.";
-export const TRAJECTORY_SCALE_NOTE_FULL =
-  "Full context keeps the 2 m and 4 m clarity references in view.";
+export function getTrajectoryScaleNoteFull(system = DEFAULT_UNIT_SYSTEM) {
+  return `Full context keeps the ${formatSecchiThreshold(2, system)} and ${formatSecchiThreshold(4, system)} clarity references in view.`;
+}
 
 export const SEARCH_PLACEHOLDER = "Search by lake name…";
 export const SEARCH_ARIA_LABEL = "Search for a lake";

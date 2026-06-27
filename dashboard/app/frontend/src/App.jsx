@@ -6,6 +6,7 @@ import { AppShell } from "./components/layout/AppShell";
 import { BootScreen } from "./components/layout/BootScreen";
 import { ContributorsPage } from "./components/layout/ContributorsPage";
 import { InfoPageNav } from "./components/layout/InfoPageNav";
+import { UnitSystemToggle } from "./components/layout/UnitSystemToggle";
 import { LandingPage } from "./components/layout/LandingPage";
 import { ModelingProcessPage } from "./components/layout/ModelingProcessPage";
 import { PageFrame } from "./components/layout/PageFrame";
@@ -106,6 +107,7 @@ function TrendsPage() {
           </button>
         </div>
       </section>
+      <ClaroGuide routeId={getClaroRouteId(ROUTES.trends)} />
     </PageFrame>
   );
 }
@@ -119,6 +121,8 @@ function PlaygroundPage() {
   const [featureCommitVersion, setFeatureCommitVersion] = useState(0);
   const [lakeSupport, setLakeSupport] = useState(null);
   const [scenarioActionStatus, setScenarioActionStatus] = useState("");
+  const [isLakeMapOpen, setIsLakeMapOpen] = useState(false);
+  const [mapFocusLake, setMapFocusLake] = useState(null);
   const featureCommitTimerRef = useRef(null);
 
   const handleLakeLoaded = useCallback((normalized, name, lakeBaseline, support, config) => {
@@ -252,6 +256,11 @@ function PlaygroundPage() {
     }
   };
 
+  const openLakeMap = (lake = null) => {
+    setMapFocusLake(lake);
+    setIsLakeMapOpen(true);
+  };
+
   const handleSearchKeyDown = async (event) => {
     if (!lakeSearch.searchFocused) return;
 
@@ -370,6 +379,7 @@ function PlaygroundPage() {
             className="mb-4"
             eyebrow={PLAYGROUND_EYEBROW}
             eyebrowIcon={Waves}
+            actions={<UnitSystemToggle />}
           />
           <DashboardHeader
             lakeSupport={lakeSupport}
@@ -387,8 +397,13 @@ function PlaygroundPage() {
               onActiveSuggestionChange: lakeSearch.setActiveSuggestion,
               recentLakes: lakeSearch.recentLakes,
               onSelectLake: selectLake,
+              onShowLakeOnMap: openLakeMap,
               onSearchKeyDown: handleSearchKeyDown,
             }}
+            isMapOpen={isLakeMapOpen}
+            mapFocusLake={mapFocusLake}
+            onOpenMap={openLakeMap}
+            onCloseMap={() => setIsLakeMapOpen(false)}
           />
         </>
       }

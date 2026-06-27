@@ -22,6 +22,7 @@ import {
 import { SAVED_SCENARIO_LABEL_MAX } from "../../lib/savedScenarios";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { SECTION_ACCENTS } from "../../lib/theme";
+import { useUnitSystem } from "../../context/UnitSystemContext";
 import { SectionHelp } from "../ui/SectionHelp";
 import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
 
@@ -37,6 +38,7 @@ export function ScenarioActionBar({
   onDeleteScenario,
   actionStatus,
 }) {
+  const { system } = useUnitSystem();
   const [saveLabel, setSaveLabel] = useState("");
   const compareActive = Boolean(compareScenarioId);
   const canUseSaved = compareActive;
@@ -136,7 +138,7 @@ export function ScenarioActionBar({
               <option value="">{SCENARIO_COMPARE_PLACEHOLDER}</option>
               {lakeSavedScenarios.map((scenario) => (
                 <option key={scenario.id} value={scenario.id}>
-                  {formatSavedScenarioOption(scenario)}
+                  {formatSavedScenarioOption(scenario, system)}
                 </option>
               ))}
             </select>

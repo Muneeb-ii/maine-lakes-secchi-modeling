@@ -1,4 +1,4 @@
-import { getClarityTone } from "./theme";
+import { getClarityTone } from "./theme.js";
 
 export { formatMeters, formatSignedMeters, formatValueWithUnit } from "./formattersCore.js";
 

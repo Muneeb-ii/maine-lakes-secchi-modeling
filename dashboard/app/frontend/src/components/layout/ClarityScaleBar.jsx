@@ -1,6 +1,7 @@
 import { CLARITY_BANDS } from "../../lib/constants";
 import { LANDING_CLARITY_TITLE, SECCHI_DIRECTION_NOTE } from "../../lib/copy";
-import { getClarityToneByKey } from "../../lib/theme";
+import { getClarityRangeLabel, getClarityToneByKey } from "../../lib/theme";
+import { useUnitSystem } from "../../context/UnitSystemContext";
 
 const SEGMENT_CLASS = {
   turbid: "bg-delta-down",
@@ -8,17 +9,8 @@ const SEGMENT_CLASS = {
   clearer: "bg-delta-up",
 };
 
-function bandThreshold(band, index) {
-  if (index === 0) return `<${band.max} m`;
-  if (!Number.isFinite(band.max)) {
-    const prev = CLARITY_BANDS[index - 1];
-    return `>${prev.max} m`;
-  }
-  const prev = CLARITY_BANDS[index - 1];
-  return `${prev.max}–${band.max} m`;
-}
-
 export function ClarityScaleBar({ className = "" }) {
+  const { system } = useUnitSystem();
   return (
     <figure className={className}>
       <figcaption className="sr-only">
@@ -35,14 +27,14 @@ export function ClarityScaleBar({ className = "" }) {
         ))}
       </div>
       <ul className="mt-2 grid grid-cols-3 gap-2" aria-label="Secchi clarity bands">
-        {CLARITY_BANDS.map((band, index) => {
+        {CLARITY_BANDS.map((band) => {
           const tone = getClarityToneByKey(band.tone);
           return (
             <li key={band.tone} className="text-center">
               <span className={`clarity-band-pill inline-block ${tone?.pillClass ?? ""}`}>
                 {band.label}
               </span>
-              <p className="body-copy mt-1">{bandThreshold(band, index)}</p>
+              <p className="body-copy mt-1">{getClarityRangeLabel(band, system)}</p>
             </li>
           );
         })}
