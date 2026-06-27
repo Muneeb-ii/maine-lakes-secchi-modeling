@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Query
 from contracts import (
     ExplainabilityResponse,
+    LakeLocationsResponse,
     LakeSearchItem,
     LakeSearchResponse,
     ModelHealthResponse,
@@ -145,6 +146,32 @@ def _validate_editable_feature(feature_name: str, value: float) -> None:
     if max_value is not None and value > float(max_value):
         raise HTTPException(status_code=400, detail=f"Feature {feature_name} is above the allowed maximum.")
 
+def _finite_float_or_none(value) -> float | None:
+    try:
+        numeric = float(value)
+    except (TypeError, ValueError):
+        return None
+    return numeric if math.isfinite(numeric) else None
+
+def _lake_location_item(midas_id: str) -> LakeSearchItem | None:
+    normalized_id = str(midas_id).upper()
+    if normalized_id == "GLOBAL_FALLBACK" or normalized_id not in baseline_data:
+        return None
+
+    baseline = baseline_data.get(normalized_id) or {}
+    latitude = _finite_float_or_none(baseline.get("LATITUDE"))
+    longitude = _finite_float_or_none(baseline.get("LONGITUDE"))
+    if latitude is None or longitude is None:
+        return None
+
+    return LakeSearchItem(
+        midas_id=normalized_id,
+        lake_name=str(lake_names_data.get(normalized_id, "Unknown Ecosystem")),
+        latitude=latitude,
+        longitude=longitude,
+        area_acres=_finite_float_or_none(baseline.get("AREA_ACRES")),
+    )
+
 
 def _prediction_features(payload: ScenarioPayload) -> dict:
     midas_id = _normalize_midas_id(payload.midas_id)
@@ -235,16 +262,24 @@ def search_lakes(q: str = Query(..., min_length=1, max_length=80), limit: int = 
             continue
 
         if query in normalized_id or query in str(lake_name).upper():
-            matches.append(
-                LakeSearchItem(
-                    midas_id=normalized_id,
-                    lake_name=str(lake_name),
-                )
-            )
+            item = _lake_location_item(normalized_id)
+            if item:
+                item.lake_name = str(lake_name)
+                matches.append(item)
 
     matches.sort(key=lambda item: (0 if item.midas_id.startswith(query) else 1, item.lake_name))
     response = LakeSearchResponse(query=q, results=matches[:limit])
     return response.model_dump()
+
+@app.get("/lakes/locations")
+def get_lake_locations():
+    results = []
+    for midas_id in baseline_data.keys():
+        item = _lake_location_item(midas_id)
+        if item:
+            results.append(item)
+    results.sort(key=lambda item: (item.lake_name, item.midas_id))
+    return LakeLocationsResponse(results=results).model_dump()
 
 @app.post("/predict_scenario")
 def predict_scenario(payload: ScenarioPayload, request: Request):

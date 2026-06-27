@@ -50,8 +50,15 @@ class ModelHealthResponse(BaseModel):
 class LakeSearchItem(BaseModel):
     midas_id: str
     lake_name: str
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    area_acres: Optional[float] = None
 
 
 class LakeSearchResponse(BaseModel):
     query: str
+    results: List[LakeSearchItem]
+
+
+class LakeLocationsResponse(BaseModel):
     results: List[LakeSearchItem]

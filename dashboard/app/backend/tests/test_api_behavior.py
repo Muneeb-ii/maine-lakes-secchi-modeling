@@ -35,15 +35,38 @@ class ApiBehaviorTests(unittest.TestCase):
             "A1200": "Alpha Pond",
         }
         main.baseline_data = {
-            "C3420": {"LATITUDE": 10.0},
-            "A1200": {"LATITUDE": 11.0},
-            "GLOBAL_FALLBACK": {"LATITUDE": 12.0},
+            "C3420": {"LATITUDE": 10.0, "LONGITUDE": -69.0, "AREA_ACRES": 120.0},
+            "A1200": {"LATITUDE": 11.0, "LONGITUDE": -70.0},
+            "GLOBAL_FALLBACK": {"LATITUDE": 12.0, "LONGITUDE": -71.0},
         }
 
         body = main.search_lakes(q="crys", limit=5)
         self.assertEqual(body["query"], "crys")
         self.assertEqual(len(body["results"]), 1)
         self.assertEqual(body["results"][0]["midas_id"], "C3420")
+        self.assertEqual(body["results"][0]["latitude"], 10.0)
+        self.assertEqual(body["results"][0]["longitude"], -69.0)
+        self.assertEqual(body["results"][0]["area_acres"], 120.0)
+
+    def test_lake_locations_returns_selectable_lakes_with_coordinates(self):
+        main.lake_names_data = {
+            "C3420": "Crystal Lake",
+            "A1200": "Alpha Pond",
+            "B0001": "Missing Location Pond",
+        }
+        main.baseline_data = {
+            "C3420": {"LATITUDE": 10.0, "LONGITUDE": -69.0, "AREA_ACRES": 120.0},
+            "A1200": {"LATITUDE": 11.0, "LONGITUDE": -70.0},
+            "B0001": {"LATITUDE": 12.0},
+            "GLOBAL_FALLBACK": {"LATITUDE": 13.0, "LONGITUDE": -71.0},
+        }
+
+        body = main.get_lake_locations()
+        ids = [item["midas_id"] for item in body["results"]]
+
+        self.assertEqual(ids, ["A1200", "C3420"])
+        self.assertNotIn("B0001", ids)
+        self.assertNotIn("GLOBAL_FALLBACK", ids)
 
     def test_predict_rejects_unsupported_requested_outputs(self):
         class StubRegistry:
