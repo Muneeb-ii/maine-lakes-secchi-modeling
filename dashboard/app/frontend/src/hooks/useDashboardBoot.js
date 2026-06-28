@@ -60,9 +60,9 @@ export function useDashboardBoot({ onLakeLoaded }) {
           );
         }
 
+        await loadLakeBaseline("C3420", undefined, featureData);
         setFeatureConfig(featureData);
         setBootState("ready");
-        await loadLakeBaseline("C3420", undefined, featureData);
       } catch (error) {
         setBootError(error.message || "Failed to initialize dashboard.");
         setBootState("error");
