@@ -463,6 +463,48 @@
     @apply mt-2 min-h-[1.5rem] text-base leading-snug text-slate-600;
   }
 
+  .sensitivity-hint {
+    @apply mt-auto flex min-h-[4.25rem] items-center gap-2 rounded-lg border border-l-4 px-2.5 py-2;
+  }
+
+  .sensitivity-hint-label {
+    @apply text-sm font-semibold leading-snug text-slate-950 sm:text-base;
+  }
+
+  .sensitivity-hint-note {
+    @apply mt-0.5 text-sm leading-snug text-slate-600;
+  }
+
+  .sensitivity-hint-clearer {
+    border-color: rgba(0, 131, 109, 0.36);
+    border-left-color: var(--positive);
+    background: var(--band-clear-bg);
+    color: var(--positive);
+  }
+
+  .sensitivity-hint-murkier {
+    border-color: rgba(213, 94, 0, 0.34);
+    border-left-color: var(--negative);
+    background: var(--band-turbid-bg);
+    color: var(--negative);
+  }
+
+  .sensitivity-hint-flat,
+  .sensitivity-hint-unavailable,
+  .sensitivity-hint-loading {
+    border-color: rgba(100, 116, 139, 0.28);
+    border-left-color: #64748b;
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .sensitivity-hint-mixed {
+    border-color: rgba(230, 159, 0, 0.36);
+    border-left-color: var(--accent-amber);
+    background: var(--band-moderate-bg);
+    color: #92400e;
+  }
+
   .input-field {
     @apply w-full h-12 rounded-xl pl-10 pr-4 bg-white border border-slate-300 outline-none text-base text-slate-950;
   }
