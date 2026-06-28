@@ -2,7 +2,7 @@
 
 Agent-oriented UI reference for the dashboard frontend. For repo architecture, routes, commands, and API contracts, see `CONTEXT.md` at the repository root.
 
-**Quick map:** `/` landing · `/playground` scenario explorer · `/trends` placeholder · `/contributors` · `/modeling-process` · localStorage snapshots (`dashboardSavedScenarios`) · Claro tour on playground only.
+**Quick map:** `/` landing · `/playground` scenario explorer · `/trends` placeholder · `/contributors` · `/modeling-process` · localStorage snapshots (`dashboardSavedScenarios`) · Claro tour on **playground only**.
 
 ---
 
@@ -51,10 +51,13 @@ Playground `InfoPageNav` also exposes an **`actions`** slot (right side) for the
 
 ## Lake map picker
 
-- **Entry points:** “Show on map” in lake search results and lake profile card; opens a centered modal over a scrim (`lake-map-layer`, z-index 270).
+- **Entry points:** map icon beside lake search plus “Show on map” pin action in search results; opens a centered modal over a scrim (`lake-map-layer`, z-index 270).
 - **Data:** `GET /lakes/locations` returns all baseline lakes with finite `latitude` / `longitude` (and optional `area_acres`). Search results use the same `LakeSearchItem` shape.
 - **Map:** Leaflet (`leaflet` npm dep); default center Maine `[44.35, -69.2]`, zoom 7; focused lake zoom 12. Pins use `lake-map-pin`; current lake uses `lake-map-pin-current`.
+- **Marker labels:** lake names stay hidden while zoomed out and appear only at zoom 11+ via `lake-map-labels-visible`, so the statewide view stays uncluttered.
+- **Popup card:** use a compact white card with a `lake-sectionLake`/`lake-accent` rail, MIDAS badge, labeled coordinate/area rows, and a subtle popup-enter motion. Keep radius at `rounded-lg`; do not nest cards inside the popup.
 - **Selection:** popup “Use this lake” calls the same `onSelectLake` handler as search.
+- **Color rule:** map picker is lake/workspace UI, not Claro. Use `lake-sectionLake` / `lake-accent`; do not use Claro green (`--claro`, `claro-button`) inside map popup cards.
 
 ---
 
@@ -134,7 +137,7 @@ Body copy on tinted surfaces stays `text-slate-900` / `text-slate-700`. Status n
 
 ### Persona copy (unchanged)
 
-Claro: calm, plain-spoken water-clarity guide. v1 is a deterministic tour; later agent features reuse the same `data-claro-target` anchors and `CLARO_PERSONA` copy in `lib/claroTourContent.js`.
+Claro: calm, plain-spoken water-clarity guide. v1 is a deterministic **playground-only** tour; later agent features reuse the same `data-claro-target` anchors and `CLARO_PERSONA` copy in `lib/claroTourContent.js`. Do not mount `ClaroGuide` on `/trends` or info routes.
 
 ---
 
