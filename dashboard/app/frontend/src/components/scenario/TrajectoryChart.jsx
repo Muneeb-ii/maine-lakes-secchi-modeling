@@ -23,7 +23,6 @@ import {
   TRAJECTORY_SCALE_FULL,
   TRAJECTORY_SCALE_LABEL,
   TRAJECTORY_SCALE_NOTE_DETAIL,
-  TRAJECTORY_STEP_NOTE,
   TRAJECTORY_TOOLTIP_VS_PREVIOUS,
   TRAJECTORY_TOOLTIP_VS_BASELINE,
   formatTrajectoryChartLiveSummary,
@@ -31,6 +30,7 @@ import {
   getTrajectoryAxisSecchi,
   getTrajectoryLegend,
   getTrajectoryScaleNoteFull,
+  getTrajectoryStepNote,
 } from "../../lib/copy";
 import { TRAJECTORY_MAX_STEPS } from "../../lib/constants";
 import { formatMeters, formatSignedMeters } from "../../lib/formatters";
@@ -365,7 +365,7 @@ export function TrajectoryChart({
           {chartData.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-lake-accent/35 bg-lake-accentSoft/50 px-4 text-center text-base text-slate-600">
               <p>{TRAJECTORY_EMPTY_PROMPT}</p>
-              <p className="max-w-md text-base text-slate-700">{TRAJECTORY_STEP_NOTE}</p>
+              <p className="max-w-md text-base text-slate-700">{getTrajectoryStepNote(system)}</p>
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">

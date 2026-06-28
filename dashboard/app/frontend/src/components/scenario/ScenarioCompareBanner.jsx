@@ -6,8 +6,10 @@ import {
   COMPARE_BANNER_SAVED_VALUE,
 } from "../../lib/copy";
 import { formatMeters, formatSignedMeters } from "../../lib/formatters";
+import { useUnitSystem } from "../../context/UnitSystemContext";
 
 export function ScenarioCompareBanner({ scenario, delta, lakeName }) {
+  const { system } = useUnitSystem();
   if (!scenario || typeof delta !== "number") return null;
 
   const isPositive = delta > 0;
@@ -31,11 +33,11 @@ export function ScenarioCompareBanner({ scenario, delta, lakeName }) {
         {lakeName ? ` for ${lakeName}` : ""}.
       </p>
       <p className="mt-2 text-slate-700">
-        {COMPARE_BANNER_SAVED_VALUE}: {formatMeters(scenario.predictionMeters)}
+        {COMPARE_BANNER_SAVED_VALUE}: {formatMeters(scenario.predictionMeters, system)}
       </p>
       <p className={`mt-2 inline-flex items-center gap-1 font-medium ${colorClass}`}>
         {Icon && <Icon className="w-4 h-4" aria-hidden />}
-        {COMPARE_BANNER_DELTA}: {formatSignedMeters(delta, { absolute: true })}
+        {COMPARE_BANNER_DELTA}: {formatSignedMeters(delta, { absolute: true, system })}
       </p>
     </div>
   );
