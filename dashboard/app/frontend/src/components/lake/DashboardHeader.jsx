@@ -30,6 +30,7 @@ export function DashboardHeader({
             <button
               type="button"
               className="action-button h-12 w-12 shrink-0 px-0"
+              data-claro-target="lake-map-button"
               onClick={() => onOpenMap()}
               aria-label="Choose a lake from map"
             >

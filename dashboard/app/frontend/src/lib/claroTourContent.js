@@ -43,6 +43,15 @@ export const claroTourRoutes = {
         cursorHint: "select",
       },
       {
+        id: "lake-map",
+        target: "lake-map-button",
+        title: "Find lakes on the map",
+        body:
+          "Use the map button to browse lake locations, zoom in for lake-name labels, and open a pin card to choose a lake.",
+        placement: "left",
+        cursorHint: "click",
+      },
+      {
         id: "lake-profile",
         target: "lake-profile",
         title: "Check fixed lake traits",
@@ -64,15 +73,15 @@ export const claroTourRoutes = {
         title: "Include only known measurements",
         body:
           "Use the checkbox when a measurement is known. If you leave it out, the model treats that chemistry value as missing instead of guessing.",
-        placement: "top",
+        placement: "right",
         cursorHint: "click",
       },
       {
         id: "parameter-panel",
-        target: "parameter-panel",
+        target: "parameter-slider-control",
         title: "Try a water-condition change",
         body:
-          "Move a slider or type a value, then release or pause briefly. Try one change now so the next steps have something to show.",
+          "Move a slider or type a value, then release or pause briefly. Each card shows nearby sensitivity for this lake and flags when larger changes may behave differently.",
         placement: "top",
         cursorHint: "drag",
       },

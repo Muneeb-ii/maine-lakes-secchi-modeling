@@ -206,7 +206,7 @@ function ClaroOverlay({ steps, stepIndex, onPrevious, onNext, onEnd }) {
   );
 }
 
-export function ClaroGuide({ routeId }) {
+export function ClaroGuide({ routeId, onStepExit }) {
   const routeConfig = getClaroRouteConfig(routeId);
   const [state, setState] = useState(() => readClaroState());
   const [tourOpen, setTourOpen] = useState(false);
@@ -225,10 +225,11 @@ export function ClaroGuide({ routeId }) {
   const promptVisible = routeConfig && promptOpen && !tourOpen;
 
   useEffect(() => {
+    const nextState = readClaroState();
     setTourOpen(false);
     setPromptOpen(Boolean(getClaroRouteConfig(routeId)));
     setStepIndex(0);
-    setState(readClaroState());
+    setState(nextState);
   }, [routeId]);
 
   useEffect(() => {
@@ -255,12 +256,14 @@ export function ClaroGuide({ routeId }) {
   };
 
   const completeTour = () => {
+    onStepExit?.(steps[stepIndex]);
     setTourOpen(false);
     setStepIndex(0);
     persistState(markClaroTourCompleted(state, routeId));
   };
 
   const previousStep = () => {
+    onStepExit?.(steps[stepIndex]);
     setStepIndex((previous) => getStepIndexByDirection(previous, -1, steps));
   };
 
@@ -269,6 +272,7 @@ export function ClaroGuide({ routeId }) {
       completeTour();
       return;
     }
+    onStepExit?.(steps[stepIndex]);
     setStepIndex((previous) => getStepIndexByDirection(previous, 1, steps));
   };
 

@@ -26,13 +26,16 @@ test("Claro only registers workspace routes", () => {
 test("playground route has the full walkthrough", () => {
   const config = getClaroRouteConfig(CLARO_ROUTE_IDS.playground);
   assert.ok(config);
-  assert.equal(config.steps.length, 12);
+  assert.equal(config.steps.length, 13);
   assert.equal(config.steps[0].id, "intro");
   assert.equal(config.steps.at(-1).id, "scenario-reset");
 });
 
 test("playground tour orders try-change before save and reset last", () => {
   const ids = getClaroRouteConfig(CLARO_ROUTE_IDS.playground).steps.map((step) => step.id);
+  const lakeSearch = ids.indexOf("lake-search");
+  const lakeMap = ids.indexOf("lake-map");
+  const lakeProfile = ids.indexOf("lake-profile");
   const parameterPanel = ids.indexOf("parameter-panel");
   const metrics = ids.indexOf("prediction-metrics");
   const trajectory = ids.indexOf("trajectory-chart");
@@ -41,6 +44,8 @@ test("playground tour orders try-change before save and reset last", () => {
   const useSaved = ids.indexOf("scenario-use-saved");
   const reset = ids.indexOf("scenario-reset");
 
+  assert.ok(lakeSearch < lakeMap);
+  assert.ok(lakeMap < lakeProfile);
   assert.ok(parameterPanel < metrics);
   assert.ok(metrics < trajectory);
   assert.ok(trajectory < drivers);
@@ -78,9 +83,9 @@ test("prompt state dismisses and completes per route", () => {
 });
 
 test("step progress label omits internal route id", () => {
-  assert.equal(formatClaroStepProgress(0, 12), "1 of 12");
-  assert.equal(formatClaroStepProgress(11, 12), "12 of 12");
-  assert.equal(formatClaroStepProgress(-1, 12), "");
+  assert.equal(formatClaroStepProgress(0, 13), "1 of 13");
+  assert.equal(formatClaroStepProgress(12, 13), "13 of 13");
+  assert.equal(formatClaroStepProgress(-1, 13), "");
 });
 
 test("step navigation clamps to available bounds", () => {
