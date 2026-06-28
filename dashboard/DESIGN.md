@@ -40,7 +40,9 @@ Playground `InfoPageNav` also exposes an **`actions`** slot (right side) for the
 | System | Length | Area | Default |
 |--------|--------|------|---------|
 | Metric | m | ha | yes |
-| US | ft | acres | |
+| Imperial | ft | acres | |
+
+- Stored value: `metric` or `imperial` (`dashboardUnitSystem`). Legacy `us` normalizes to `imperial`.
 
 - **UI only** — sliders, hero, trajectory chart, clarity bands, lake profile fields, and saved-scenario labels convert for display. Chemistry units (ppm, ppb, SPU, µS/cm, pH, alkalinity) are not converted.
 - **Canonical model units never change** — Secchi stays meters in state and API payloads; max depth stays feet; area stays acres. Use `toDisplay` / `toCanonical` at input boundaries (`lib/units.js`).
@@ -58,6 +60,25 @@ Playground `InfoPageNav` also exposes an **`actions`** slot (right side) for the
 - **Popup card:** use a compact white card with a `lake-sectionLake`/`lake-accent` rail, MIDAS badge, labeled coordinate/area rows, and a subtle popup-enter motion. Keep radius at `rounded-lg`; do not nest cards inside the popup.
 - **Selection:** popup “Use this lake” calls the same `onSelectLake` handler as search.
 - **Color rule:** map picker is lake/workspace UI, not Claro. Use `lake-sectionLake` / `lake-accent`; do not use Claro green (`--claro`, `claro-button`) inside map popup cards.
+- **Claro tour:** map button anchor `data-claro-target="lake-map-button"`; tour step `lake-map` before lake profile. `ClaroGuide` accepts `onStepExit` so leaving the map step closes an open map modal.
+
+---
+
+## Parameter sensitivity hints
+
+Each editable chemistry slider (`ParameterSlider.jsx`) shows a **local effect** hint below the control after the scenario commits (`featureCommitVersion`).
+
+| Direction | Meaning | Style |
+|-----------|---------|-------|
+| `clearer` | Nearby increase predicts clearer water | green left rail (`sensitivity-hint-clearer`) |
+| `murkier` | Nearby increase predicts murkier water | amber left rail (`sensitivity-hint-murkier`) |
+| `flat` | Little effect near current value | neutral rail |
+| `mixed` / `range_sensitive` | Effect changes across the slider range | split icon, mixed rail |
+
+- Data from `POST /predict_scenario/sensitivity` via `useScenarioSensitivity` (debounced `DEBOUNCE_MS`, same payload shape as predict).
+- Subtext: “At this lake and current scenario” — not global SHAP; complements the drivers panel.
+- Excluded measurements show “Measurement not included”; loading and error states use neutral styling.
+- Claro tour step `parameter-panel` targets `parameter-slider-control` and mentions sensitivity copy.
 
 ---
 
