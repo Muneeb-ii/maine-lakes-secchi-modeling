@@ -6,6 +6,7 @@ import {
   parsePredictionResponse,
 } from "../lib/contracts";
 import { resolveModelBaseline } from "../lib/playgroundGuards";
+import { useUnitSystem } from "../context/UnitSystemContext";
 import {
   buildTrajectoryPoint,
   capTrajectoryHistory,
@@ -24,6 +25,7 @@ export function useScenarioPrediction({
   includedFeatures,
   featureCommitVersion = 0,
 }) {
+  const { system } = useUnitSystem();
   const [forecast, setForecast] = useState(null);
   const [baselinePrediction, setBaselinePrediction] = useState(null);
   const [predictionError, setPredictionError] = useState("");
@@ -298,8 +300,8 @@ export function useScenarioPrediction({
 
   const latestChange = useMemo(() => {
     if (chartHistory.length < 2) return null;
-    return formatLatestChange(chartHistory[chartHistory.length - 1]);
-  }, [chartHistory]);
+    return formatLatestChange(chartHistory[chartHistory.length - 1], system);
+  }, [chartHistory, system]);
 
   const resetChart = (
     seedFeatures = features,

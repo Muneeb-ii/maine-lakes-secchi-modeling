@@ -1,4 +1,4 @@
-import { DEFAULT_UNIT_SYSTEM, displayUnitFor } from "./units.js";
+import { DEFAULT_UNIT_SYSTEM, displayUnitFor, formatQuantity } from "./units.js";
 import { formatSecchiThreshold } from "./theme.js";
 
 export const DASHBOARD_TITLE = "Maine Lake Water Clarity Dashboard";
@@ -171,8 +171,13 @@ export const COMPARE_BANNER_DELTA = "Difference from your current sliders";
 
 export const TRAJECTORY_EMPTY_PROMPT =
   "Move a slider to start a scenario history.";
-export const TRAJECTORY_STEP_NOTE =
-  "Each dot is one meaningful slider adjustment. Very small tweaks under 0.02 m may be ignored so the chart stays readable.";
+export function getTrajectoryStepNote(system = DEFAULT_UNIT_SYSTEM) {
+  return `Each dot is one meaningful slider adjustment. Very small tweaks under ${formatQuantity(0.02, {
+    canonicalUnit: "m",
+    system,
+    decimals: 2,
+  })} may be ignored so the chart stays readable.`;
+}
 export const TRAJECTORY_RESET_CONFIRM =
   "Clear the scenario history chart? Saved scenarios will stay in the comparison menu.";
 export const TRAJECTORY_RESET_BUTTON = "Clear chart history";

@@ -4,6 +4,8 @@ import {
   TRAJECTORY_STEP_LABEL_START,
 } from "./copy.js";
 import { getFriendlyFeatureLabel } from "./featureLabels.js";
+import { DEFAULT_UNIT_SYSTEM } from "./units.js";
+import { formatSignedMeters } from "./formattersCore.js";
 
 const TRAJECTORY_MAX_STEPS = 30;
 const TRAJECTORY_DEDUPE_METERS = 0.02;
@@ -182,13 +184,12 @@ export function computeTrajectorySummary(points) {
   };
 }
 
-export function formatLatestChange(point) {
+export function formatLatestChange(point, system = DEFAULT_UNIT_SYSTEM) {
   if (!point || point.step <= 1) return null;
   const change = point.changedFeatures?.[0];
   if (!change || point.deltaFromPrevious === null) return null;
 
-  const sign = point.deltaFromPrevious > 0 ? "+" : "";
-  const deltaText = `${sign}${point.deltaFromPrevious.toFixed(2)} m`;
+  const deltaText = formatSignedMeters(point.deltaFromPrevious, { system });
   const valueText =
     change.value === null
       ? "not included"
