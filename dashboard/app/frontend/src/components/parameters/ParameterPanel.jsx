@@ -19,6 +19,9 @@ export function ParameterPanel({
   features,
   baseline,
   includedFeatures,
+  sensitivityByFeature,
+  sensitivityError,
+  isCheckingSensitivity,
   onFeatureChange,
   onFeatureCommit,
   onFeatureIncludedChange,
@@ -60,6 +63,9 @@ export function ParameterPanel({
                     value={val}
                     baselineValue={baseline?.[key]}
                     included={includedFeatures?.includes(key)}
+                    sensitivity={sensitivityByFeature?.[key]}
+                    sensitivityError={sensitivityError}
+                    isCheckingSensitivity={isCheckingSensitivity}
                     min={min}
                     max={max}
                     onChange={onFeatureChange}

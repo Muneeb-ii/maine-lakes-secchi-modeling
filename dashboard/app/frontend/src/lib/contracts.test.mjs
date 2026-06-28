@@ -6,6 +6,7 @@ import {
   parseApiError,
   parseLakeSearchResponse,
   parsePredictionResponse,
+  parseSensitivityResponse,
   validateFeatureConfig,
 } from "./contracts.js";
 
@@ -82,6 +83,51 @@ test("parsePredictionResponse supports versioned payload", () => {
   });
   assert.equal(parsed.predictionMeters, 2.3);
   assert.equal(parsed.schemaVersion, "1.0.0");
+});
+
+test("parseSensitivityResponse supports versioned payload", () => {
+  const parsed = parseSensitivityResponse({
+    schema_version: "1.0.0",
+    model_id: "m1",
+    model_version: "v1",
+    baseline_prediction_meters: 3.2,
+    items: [
+      {
+        feature: "TPEC",
+        direction: "murkier",
+        local_direction: "murkier",
+        range_direction: "murkier",
+        range_delta_meters: -0.2,
+        delta_up_meters: -0.03,
+        delta_down_meters: 0.02,
+        step: 0.5,
+        unit: "ppb",
+        value: 8,
+        value_up: 8.5,
+        value_down: 7.5,
+      },
+    ],
+  });
+
+  assert.equal(parsed.baselinePredictionMeters, 3.2);
+  assert.equal(parsed.items[0].feature, "TPEC");
+  assert.equal(parsed.items[0].direction, "murkier");
+  assert.equal(parsed.items[0].localDirection, "murkier");
+  assert.equal(parsed.items[0].rangeDirection, "murkier");
+  assert.equal(parsed.items[0].rangeDeltaMeters, -0.2);
+  assert.equal(parsed.items[0].deltaUpMeters, -0.03);
+  assert.equal(parsed.items[0].valueUp, 8.5);
+});
+
+test("parseSensitivityResponse rejects malformed payload", () => {
+  assert.throws(
+    () => parseSensitivityResponse({ baseline_prediction_meters: 3.2 }),
+    /sensitivity response/
+  );
+  assert.throws(
+    () => parseSensitivityResponse({ baseline_prediction_meters: 3.2, items: [{}] }),
+    /sensitivity result was incomplete/
+  );
 });
 
 test("validateFeatureConfig rejects invalid contract", () => {

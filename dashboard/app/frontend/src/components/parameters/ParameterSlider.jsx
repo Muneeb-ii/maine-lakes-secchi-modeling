@@ -1,5 +1,15 @@
 import { useEffect, useId, useMemo, useState } from "react";
-import { Activity, Beaker, Droplet, Gauge, Thermometer } from "lucide-react";
+import {
+  Activity,
+  Beaker,
+  Droplet,
+  Gauge,
+  Minus,
+  Split,
+  Thermometer,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
 import { SLIDER_STARTING_VALUE, SLIDER_VALUE_ERROR } from "../../lib/copy";
 import { FEATURE_HELP_CONTENT, getFriendlyFeatureLabel } from "../../lib/featureLabels";
 import { formatValueWithUnit } from "../../lib/formatters";
@@ -8,6 +18,39 @@ import { PARAMETER_ICON_COLORS } from "../../lib/theme";
 import { SectionHelp } from "../ui/SectionHelp";
 
 const iconMap = { Beaker, Droplet, Activity, Gauge, Thermometer };
+
+const sensitivityDisplay = {
+  clearer: {
+    Icon: TrendingUp,
+    label: "Nearby increase predicts clearer water",
+    className: "sensitivity-hint-clearer",
+  },
+  murkier: {
+    Icon: TrendingDown,
+    label: "Nearby increase predicts murkier water",
+    className: "sensitivity-hint-murkier",
+  },
+  flat: {
+    Icon: Minus,
+    label: "Little effect near current value",
+    className: "sensitivity-hint-flat",
+  },
+  mixed: {
+    Icon: Split,
+    label: "Effect changes across range",
+    className: "sensitivity-hint-mixed",
+  },
+  range_sensitive: {
+    Icon: Split,
+    label: "Little nearby effect; larger changes may differ",
+    className: "sensitivity-hint-mixed",
+  },
+  unavailable: {
+    Icon: Minus,
+    label: "Measurement not included",
+    className: "sensitivity-hint-unavailable",
+  },
+};
 
 function formatInputValue(value) {
   if (!hasFiniteSliderValue(value)) return "";
@@ -20,6 +63,9 @@ export function ParameterSlider({
   value,
   baselineValue,
   included = true,
+  sensitivity,
+  sensitivityError = "",
+  isCheckingSensitivity = false,
   onChange,
   onCommit,
   onIncludedChange,
@@ -74,6 +120,27 @@ export function ParameterSlider({
   const rangeSpan = numericMax - numericMin;
   const rangePercent =
     rangeSpan > 0 ? `${((numericValue - numericMin) / rangeSpan) * 100}%` : "0%";
+  const sensitivityState = sensitivityError
+    ? {
+        Icon: Minus,
+        label: "Local effect unavailable",
+        className: "sensitivity-hint-unavailable",
+      }
+    : isCheckingSensitivity
+      ? {
+          Icon: Minus,
+          label: "Checking local effect...",
+          className: "sensitivity-hint-loading",
+        }
+      : sensitivityDisplay[sensitivity?.direction] ||
+        (included
+          ? {
+              Icon: Minus,
+              label: "Checking local effect...",
+              className: "sensitivity-hint-loading",
+            }
+          : sensitivityDisplay.unavailable);
+  const SensitivityIcon = sensitivityState.Icon;
 
   return (
     <div
@@ -143,6 +210,7 @@ export function ParameterSlider({
       </div>
       <input
         type="range"
+        data-claro-target="parameter-slider-control"
         className={`mt-2 w-full ${differsFromBaseline ? "" : "range-default"}`}
         style={{ "--range-percent": rangePercent }}
         min={min}
@@ -172,6 +240,13 @@ export function ParameterSlider({
       >
         {baselineText}
       </p>
+      <div className={`sensitivity-hint ${sensitivityState.className}`}>
+        <SensitivityIcon className="h-4 w-4 shrink-0" aria-hidden />
+        <div className="min-w-0">
+          <p className="sensitivity-hint-label">{sensitivityState.label}</p>
+          <p className="sensitivity-hint-note">At this lake and current scenario</p>
+        </div>
+      </div>
     </div>
   );
 }

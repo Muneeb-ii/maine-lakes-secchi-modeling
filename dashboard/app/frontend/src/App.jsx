@@ -22,6 +22,7 @@ import { useDashboardBoot } from "./hooks/useDashboardBoot";
 import { useLakeSearch } from "./hooks/useLakeSearch";
 import { useSavedScenarios } from "./hooks/useSavedScenarios";
 import { useScenarioPrediction } from "./hooks/useScenarioPrediction";
+import { useScenarioSensitivity } from "./hooks/useScenarioSensitivity";
 import {
   LANDING_DESTINATIONS,
   LANDING_TRENDS_PAGE_NOTE,
@@ -163,6 +164,18 @@ function PlaygroundPage() {
     includedFeatures,
     featureCommitVersion,
   });
+  const {
+    sensitivityByFeature,
+    sensitivityError,
+    isCheckingSensitivity,
+  } = useScenarioSensitivity({
+    lakeId,
+    baseline,
+    features,
+    featureConfig,
+    includedFeatures,
+    featureCommitVersion,
+  });
 
   const {
     savedScenarios,
@@ -258,6 +271,12 @@ function PlaygroundPage() {
   const openLakeMap = (lake = null) => {
     setMapFocusLake(lake);
     setIsLakeMapOpen(true);
+  };
+
+  const handleClaroStepExit = (step) => {
+    if (step?.id === "lake-map") {
+      setIsLakeMapOpen(false);
+    }
   };
 
   const handleSearchKeyDown = async (event) => {
@@ -369,7 +388,7 @@ function PlaygroundPage() {
       footer={
         <>
           <AppFooter />
-          <ClaroGuide routeId={getClaroRouteId(ROUTES.playground)} />
+          <ClaroGuide routeId={getClaroRouteId(ROUTES.playground)} onStepExit={handleClaroStepExit} />
         </>
       }
       header={
@@ -413,6 +432,9 @@ function PlaygroundPage() {
           features={features}
           baseline={baseline}
           includedFeatures={includedFeatures}
+          sensitivityByFeature={sensitivityByFeature}
+          sensitivityError={sensitivityError}
+          isCheckingSensitivity={isCheckingSensitivity}
           onFeatureChange={handleFeatureChange}
           onFeatureCommit={handleFeatureCommit}
           onFeatureIncludedChange={handleFeatureIncludedChange}

@@ -85,6 +85,45 @@ export function parsePredictionResponse(payload) {
   };
 }
 
+export function parseSensitivityResponse(payload) {
+  if (!payload || typeof payload !== "object" || !Array.isArray(payload.items)) {
+    throw new Error("We could not read the sensitivity response. Please try again.");
+  }
+
+  const baselinePredictionMeters = Number(payload.baseline_prediction_meters);
+  if (!Number.isFinite(baselinePredictionMeters)) {
+    throw new Error("The sensitivity result was incomplete. Please try again.");
+  }
+
+  return {
+    schemaVersion: payload.schema_version || "legacy",
+    modelVersion: payload.model_version || "unknown",
+    modelId: payload.model_id || "unknown",
+    baselinePredictionMeters,
+    items: payload.items.map((item) => {
+      const feature = String(item?.feature || "");
+      const direction = String(item?.direction || "");
+      if (!feature || !direction) {
+        throw new Error("The sensitivity result was incomplete. Please try again.");
+      }
+      return {
+        feature,
+        direction,
+        localDirection: item.local_direction ? String(item.local_direction) : undefined,
+        rangeDirection: item.range_direction ? String(item.range_direction) : undefined,
+        rangeDeltaMeters: toOptionalFiniteNumber(item.range_delta_meters),
+        deltaUpMeters: toOptionalFiniteNumber(item.delta_up_meters),
+        deltaDownMeters: toOptionalFiniteNumber(item.delta_down_meters),
+        step: toOptionalFiniteNumber(item.step),
+        unit: String(item.unit || ""),
+        value: toOptionalFiniteNumber(item.value),
+        valueUp: toOptionalFiniteNumber(item.value_up),
+        valueDown: toOptionalFiniteNumber(item.value_down),
+      };
+    }),
+  };
+}
+
 export function validateFeatureConfig(featureConfig) {
   if (!featureConfig || typeof featureConfig !== "object") {
     throw new Error("Water condition settings could not be loaded.");
