@@ -61,7 +61,7 @@ export const EXPLAINABILITY_LAKE_CONTEXT_FEATURES = [
 
 // Convertible lake-trait features: base label + canonical unit for the
 // unit-aware label path. Their FRIENDLY_FEATURE_LABELS entries bake the
-// canonical (US) unit and remain the fallback when no system is passed.
+// canonical (imperial) unit and remain the fallback when no system is passed.
 const CONVERTIBLE_FEATURE_UNITS = {
   AREA_ACRES: { base: "Lake area", canonicalUnit: "acres" },
   DEPTH_MAX_FEET: { base: "Maximum depth", canonicalUnit: "ft" },

@@ -3,7 +3,7 @@ import { DEFAULT_UNIT_SYSTEM, displayUnitFor, toDisplay } from "./units.js";
 
 // Render a canonical-meters Secchi threshold in the active unit system. Rounds
 // to one decimal and drops a trailing ".0" so metric stays clean (e.g. "2 m")
-// while US shows the converted value (e.g. "6.6 ft").
+// while imperial shows the converted value (e.g. "6.6 ft").
 export function formatSecchiThreshold(meters, system = DEFAULT_UNIT_SYSTEM) {
   const value = toDisplay(meters, "m", system);
   const rounded = Math.round(value * 10) / 10;
@@ -107,7 +107,7 @@ export function getClarityToneByKey(toneKey) {
   return { ...band, ...getClarityToneStyles(band.tone) };
 }
 
-// Short range chip text, e.g. "<2 m", "2–4 m", ">4 m" (US: ft equivalents).
+// Short range chip text, e.g. "<2 m", "2–4 m", ">4 m" (imperial: ft equivalents).
 export function getClarityRangeLabel(band, system = DEFAULT_UNIT_SYSTEM) {
   const index = CLARITY_BANDS.findIndex((entry) => entry.tone === band.tone);
   if (index <= 0) return `<${formatSecchiThreshold(band.max, system)}`;

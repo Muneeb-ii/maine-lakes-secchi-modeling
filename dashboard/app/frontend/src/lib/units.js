@@ -7,12 +7,12 @@
 // Chemistry units (DO ppm, TP ppb, color SPU, conductivity uS/cm, pH,
 // alkalinity) are not convertible and always take the identity path.
 
-export const UNIT_SYSTEMS = { METRIC: "metric", US: "us" };
+export const UNIT_SYSTEMS = { METRIC: "metric", IMPERIAL: "imperial" };
 export const DEFAULT_UNIT_SYSTEM = UNIT_SYSTEMS.METRIC;
 
 export const UNIT_SYSTEM_OPTIONS = [
   { value: UNIT_SYSTEMS.METRIC, label: "Metric", hint: "m / ha" },
-  { value: UNIT_SYSTEMS.US, label: "US", hint: "ft / acres" },
+  { value: UNIT_SYSTEMS.IMPERIAL, label: "Imperial", hint: "ft / acres" },
 ];
 
 // Each dimension defines its convertible units as ratios to a shared base,
@@ -21,11 +21,11 @@ export const UNIT_SYSTEM_OPTIONS = [
 const DIMENSIONS = {
   length: {
     units: { m: 1, ft: 0.3048 },
-    display: { [UNIT_SYSTEMS.METRIC]: "m", [UNIT_SYSTEMS.US]: "ft" },
+    display: { [UNIT_SYSTEMS.METRIC]: "m", [UNIT_SYSTEMS.IMPERIAL]: "ft" },
   },
   area: {
     units: { acres: 4046.8564224, ha: 10000 },
-    display: { [UNIT_SYSTEMS.METRIC]: "ha", [UNIT_SYSTEMS.US]: "acres" },
+    display: { [UNIT_SYSTEMS.METRIC]: "ha", [UNIT_SYSTEMS.IMPERIAL]: "acres" },
   },
 };
 
@@ -46,7 +46,10 @@ export function isConvertibleUnit(unit) {
 }
 
 export function normalizeUnitSystem(system) {
-  return system === UNIT_SYSTEMS.US ? UNIT_SYSTEMS.US : UNIT_SYSTEMS.METRIC;
+  if (system === UNIT_SYSTEMS.IMPERIAL || system === "us") {
+    return UNIT_SYSTEMS.IMPERIAL;
+  }
+  return UNIT_SYSTEMS.METRIC;
 }
 
 // The unit label to show for a canonical unit under a given system. Returns
