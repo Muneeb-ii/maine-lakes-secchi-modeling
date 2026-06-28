@@ -29,7 +29,8 @@ Current dashboard UX:
 - **Brand mark** — lake + Secchi disk logo (`components/brand/DashboardLogo.jsx`, `SiteBrand.jsx`); favicon at `app/frontend/public/favicon.svg`; primary blue `#005AB5` (`theme-color` in `index.html`). Distinct from the green Claro mascot.
 - **Site chrome** — `InfoPageNav` shows logo + optional page eyebrow; playground/trends use eyebrows instead of duplicate header pills.
 - **Info pages** — contributors and modeling-process show `PageInProgressNotice` while copy evolves (`lib/siteStatus.js` toggle).
-- **Unit system** — Metric (m / ha) vs US (ft / acres) display toggle in playground nav (`UnitSystemToggle`, `context/UnitSystemContext.jsx`, `lib/units.js`); persisted in `localStorage` (`dashboardUnitSystem`). Display-only — canonical model units in API payloads never change.
+- **Unit system** — Metric (m / ha) vs Imperial (ft / acres) display toggle in playground nav (`UnitSystemToggle`, `context/UnitSystemContext.jsx`, `lib/units.js`); persisted in `localStorage` (`dashboardUnitSystem`). Display-only — canonical model units in API payloads never change. Legacy stored value `us` maps to `imperial`.
+- **Parameter sensitivity** — each chemistry slider shows a local clearer/murkier/flat/mixed hint from `POST /predict_scenario/sensitivity` (`hooks/useScenarioSensitivity.js`); debounced after slider commits, lake- and scenario-specific.
 - **Lake map** — Leaflet modal picker on playground (`LakeMapPicker.jsx`); loads pins from `GET /lakes/locations`; map icon beside search plus “Show on map” in results. Pin labels appear at zoom 11+; popup cards use lake-accent styling (not Claro green).
 - Partner logos in `dashboard/app/frontend/src/assets/logos/`; copy in `lib/copy.js`, `lib/infoPagesCopy.js`, `lib/featureLabels.js`.
 - Routing uses `history.pushState` + `popstate` (no router package); Render/Nginx serves `index.html` for all paths.
@@ -122,6 +123,7 @@ Latest experiments (`36`–`38`) cover imputation comparison and supported-lake 
 | Change info-page draft banner | `lib/siteStatus.js`, `PageInProgressNotice.jsx` |
 | Change Claro tour | `lib/claroTourContent.js`, `components/claro/ClaroGuide.jsx` |
 | Change display units | `lib/units.js`, `context/UnitSystemContext.jsx`, `components/layout/UnitSystemToggle.jsx`, `lib/formattersCore.js` |
+| Change parameter sensitivity hints | `hooks/useScenarioSensitivity.js`, `POST /predict_scenario/sensitivity`, `ParameterSlider.jsx`, backend `main.py` |
 | Change lake map picker | `components/lake/LakeMapPicker.jsx`, `GET /lakes/locations`, `lib/contracts.js` |
 | Change save/compare snapshots | `lib/savedScenarios.js`, `hooks/useSavedScenarios.js`, `ScenarioActionBar.jsx` |
 | Change rate limits | `dashboard/app/backend/rate_limit.py`, `dashboard/README.md` |
@@ -193,6 +195,7 @@ Base path locally: `http://localhost:8000`. On Render, proxied at `/api/*`.
 | `GET` | `/lakes/search` | Lake search (includes lat/lon/area when available) |
 | `GET` | `/lakes/locations` | All lakes with finite coordinates for the map picker |
 | `POST` | `/predict_scenario` | Scenario prediction + explainability; editable features may be `null` when excluded in the UI |
+| `POST` | `/predict_scenario/sensitivity` | Per-feature local/range Secchi sensitivity for current lake + scenario (slider hints) |
 
 Rate limits (sliding 60 s window, per client IP): `API_RATE_LIMIT_PER_MINUTE` default **180** on all routes; `PREDICT_RATE_LIMIT_PER_MINUTE` default **60** on predict (counts toward the API total). Over-limit → HTTP `429` with `Retry-After`. See `dashboard/README.md` and `rate_limit.py`.
 
