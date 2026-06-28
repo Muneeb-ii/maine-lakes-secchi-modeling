@@ -23,7 +23,7 @@ export function UnitSystemProvider({ children }) {
 
   const toggleSystem = useCallback(() => {
     setSystemState((current) =>
-      current === UNIT_SYSTEMS.US ? UNIT_SYSTEMS.METRIC : UNIT_SYSTEMS.US
+      current === UNIT_SYSTEMS.IMPERIAL ? UNIT_SYSTEMS.METRIC : UNIT_SYSTEMS.IMPERIAL
     );
   }, []);
 

@@ -78,7 +78,7 @@ test("formatLatestChange renders readable line", () => {
     previousPrediction: 3.02,
   });
   assert.equal(formatLatestChange(point), "pH changed to 7.4 → Secchi +0.18 m");
-  assert.equal(formatLatestChange(point, "us"), "pH changed to 7.4 → Secchi +0.59 ft");
+  assert.equal(formatLatestChange(point, "imperial"), "pH changed to 7.4 → Secchi +0.59 ft");
 });
 
 test("buildTrajectoryChangeRows mirrors chart history points", () => {
