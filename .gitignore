@@ -69,3 +69,5 @@ logs/
 # Agent config
 CONTEXT.md
 DESIGN.md
+.claudeignore
+.serena/
