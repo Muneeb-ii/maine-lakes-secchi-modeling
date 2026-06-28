@@ -23,14 +23,14 @@ Current dashboard UX:
 - `/trends` — Trend Following placeholder (model in development).
 - `/contributors` and `/modeling-process` — static info pages linked from the shared footer.
 - Light, WCAG-oriented theme with semantic section accents (`lib/theme.js`), clarity-band theming, 18 px base type, and colorblind-safe status colors (`dashboard/DESIGN.md`).
-- **Claro** — mint-green guided tour on `/playground` (`components/claro/`, `lib/claroTourContent.js`); `data-claro-target` anchors on key panels.
+- **Claro** — mint-green guided tour on `/playground` only (`components/claro/`, `lib/claroTourContent.js`); `data-claro-target` anchors on key panels. Trends and info routes do not mount `ClaroGuide`.
 - **Save & compare** — labeled snapshots in `localStorage` (`lib/savedScenarios.js`, schema v1); lake-scoped compare, load, delete; trajectory chart + change-log table share `chartHistory`.
 - Playground supports **per-feature include toggles**; excluded chemistry fields are sent as `null` so CatBoost uses native missing-value handling.
 - **Brand mark** — lake + Secchi disk logo (`components/brand/DashboardLogo.jsx`, `SiteBrand.jsx`); favicon at `app/frontend/public/favicon.svg`; primary blue `#005AB5` (`theme-color` in `index.html`). Distinct from the green Claro mascot.
 - **Site chrome** — `InfoPageNav` shows logo + optional page eyebrow; playground/trends use eyebrows instead of duplicate header pills.
 - **Info pages** — contributors and modeling-process show `PageInProgressNotice` while copy evolves (`lib/siteStatus.js` toggle).
 - **Unit system** — Metric (m / ha) vs US (ft / acres) display toggle in playground nav (`UnitSystemToggle`, `context/UnitSystemContext.jsx`, `lib/units.js`); persisted in `localStorage` (`dashboardUnitSystem`). Display-only — canonical model units in API payloads never change.
-- **Lake map** — Leaflet modal picker on playground (`LakeMapPicker.jsx`); loads pins from `GET /lakes/locations`; search combobox and profile card link into the map.
+- **Lake map** — Leaflet modal picker on playground (`LakeMapPicker.jsx`); loads pins from `GET /lakes/locations`; map icon beside search plus “Show on map” in results. Pin labels appear at zoom 11+; popup cards use lake-accent styling (not Claro green).
 - Partner logos in `dashboard/app/frontend/src/assets/logos/`; copy in `lib/copy.js`, `lib/infoPagesCopy.js`, `lib/featureLabels.js`.
 - Routing uses `history.pushState` + `popstate` (no router package); Render/Nginx serves `index.html` for all paths.
 
@@ -161,20 +161,9 @@ npm run dev
 
 Copy `.env.example` for local env vars (`VITE_API_URL`, `API_ALLOWED_ORIGINS`, `MODEL_ARTIFACTS_PATH`).
 
-### iCloud Drive — `node_modules` (local only)
+### iCloud Drive — `node_modules` (optional local setup)
 
-This checkout lives in iCloud Drive. Keep packages out of sync by symlinking `node_modules` → `node_modules.nosync` (the `.nosync` suffix tells iCloud to skip the folder).
-
-**Current setup:** `dashboard/app/frontend/node_modules` → `node_modules.nosync`. `.gitignore` ignores both names.
-
-**After `npm ci` or `npm install`**, npm may replace the symlink with a real folder. Re-apply:
-
-```bash
-cd dashboard/app/frontend
-rm -rf node_modules.nosync && mv node_modules node_modules.nosync && ln -s node_modules.nosync node_modules
-```
-
-Use the same pattern for any other iCloud project with a `node_modules` folder (find with `/usr/bin/find ~/Library/Mobile\ Documents/com~apple~CloudDocs -name node_modules -type d -prune`).
+If the repo lives in iCloud Drive, symlink `node_modules` → `node_modules.nosync` so npm packages are not synced. See `dashboard/README.md` for the re-apply command after `npm ci` / `npm install`.
 
 ### Dashboard — Docker
 
