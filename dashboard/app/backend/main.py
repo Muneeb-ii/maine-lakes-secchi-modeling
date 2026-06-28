@@ -14,6 +14,8 @@ from contracts import (
     ModelHealthResponse,
     PredictScenarioResponse,
     PredictionPayloadResponse,
+    SensitivityItemResponse,
+    SensitivityResponse,
     ScenarioPayload,
     WaterfallItemResponse,
 )
@@ -45,6 +47,8 @@ lake_names_data = {}
 support_policy_data = {}
 registry = ModelRegistry(models_path=models_path)
 SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
+SENSITIVITY_FLAT_THRESHOLD_METERS = 0.01
+SENSITIVITY_RANGE_SAMPLE_COUNT = 5
 
 
 @asynccontextmanager
@@ -100,7 +104,7 @@ app.add_middleware(
 async def rate_limit_middleware(request: Request, call_next):
     if request.method != "OPTIONS":
         enforce_api_rate_limit(request)
-        if request.method == "POST" and request.url.path == "/predict_scenario":
+        if request.method == "POST" and request.url.path.startswith("/predict_scenario"):
             enforce_predict_rate_limit(request)
     return await call_next(request)
 
@@ -192,6 +196,133 @@ def _prediction_features(payload: ScenarioPayload) -> dict:
         _validate_editable_feature(feature_name, value)
         normalized_features[feature_name] = value
     return normalized_features
+
+def _model_prediction(features: dict, model_id: str | None = None) -> float:
+    return registry.predict(
+        features=features,
+        model_id=model_id,
+        include_explainability=False,
+    ).prediction_meters
+
+def _sensitivity_direction(delta_up: float, delta_down: float) -> str:
+    threshold = SENSITIVITY_FLAT_THRESHOLD_METERS
+    up_significant = abs(delta_up) >= threshold
+    down_significant = abs(delta_down) >= threshold
+
+    if not up_significant and not down_significant:
+        return "flat"
+    if delta_up >= threshold and (not down_significant or delta_down <= -threshold):
+        return "clearer"
+    if delta_up <= -threshold and (not down_significant or delta_down >= threshold):
+        return "murkier"
+    if delta_down <= -threshold and not up_significant:
+        return "clearer"
+    if delta_down >= threshold and not up_significant:
+        return "murkier"
+    return "mixed"
+
+def _direction_from_delta(delta: float) -> str:
+    threshold = SENSITIVITY_FLAT_THRESHOLD_METERS
+    if delta >= threshold:
+        return "clearer"
+    if delta <= -threshold:
+        return "murkier"
+    return "flat"
+
+def _sensitivity_summary_direction(local_direction: str, range_direction: str) -> str:
+    if local_direction == "flat" and range_direction in {"clearer", "murkier", "mixed"}:
+        return "range_sensitive"
+    if local_direction in {"clearer", "murkier"} and range_direction not in {"flat", local_direction}:
+        return "mixed"
+    return local_direction
+
+def _range_sensitivity_for_feature(
+    feature_name: str,
+    features: dict,
+    baseline_prediction: float,
+    current_value: float,
+    max_value: float,
+    model_id: str | None = None,
+) -> tuple[str, float]:
+    if current_value >= max_value:
+        return "flat", 0.0
+
+    sample_count = SENSITIVITY_RANGE_SAMPLE_COUNT
+    interval = (max_value - current_value) / sample_count
+    deltas = []
+    directions = set()
+    for index in range(1, sample_count + 1):
+        sampled_value = current_value + interval * index
+        sampled_features = dict(features)
+        sampled_features[feature_name] = sampled_value
+        delta = _model_prediction(sampled_features, model_id=model_id) - baseline_prediction
+        deltas.append(delta)
+        direction = _direction_from_delta(delta)
+        if direction != "flat":
+            directions.add(direction)
+
+    if len(directions) > 1:
+        return "mixed", max(deltas, key=abs)
+    if len(directions) == 1:
+        direction = next(iter(directions))
+        directional_deltas = [delta for delta in deltas if _direction_from_delta(delta) == direction]
+        return direction, max(directional_deltas, key=abs)
+    return "flat", max(deltas, key=abs) if deltas else 0.0
+
+def _sensitivity_item_for_feature(
+    feature_name: str,
+    features: dict,
+    baseline_prediction: float,
+    model_id: str | None = None,
+) -> SensitivityItemResponse:
+    definition = FEATURE_DEFINITIONS[feature_name]
+    slider = definition.get("slider") or {}
+    unit = str(definition.get("unit", ""))
+    value = features.get(feature_name)
+
+    if value is None or not math.isfinite(float(value)):
+        return SensitivityItemResponse(feature=feature_name, direction="unavailable", unit=unit)
+
+    numeric_value = float(value)
+    min_value = float(slider.get("min", numeric_value))
+    max_value = float(slider.get("max", numeric_value))
+    step = float(slider.get("step", 0.1))
+    up_value = min(max_value, numeric_value + step)
+    down_value = max(min_value, numeric_value - step)
+
+    up_features = dict(features)
+    down_features = dict(features)
+    up_features[feature_name] = up_value
+    down_features[feature_name] = down_value
+
+    up_prediction = _model_prediction(up_features, model_id=model_id)
+    down_prediction = _model_prediction(down_features, model_id=model_id)
+    delta_up = up_prediction - baseline_prediction
+    delta_down = down_prediction - baseline_prediction
+    local_direction = _sensitivity_direction(delta_up, delta_down)
+    range_direction, range_delta = _range_sensitivity_for_feature(
+        feature_name,
+        features,
+        baseline_prediction,
+        numeric_value,
+        max_value,
+        model_id=model_id,
+    )
+
+    return SensitivityItemResponse(
+        feature=feature_name,
+        direction=_sensitivity_summary_direction(local_direction, range_direction),
+        local_direction=local_direction,
+        range_direction=range_direction,
+        range_delta_meters=range_delta,
+        delta_up_meters=delta_up,
+        delta_down_meters=delta_down,
+        step=step,
+        unit=unit,
+        value=numeric_value,
+        value_up=up_value,
+        value_down=down_value,
+    )
 
 
 @app.get("/")
@@ -346,3 +477,46 @@ def predict_scenario(payload: ScenarioPayload, request: Request):
             raise HTTPException(status_code=500, detail=str(exc))
         print(f"Prediction failed: {exc}")
         raise HTTPException(status_code=500, detail="Prediction service failed.")
+
+@app.post("/predict_scenario/sensitivity")
+def predict_scenario_sensitivity(payload: ScenarioPayload, request: Request):
+    if not registry.is_ready():
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "message": "Models are unavailable.",
+                "startup_errors": _public_startup_errors(),
+            },
+        )
+
+    try:
+        normalized_features = _prediction_features(payload)
+        baseline_prediction = _model_prediction(normalized_features, model_id=payload.model_id)
+        active_metadata = registry.active_model_metadata() or {}
+        items = [
+            _sensitivity_item_for_feature(
+                feature_name,
+                normalized_features,
+                baseline_prediction,
+                model_id=payload.model_id,
+            )
+            for feature_name in get_feature_config_response()["editable_features"]
+        ]
+
+        response = SensitivityResponse(
+            schema_version="1.0.0",
+            model_id=str(active_metadata.get("model_id", "unknown")),
+            model_version=str(active_metadata.get("model_version", "unknown")),
+            baseline_prediction_meters=baseline_prediction,
+            items=items,
+        )
+        return response.model_dump()
+    except HTTPException as exc:
+        raise exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    except Exception as exc:
+        if _dashboard_debug():
+            raise HTTPException(status_code=500, detail=str(exc))
+        print(f"Sensitivity failed: {exc}")
+        raise HTTPException(status_code=500, detail="Sensitivity service failed.")

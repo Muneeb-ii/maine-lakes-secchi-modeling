@@ -38,6 +38,27 @@ class PredictScenarioResponse(BaseModel):
     # Compatibility fields for existing frontend consumers.
     prediction_meters: float
 
+class SensitivityItemResponse(BaseModel):
+    feature: str
+    direction: str
+    local_direction: Optional[str] = None
+    range_direction: Optional[str] = None
+    range_delta_meters: Optional[float] = None
+    delta_up_meters: Optional[float] = None
+    delta_down_meters: Optional[float] = None
+    step: Optional[float] = None
+    unit: str = ""
+    value: Optional[float] = None
+    value_up: Optional[float] = None
+    value_down: Optional[float] = None
+
+class SensitivityResponse(BaseModel):
+    schema_version: str = Field(default="1.0.0")
+    model_id: str
+    model_version: str
+    baseline_prediction_meters: float
+    items: List[SensitivityItemResponse]
+
 
 class ModelHealthResponse(BaseModel):
     status: str
