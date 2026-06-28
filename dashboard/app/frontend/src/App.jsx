@@ -107,7 +107,6 @@ function TrendsPage() {
           </button>
         </div>
       </section>
-      <ClaroGuide routeId={getClaroRouteId(ROUTES.trends)} />
     </PageFrame>
   );
 }

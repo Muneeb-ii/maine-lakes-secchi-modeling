@@ -16,9 +16,10 @@ import {
 
 test("Claro only registers workspace routes", () => {
   assert.equal(getClaroRouteId("/playground"), CLARO_ROUTE_IDS.playground);
-  assert.equal(getClaroRouteId("/trends"), CLARO_ROUTE_IDS.trends);
+  assert.equal(getClaroRouteId("/trends"), "");
   assert.equal(getClaroRouteId("/"), "");
   assert.equal(isClaroRoute("/playground"), true);
+  assert.equal(isClaroRoute("/trends"), false);
   assert.equal(isClaroRoute("/contributors"), false);
 });
 

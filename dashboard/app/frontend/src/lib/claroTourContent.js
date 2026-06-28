@@ -10,7 +10,6 @@ export const CLARO_ROUTE_IDS = {
 
 export const CLARO_ROUTE_BY_PATH = {
   [ROUTES.playground]: CLARO_ROUTE_IDS.playground,
-  [ROUTES.trends]: CLARO_ROUTE_IDS.trends,
 };
 
 export const CLARO_PERSONA = {
