@@ -5,10 +5,13 @@ import "leaflet/dist/leaflet.css";
 import { MapPin, X } from "lucide-react";
 import { API_URL } from "../../lib/constants";
 import { parseLakeSearchResponse } from "../../lib/contracts";
+import { useUnitSystem } from "../../context/UnitSystemContext";
+import { formatQuantity } from "../../lib/units";
 
 const DEFAULT_CENTER = [44.35, -69.2];
 const DEFAULT_ZOOM = 7;
 const FOCUSED_ZOOM = 12;
+const LABEL_ZOOM = 11;
 
 function hasLocation(lake) {
   return typeof lake?.latitude === "number" && typeof lake?.longitude === "number";
@@ -31,7 +34,7 @@ function escapeHtml(value) {
 function markerIcon(isCurrent) {
   return L.divIcon({
     className: `lake-map-pin ${isCurrent ? "lake-map-pin-current" : ""}`,
-    html: `<span></span>`,
+    html: `<span class="lake-map-pin-dot"></span>`,
     iconSize: [18, 18],
     iconAnchor: [9, 9],
     popupAnchor: [0, -9],
@@ -45,10 +48,12 @@ export function LakeMapPicker({
   onClose,
   onSelectLake,
 }) {
+  const { system } = useUnitSystem();
   const mapRef = useRef(null);
   const mapNodeRef = useRef(null);
   const markerLayerRef = useRef(null);
   const popupHandlersRef = useRef(new Map());
+  const lastFocusedLakeIdRef = useRef("");
   const [lakes, setLakes] = useState([]);
   const [status, setStatus] = useState("");
   const [selectedLakeId, setSelectedLakeId] = useState("");
@@ -101,12 +106,13 @@ export function LakeMapPicker({
   useEffect(() => {
     if (!isOpen || !mapNodeRef.current || mapRef.current) return;
 
-    const startCenter = hasLocation(focusLake)
-      ? [focusLake.latitude, focusLake.longitude]
+    const startLake = hasLocation(initialLake) ? initialLake : null;
+    const startCenter = startLake
+      ? [startLake.latitude, startLake.longitude]
       : DEFAULT_CENTER;
     const map = L.map(mapNodeRef.current, {
       center: startCenter,
-      zoom: hasLocation(focusLake) ? FOCUSED_ZOOM : DEFAULT_ZOOM,
+      zoom: startLake ? FOCUSED_ZOOM : DEFAULT_ZOOM,
       scrollWheelZoom: true,
     });
 
@@ -115,18 +121,28 @@ export function LakeMapPicker({
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
+    const syncLabelVisibility = () => {
+      mapNodeRef.current?.classList.toggle("lake-map-labels-visible", map.getZoom() >= LABEL_ZOOM);
+    };
+    map.on("zoom", syncLabelVisibility);
+    map.on("zoomend", syncLabelVisibility);
+    syncLabelVisibility();
+
     markerLayerRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
 
     const timer = window.setTimeout(() => map.invalidateSize(), 80);
     return () => {
       window.clearTimeout(timer);
+      map.off("zoom", syncLabelVisibility);
+      map.off("zoomend", syncLabelVisibility);
       popupHandlersRef.current.clear();
+      lastFocusedLakeIdRef.current = "";
       map.remove();
       mapRef.current = null;
       markerLayerRef.current = null;
     };
-  }, [focusLake, isOpen]);
+  }, [initialLake, isOpen]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -140,22 +156,46 @@ export function LakeMapPicker({
       const buttonId = `lake-map-select-${lake.midasId}`;
       const marker = L.marker([lake.latitude, lake.longitude], {
         icon: markerIcon(lake.midasId === currentLakeId),
+        riseOnHover: true,
         title: `${lake.lakeName} ${lake.midasId}`,
+      });
+      marker.bindTooltip(escapeHtml(lake.lakeName), {
+        className: "lake-map-label",
+        direction: "right",
+        interactive: false,
+        offset: [12, 0],
+        opacity: 0,
+        permanent: true,
       });
       const areaLine =
         typeof lake.areaAcres === "number"
-          ? `<p class="lake-map-popup-meta">${lake.areaAcres.toLocaleString(undefined, {
-              maximumFractionDigits: 1,
-            })} acres</p>`
+          ? `<div class="lake-map-popup-row">
+              <span class="lake-map-popup-label">Area</span>
+              <span class="lake-map-popup-value">${escapeHtml(
+              formatQuantity(lake.areaAcres, {
+                canonicalUnit: "acres",
+                system,
+                decimals: 1,
+              })
+            )}</span>
+            </div>`
           : "";
       marker.bindPopup(`
         <div class="lake-map-popup">
-          <p class="lake-map-popup-title">${escapeHtml(lake.lakeName)}</p>
-          <p class="lake-map-popup-meta">${escapeHtml(lake.midasId)} · ${escapeHtml(formatCoordinates(lake))}</p>
-          ${areaLine}
-          <button type="button" id="${buttonId}" class="lake-map-popup-button">Select lake</button>
+          <div class="lake-map-popup-header">
+            <p class="lake-map-popup-title">${escapeHtml(lake.lakeName)}</p>
+            <span class="lake-map-popup-badge">${escapeHtml(lake.midasId)}</span>
+          </div>
+          <div class="lake-map-popup-details">
+            <div class="lake-map-popup-row">
+              <span class="lake-map-popup-label">Coordinates</span>
+              <span class="lake-map-popup-value">${escapeHtml(formatCoordinates(lake))}</span>
+            </div>
+            ${areaLine}
+          </div>
+          <button type="button" id="${buttonId}" class="lake-map-popup-button">Use this lake</button>
         </div>
-      `);
+      `, { maxWidth: 320, minWidth: 240 });
       marker.on("popupopen", () => {
         const button = document.getElementById(buttonId);
         const handler = async () => {
@@ -181,11 +221,14 @@ export function LakeMapPicker({
       });
       marker.addTo(layer);
     });
-  }, [currentLakeId, isOpen, lakes, onClose, onSelectLake]);
+  }, [currentLakeId, isOpen, lakes, onClose, onSelectLake, system]);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!isOpen || !map || !hasLocation(focusLake)) return;
+    const focusKey = focusLake.midasId || `${focusLake.latitude},${focusLake.longitude}`;
+    if (lastFocusedLakeIdRef.current === focusKey) return;
+    lastFocusedLakeIdRef.current = focusKey;
     map.setView([focusLake.latitude, focusLake.longitude], FOCUSED_ZOOM, {
       animate: true,
     });

@@ -8,6 +8,8 @@ import {
   SEARCH_RECENT_HEADING,
   formatLakeSearchDisplay,
 } from "../../lib/copy";
+import { useUnitSystem } from "../../context/UnitSystemContext";
+import { formatQuantity } from "../../lib/units";
 
 export function LakeSearchCombobox({
   lakeId,
@@ -26,6 +28,7 @@ export function LakeSearchCombobox({
   onShowLakeOnMap,
   onSearchKeyDown,
 }) {
+  const { system } = useUnitSystem();
   const listboxId = useId();
   const activeOptionId =
     activeSuggestion >= 0 ? `${listboxId}-option-${activeSuggestion}` : undefined;
@@ -38,9 +41,11 @@ export function LakeSearchCombobox({
     }
     const coordinates = `${result.latitude.toFixed(4)}, ${result.longitude.toFixed(4)}`;
     if (typeof result.areaAcres === "number") {
-      return `${coordinates} · ${result.areaAcres.toLocaleString(undefined, {
-        maximumFractionDigits: 1,
-      })} acres`;
+      return `${coordinates} · ${formatQuantity(result.areaAcres, {
+        canonicalUnit: "acres",
+        system,
+        decimals: 1,
+      })}`;
     }
     return coordinates;
   };
