@@ -6,7 +6,7 @@ from pathlib import Path
 from feature_contract import CANONICAL_FEATURE_ORDER, FEATURE_DEFINITIONS
 
 
-# Expected dashboard labels/units aligned with data/Merged_Dataset_Metadata.csv
+# Expected dashboard labels/units aligned with the dashboard dataset metadata in data/catalog.json
 METADATA_ALIGNED_FEATURES = {
     "DOMAX": {"label": "Dissolved Oxygen Max", "unit": "ppm"},
     "DOMIN": {"label": "Dissolved Oxygen Min", "unit": "ppm"},

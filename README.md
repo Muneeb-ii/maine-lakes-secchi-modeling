@@ -4,7 +4,7 @@ This repository is used to iterate on Secchi-depth modeling experiments and keep
 
 ## Repository Map
 
-- `data/` contains the canonical research inputs, especially `Merged_Dataset.csv` and `Merged_Dataset_Metadata.csv`.
+- `data/` separates immutable provider files, versioned processed datasets, and dataset-bound derived artifacts; `data/catalog.json` records their lineage and active status.
 - `experiments/` contains the stable experiment registry, runner, template, and the numbered experiment scripts that generate reports.
 - `reports/` contains the committed canonical report outputs and figure artifacts produced by experiments.
 - `artifacts/models/` contains dashboard-facing model artifacts, the manifest, and the model training/export script.

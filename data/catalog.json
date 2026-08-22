@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "active_research_dataset_id": "secchi-merged-2026-06-29-r1",
+  "dashboard_artifact_dataset_id": "secchi-merged-2025-04-17-r1",
+  "raw_sources": {
+    "secchi-2025-04-17": {
+      "kind": "secchi_provider_delivery",
+      "release_date": "2025-04-17",
+      "measurements_through": "2022-11-28",
+      "status": "historical",
+      "files": [
+        {
+          "role": "data",
+          "path": "data/raw/secchi/secchi-2025-04-17/Data for Secchi Modeling 4-17-25 DJW.xlsx - data.csv",
+          "sha256": "0ea021488ad1891f2ea4694e05d5b50b99cce122ac89a138a0807c26dcf0f5eb"
+        },
+        {
+          "role": "provider_metadata",
+          "path": "data/raw/secchi/secchi-2025-04-17/Data for Secchi Modeling 4-17-25 DJW.xlsx - metadata.csv",
+          "sha256": "8abfc3fdd77a05a45e417cd6dfae22307ffba82c30fafcf320dc82475800d18e",
+          "known_issue": "TPEC and TPBG definitions are reversed; the provider confirmed TPEC is epicore and TPBG is bottom grab."
+        }
+      ]
+    },
+    "secchi-2026-04-14": {
+      "kind": "secchi_provider_delivery",
+      "release_date": "2026-04-14",
+      "measurements_through": "2024-12-03",
+      "status": "superseded",
+      "superseded_by": "secchi-2026-06-29",
+      "files": [
+        {
+          "role": "data",
+          "path": "data/raw/secchi/secchi-2026-04-14/Data for Secchi Modeling 4-14-26 DJW-data.csv",
+          "sha256": "09360d9faf2855932abba5accd49b5605de0d40df0d0d91a0ab42be903fac5f3"
+        },
+        {
+          "role": "provider_metadata",
+          "path": "data/raw/secchi/secchi-2026-04-14/Data for Secchi Modeling 4-14-26 DJW-metadata.csv",
+          "sha256": "26d1754b36984fb44238a3f830b39eb0d01f631a5be6aabbe9e7923992d8f657"
+        }
+      ]
+    },
+    "secchi-2026-06-29": {
+      "kind": "secchi_provider_delivery",
+      "release_date": "2026-06-29",
+      "measurements_through": "2024-12-03",
+      "status": "current",
+      "notes": "Supersedes the April delivery. The observation-identity multiset is unchanged from April, but many shared historical values were reprocessed and the June file contains additional profile fields. The provider has not yet documented all processing changes.",
+      "files": [
+        {
+          "role": "data",
+          "path": "data/raw/secchi/secchi-2026-06-29/Data for Secchi Modeling 6-29-26.xlsx - Data.csv",
+          "sha256": "1f950962a6d361a62ba06df4fbc1e1c42a725618b57d9aca57e7cf470c956d26"
+        },
+        {
+          "role": "provider_metadata",
+          "path": "data/raw/secchi/secchi-2026-06-29/Data for Secchi Modeling 6-29-26.xlsx - Metadata.csv",
+          "sha256": "b98ace7fc96bacb0870b1221088744aeab81259d384d4352ad9007efe57fcae4",
+          "known_issue": "The file contains only a one-sentence placeholder and no field definitions."
+        }
+      ]
+    },
+    "maine-lakes-geography-morphometry-2014-01-24": {
+      "kind": "provider_geography_morphometry",
+      "release_date": "2014-01-24",
+      "status": "current",
+      "files": [
+        {
+          "role": "provider_metadata",
+          "path": "data/raw/geography/maine-lakes-geography-morphometry-2014-01-24/MaineLakes_Geography_Morphometry.xls - About the Data.csv",
+          "sha256": "480ab1dadb9df6c4c9ab0ccf21de5797bfe6f33d8cf44f0e8117f87f04a9b862"
+        },
+        {
+          "role": "data",
+          "path": "data/raw/geography/maine-lakes-geography-morphometry-2014-01-24/MaineLakes_Geography_Morphometry.xls - DATA.csv",
+          "sha256": "95a41a3e2451c1e68684035a1ea3bb272dbfa0ea6689fbcc87c69fb3c40b95ea"
+        }
+      ]
+    },
+    "lake-classification-undated": {
+      "kind": "provider_lake_classification",
+      "release_date": null,
+      "status": "current",
+      "notes": "Provider-supplied workbook with no known release date; expected to change infrequently.",
+      "files": [
+        {
+          "role": "data",
+          "path": "data/raw/lake-classification/lake-classification-undated/Class_Final_LakeNames.xlsx",
+          "sha256": "444f7a6822e656455951dd0d478f9444e6ccdc15f3b802d69d0073e230b784d8"
+        }
+      ]
+    }
+  },
+  "processed_datasets": {
+    "secchi-merged-2025-04-17-r1": {
+      "status": "historical",
+      "release_date": "2025-04-17",
+      "raw_source_ids": [
+        "secchi-2025-04-17",
+        "maine-lakes-geography-morphometry-2014-01-24",
+        "lake-classification-undated"
+      ],
+      "data_path": "data/processed/secchi-merged-2025-04-17-r1/dataset.csv",
+      "data_sha256": "be815df1e28e6da8e1aa58e7fc2714f545c7804ff74042c9f3135f5723a10ec6",
+      "metadata_path": "data/processed/secchi-merged-2025-04-17-r1/metadata.csv",
+      "metadata_sha256": "70d3874138a1821b1f64b563020cf391a70a62adcc628ae9d0bd7f8aa781cdea",
+      "lineage_note": "The original merge builder was not committed. Repository audit verified all Secchi fields and geography/region joins against the listed raw sources. The historical processed files remain byte-for-byte unchanged."
+    },
+    "secchi-merged-2026-06-29-r1": {
+      "status": "active_research",
+      "release_date": "2026-06-29",
+      "raw_source_ids": [
+        "secchi-2026-06-29",
+        "secchi-2025-04-17",
+        "maine-lakes-geography-morphometry-2014-01-24",
+        "lake-classification-undated"
+      ],
+      "data_path": "data/processed/secchi-merged-2026-06-29-r1/dataset.csv",
+      "data_sha256": "a59d00d5a221a8d86c6c1be21e920d95cd558764972556e191967441fb617ba4",
+      "metadata_path": "data/processed/secchi-merged-2026-06-29-r1/metadata.csv",
+      "metadata_sha256": "b6c0734d3e9248a9d3229fa3d1ae36b3827e8fa0674e9587a783b69f12088337",
+      "project_source_metadata_path": "data/processed/secchi-merged-2026-06-29-r1/source-metadata-project.csv",
+      "project_source_metadata_sha256": "48b4e1f5cb9cea202dec1c4d6f6b864416fb908d60ed2776f533ae8d33713d5b",
+      "builder_path": "data/pipeline/build_secchi_merged.py",
+      "build_summary_path": "data/processed/secchi-merged-2026-06-29-r1/build-summary.json",
+      "cleaning_policy": [
+        "Remove 226 rows whose provider MIDAS lake component is negative.",
+        "Set non-Y/N SECCBOT values to NA.",
+        "Set the confirmed DOMAX=410.8 and TMAX=53.2/TMIN=46 transcription errors to NA.",
+        "Retain TPBG=16200 because the provider indicated that change is likely correct.",
+        "Add PH, COLOR, CONDUCT, and ALK as fixed lake means from unique 2025 lake-station-date observations."
+      ]
+    }
+  },
+  "derived_artifacts": {
+    "secchi-merged-2025-04-17-r1": {
+      "lake_missingness_path": "data/derived/secchi-merged-2025-04-17-r1/lake-missingness.csv",
+      "lake_missingness_sha256": "71e2aad5de821ebc510feb057672909b90596200ff77e7c74854ca222609be47",
+      "lolo_seed_10_path": "data/derived/secchi-merged-2025-04-17-r1/lolo-random-seed-10.txt",
+      "lolo_seed_10_sha256": "9fe84b9cece098c324886006bfbb7fa4a5186f3127b31fd8b6e2dfa90970f7b0",
+      "lolo_seed_100_path": "data/derived/secchi-merged-2025-04-17-r1/lolo-random-seed-100-seed42.txt",
+      "lolo_seed_100_sha256": "331bca5df52f22604a549f2919b4cc9be16573a633e34a396e92e3b262554def"
+    },
+    "secchi-merged-2026-06-29-r1": {
+      "lake_missingness_path": "data/derived/secchi-merged-2026-06-29-r1/lake-missingness.csv",
+      "lake_missingness_sha256": "ea73ddb7402ec6e2b05e5af3db5176dc5ed790350feaa241eaf2b2239f5c265c"
+    }
+  }
+}

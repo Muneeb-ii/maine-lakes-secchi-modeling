@@ -7,6 +7,7 @@ This runbook defines the expected workflow for rerunning or adding experiments. 
 - Keep the numeric experiment IDs stable forever.
 - Every experiment script lives in `experiments/scripts/`.
 - Every canonical experiment must have one registry entry in `experiments/registry.json`.
+- Every registry entry must record an exact `dataset_id`; never point a historical experiment at a moving default.
 - Every canonical experiment must produce one committed markdown report in `reports/`.
 - Supporting figures and tables should also be committed when they are part of the experiment output contract.
 
@@ -21,14 +22,15 @@ This runbook defines the expected workflow for rerunning or adding experiments. 
 
 1. Copy `experiments/templates/experiment_template.py` into `experiments/scripts/` and replace the placeholder ID, slug, and title.
 2. Add a matching entry to `experiments/registry.json`.
-3. Use the canonical report structure:
+3. Copy `active_research_dataset_id` from `data/catalog.json` into that entry's `dataset_id`.
+4. Use the canonical report structure:
    - Objective
    - Method
    - Parameters
    - Results
    - Next Step
-4. Write outputs into `reports/` using stable filenames prefixed by the experiment ID.
-5. Commit the script, registry update, report, and any supporting figures together.
+5. Write outputs into `reports/` using stable filenames prefixed by the experiment ID.
+6. Commit the script, registry update, report, and any supporting figures together.
 
 ## Report Expectations
 
@@ -41,4 +43,4 @@ This runbook defines the expected workflow for rerunning or adding experiments. 
 
 - `experiments/scripts/experiment_utils.py` is the shared utility layer for loading canonical data, writing reports, and rendering tables.
 - `artifacts/models/train_dashboard_model.py` is the artifact export path for dashboard-serving assets, not a replacement for the experiment workflow.
-- `data/lake_missingness.csv` is a derived support file used by some later experiments and should be regenerated intentionally.
+- Dataset-dependent inputs such as lake missingness and LOLO seeds resolve from `data/derived/<dataset-id>/` through `data/catalog.json`.

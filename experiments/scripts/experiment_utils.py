@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List, Tuple
@@ -11,10 +13,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 EXPERIMENTS_ROOT = PROJECT_ROOT / "experiments"
 DATA_DIR = PROJECT_ROOT / "data"
 REPORTS_DIR = PROJECT_ROOT / "reports"
-
-# Canonical research inputs.
-DATA_CSV = DATA_DIR / "Merged_Dataset.csv"
-METADATA_CSV = DATA_DIR / "Merged_Dataset_Metadata.csv"
+CATALOG_PATH = DATA_DIR / "catalog.json"
+DATASET_ID_ENV = "SECCHI_DATASET_ID"
 
 STANDARD_REPORT_SECTIONS = (
     "Objective",
@@ -28,6 +28,14 @@ STANDARD_REPORT_SECTIONS = (
 @dataclass
 class LoadedData:
     frame: pd.DataFrame
+    dataset_id: str
+
+
+@dataclass(frozen=True)
+class DatasetPaths:
+    dataset_id: str
+    data: Path
+    metadata: Path
 
 
 @dataclass(frozen=True)
@@ -91,15 +99,74 @@ def _parse_midas(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def load_data() -> LoadedData:
-    """Load the main Secchi dataset with parsed temporal fields."""
-    if not DATA_CSV.exists():
-        raise FileNotFoundError(f"Data CSV not found at {DATA_CSV}")
+def _load_catalog() -> dict:
+    if not CATALOG_PATH.is_file():
+        raise FileNotFoundError(f"Data catalog not found at {CATALOG_PATH}")
+    with CATALOG_PATH.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
 
-    df = pd.read_csv(DATA_CSV)
+
+def resolve_dataset_paths(dataset_id: str | None = None) -> DatasetPaths:
+    """Resolve an explicit processed snapshot from the repository data catalog."""
+    selected_id = dataset_id or os.environ.get(DATASET_ID_ENV)
+    if not selected_id:
+        raise RuntimeError(
+            f"No dataset selected. Run experiments through experiments/run.py or set "
+            f"{DATASET_ID_ENV} to a cataloged processed dataset ID."
+        )
+
+    catalog = _load_catalog()
+    entry = catalog.get("processed_datasets", {}).get(selected_id)
+    if entry is None:
+        raise KeyError(f"Unknown processed dataset ID: {selected_id}")
+
+    paths = DatasetPaths(
+        dataset_id=selected_id,
+        data=PROJECT_ROOT / entry["data_path"],
+        metadata=PROJECT_ROOT / entry["metadata_path"],
+    )
+    for role, path in (("data", paths.data), ("metadata", paths.metadata)):
+        if not path.is_file():
+            raise FileNotFoundError(
+                f"Cataloged {role} file for {selected_id} not found at {path}"
+            )
+    return paths
+
+
+def get_dataset_artifact_path(
+    artifact_key: str,
+    dataset_id: str | None = None,
+    *,
+    must_exist: bool = True,
+) -> Path:
+    """Resolve a dataset-dependent derived artifact from the data catalog."""
+    selected_id = dataset_id or os.environ.get(DATASET_ID_ENV)
+    if not selected_id:
+        raise RuntimeError(
+            f"No dataset selected for derived artifact {artifact_key!r}; set "
+            f"{DATASET_ID_ENV} or run the experiment through experiments/run.py."
+        )
+    entry = _load_catalog().get("derived_artifacts", {}).get(selected_id)
+    if entry is None or artifact_key not in entry:
+        raise KeyError(
+            f"No derived artifact {artifact_key!r} is cataloged for {selected_id}."
+        )
+    path = PROJECT_ROOT / entry[artifact_key]
+    if must_exist and not path.is_file():
+        raise FileNotFoundError(
+            f"Cataloged derived artifact {artifact_key!r} not found at {path}"
+        )
+    return path
+
+
+def load_data(dataset_id: str | None = None) -> LoadedData:
+    """Load one explicit Secchi snapshot with parsed temporal fields."""
+    paths = resolve_dataset_paths(dataset_id)
+
+    df = pd.read_csv(paths.data, low_memory=False)
     df = _parse_midas(df)
     df = _parse_dates(df)
-    return LoadedData(frame=df)
+    return LoadedData(frame=df, dataset_id=paths.dataset_id)
 
 
 def ensure_reports_dir() -> Path:

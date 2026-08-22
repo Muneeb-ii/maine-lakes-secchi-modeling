@@ -9,7 +9,13 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from tqdm import tqdm
 import random
 
-from experiment_utils import ensure_reports_dir, write_markdown_report, df_to_markdown_table, load_data, PROJECT_ROOT
+from experiment_utils import (
+    ensure_reports_dir,
+    write_markdown_report,
+    df_to_markdown_table,
+    get_dataset_artifact_path,
+    load_data,
+)
 
 def haversine_vectorized(lat1, lon1, lat2, lon2):
     """
@@ -216,7 +222,9 @@ def main():
     avg_spatial_lolo = np.mean(spatial_lolo_results)
     
     # Save the selected random lakes so Experiments 20 and 21 can match identically!
-    with open(PROJECT_ROOT / "experiments" / "scripts" / "lolo_random_seed_10.txt", "w") as f:
+    with get_dataset_artifact_path(
+        "lolo_seed_10_path", must_exist=False
+    ).open("w") as f:
         for L in sample_lakes:
             f.write(f"{L}\n")
     
@@ -254,7 +262,7 @@ def main():
         ),
         
         ("Predicting Completely Unseen Lakes (LOLO)",
-         "We randomly saved exactly 10 data-rich lakes (Lakes saved: `lolo_random_seed_10.txt`). For each lake, we completely stripped it out from the model's memory during training context, effectively simulating bringing a totally unobserved lake to the model and watching if it successfully borrows the environment around it.\n\n"
+         "We randomly saved exactly 10 data-rich lakes in the dataset-bound LOLO seed artifact. For each lake, we completely stripped it out from the model's memory during training context, effectively simulating bringing a totally unobserved lake to the model and watching if it successfully borrows the environment around it.\n\n"
          f"- **Baseline Global RF Average LOLO $R^2$:** {avg_base_lolo:.4f}\n"
          f"- **Spatial Context RF Average LOLO $R^2$:** {avg_spatial_lolo:.4f}\n\n"
          "*(Note: When LOLO is negative, the model essentially inverted its predictability logic, failing drastically)*"

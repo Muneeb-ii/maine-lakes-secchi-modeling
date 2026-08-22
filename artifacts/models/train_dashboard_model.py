@@ -15,6 +15,8 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'experiments', 'scripts')))
 from experiment_utils import PROJECT_ROOT  # noqa: E402
 
+DASHBOARD_DATASET_ID = "secchi-merged-2025-04-17-r1"
+
 FEATURES = [
     "year",
     "month",
@@ -117,12 +119,24 @@ def write_json(path: Path, payload) -> None:
         json.dump(payload, handle, indent=2)
 
 
+def dashboard_dataset_paths() -> tuple[Path, Path]:
+    catalog_path = PROJECT_ROOT / "data" / "catalog.json"
+    with catalog_path.open("r", encoding="utf-8") as handle:
+        catalog = json.load(handle)
+    processed = catalog["processed_datasets"][DASHBOARD_DATASET_ID]
+    derived = catalog["derived_artifacts"][DASHBOARD_DATASET_ID]
+    return (
+        PROJECT_ROOT / processed["data_path"],
+        PROJECT_ROOT / derived["lake_missingness_path"],
+    )
+
+
 def main():
     models_dir = PROJECT_ROOT / "artifacts" / "models"
     models_dir.mkdir(parents=True, exist_ok=True)
 
-    print("Loading dataset...")
-    csv_path = PROJECT_ROOT / "data" / "Merged_Dataset.csv"
+    print(f"Loading dashboard dataset {DASHBOARD_DATASET_ID}...")
+    csv_path, missing_path = dashboard_dataset_paths()
     df = pd.read_csv(csv_path, low_memory=False)
     df = parse_midas(df)
     df["SAMPDATE"] = pd.to_datetime(df["SAMPDATE"], errors="coerce", utc=True)
@@ -133,7 +147,6 @@ def main():
     required = [target, "SAMPDATE", "MIDAS", "LATITUDE", "LONGITUDE", "AREA_ACRES", "DEPTH_MAX_FEET"]
     model_df = df.dropna(subset=required).copy().sort_values("SAMPDATE").reset_index(drop=True)
 
-    missing_path = PROJECT_ROOT / "data" / "lake_missingness.csv"
     missingness_df = pd.read_csv(missing_path)
     missingness_df["MIDAS"] = missingness_df["MIDAS"].astype(str).str.upper().str.strip()
 
@@ -172,6 +185,7 @@ def main():
     write_json(models_dir / "baseline_lakes_summary.json", baseline)
 
     support_payload = {
+        "dataset_id": DASHBOARD_DATASET_ID,
         "policy": SUPPORT_POLICY,
         "proof_experiments": PROOF_EXPERIMENTS,
         "counts": {
@@ -265,6 +279,8 @@ The dashboard is restricted to lakes with:
         "schema_version": "1.0.0",
         "model_id": "secchi-catboost-supported-lakes",
         "model_version": "2026-05-28-exp34-exp38",
+        "dataset_id": DASHBOARD_DATASET_ID,
+        "dataset_sha256": sha256_for_file(csv_path),
         "trained_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "feature_order": FEATURES,
         "artifacts": artifacts,

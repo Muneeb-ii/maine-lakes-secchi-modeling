@@ -11,7 +11,13 @@ except ImportError:  # optional dependency
     def tqdm(iterable, **_kwargs):
         return iterable
 
-from experiment_utils import ensure_reports_dir, write_markdown_report, df_to_markdown_table, load_data, PROJECT_ROOT
+from experiment_utils import (
+    ensure_reports_dir,
+    write_markdown_report,
+    df_to_markdown_table,
+    get_dataset_artifact_path,
+    load_data,
+)
 
 def evaluate_model(y_true, y_pred, depth):
     if len(y_true) == 0:
@@ -49,13 +55,13 @@ def main():
     model_df = df.dropna(subset=subset_cols).copy()
     model_df = model_df.sort_values(by="SAMPDATE").reset_index(drop=True)
     
-    missing_path = PROJECT_ROOT / "data" / "lake_missingness.csv"
+    missing_path = get_dataset_artifact_path("lake_missingness_path")
     missingness_df = pd.read_csv(missing_path) if missing_path.exists() else pd.DataFrame()
     
     features = base_features + valid_chems
     
     # --- LOLO Evaluation ---
-    seed_file = PROJECT_ROOT / "experiments" / "scripts" / "lolo_random_seed_10.txt"
+    seed_file = get_dataset_artifact_path("lolo_seed_10_path")
     sample_lakes = []
     if seed_file.exists():
         with open(seed_file, "r") as f:
@@ -132,7 +138,7 @@ def main():
     sections = [
         ("What We Did",
          "In Experiment 23, we tested how well the model generalizes to lakes it has never seen.\n\n"
-         "We used a Leave-One-Lake-Out (LOLO) setup. Target lakes are read from `lolo_random_seed_10.txt` (one `MIDAS` ID per line).\n"
+         "We used a Leave-One-Lake-Out (LOLO) setup. Target lakes are read from the dataset-bound 10-lake seed artifact (one `MIDAS` ID per line).\n"
          "For each target lake, we ran this process:\n"
          "1. Held out one lake as the test set.\n"
          "2. Used all other lakes as the training set.\n"

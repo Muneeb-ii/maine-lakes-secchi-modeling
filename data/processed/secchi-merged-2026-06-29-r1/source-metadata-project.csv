@@ -1,0 +1,31 @@
+MIDAS,"Unique lake identifier assigned by the state plus station number. A lake can contain multiple sampling stations or basins."
+SAMPDATE,Date on which the measurement was taken.
+SECCHI,Secchi disk transparency in meters. There can be multiple readings on the same day.
+SECCBOT,Did the Secchi disk hit the bottom of the lake? Valid values are Y or N.
+MTB,NA
+Depth,NA
+TMAX,The maximum temperature in Celsius from a profile on a given date after data cleaning.
+TMIN,The minimum temperature in Celsius from a profile on a given date after data cleaning.
+DOMAX,The maximum dissolved oxygen in ppm from a profile on a given date after data cleaning.
+DOMIN,The minimum dissolved oxygen in ppm from a profile on a given date after data cleaning.
+MLD,Mixed layer depth in meters. The exact processing definition for this delivery was not provided.
+maxbf,NA
+ctr_buoy,NA
+epi_temp,NA
+hypo_temp,NA
+int_ener,NA
+schmidt,Schmidt stability in J/m2. The exact processing definition for this delivery was not provided.
+thermo,Thermocline depth in meters. The exact processing definition for this delivery was not provided.
+whole_temp,NA
+oxic_depth,Oxic layer depth in meters. The exact oxygen threshold and processing definition for this delivery were not provided.
+frac_anoxic,NA
+TPEC,Total phosphorus in ppb from epicore samples. Data points from the same day were averaged.
+TPBG,Total phosphorus in ppb from bottom grabs designated by sample depth. Data points from the same day were averaged.
+CHLA,Chlorophyll-a in ppb from epicore samples. Data points from the same day were averaged.
+,
+Project notes,
+1. The provider metadata file is preserved unchanged; it contains only a one-sentence placeholder rather than field definitions.,
+2. Definitions above reuse confirmed prior definitions where the field meaning is clear. Unconfirmed fields are marked NA.,
+3. The provider confirmed that TPEC is epicore and TPBG is bottom grab; the reversed definitions in the 2025 metadata are incorrect.,
+4. The provider indicated that processing changed in this delivery but has not yet supplied a complete method description.,
+5. Invalid numeric SECCBOT values are set to NA in the processed dataset because valid values are only Y or N.,

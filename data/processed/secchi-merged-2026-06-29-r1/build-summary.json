@@ -1,0 +1,35 @@
+{
+  "dataset_id": "secchi-merged-2026-06-29-r1",
+  "raw_rows": 165469,
+  "removed_negative_midas_rows": 226,
+  "removed_negative_midas_values": {
+    "-1_1": 179,
+    "-1_2": 21,
+    "-2_1": 12,
+    "-2_2": 12,
+    "-3_1": 2
+  },
+  "invalid_seccbot_set_to_na_rows": 2,
+  "invalid_seccbot_values": {
+    "9": 2
+  },
+  "domax_transcription_error_set_to_na_rows": 2,
+  "tmax_tmin_transcription_error_set_to_na_rows": 1,
+  "rows_output": 165243,
+  "unique_lakes": 1104,
+  "unique_lake_stations": 1509,
+  "measurement_date_min": "1952-08-01",
+  "measurement_date_max": "2024-12-03",
+  "lakes_without_geography": 3,
+  "lakes_without_region": 0,
+  "classification_region_conflict_midas_set_to_na": [
+    6016
+  ],
+  "static_descriptor_lake_coverage": {
+    "PH": 758,
+    "COLOR": 829,
+    "CONDUCT": 814,
+    "ALK": 815
+  },
+  "static_descriptor_method": "For each legacy chemistry field, repeated Secchi rows were first averaged within lake-station-date; those station-date values were then averaged by lake."
+}

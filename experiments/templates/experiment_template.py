@@ -9,7 +9,8 @@ REPORT_TITLE = "Experiment XX: Replace With Final Title"
 
 
 def main() -> None:
-    df = load_data().frame
+    data = load_data()
+    df = data.frame
 
     report = CanonicalReport(
         objective=(
@@ -21,8 +22,8 @@ def main() -> None:
             "and any major preprocessing or validation decisions."
         ),
         parameters=(
-            "List the key tunable settings, feature groups, and any external inputs or "
-            "supporting artifacts used during the run."
+            f"Dataset ID: `{data.dataset_id}`. List the key tunable settings, feature "
+            "groups, and any external inputs or supporting artifacts used during the run."
         ),
         results=(
             f"Record the core tables, metrics, and figure references here. "

@@ -18,8 +18,8 @@ from experiment_utils import (
     ensure_reports_dir,
     write_canonical_report,
     df_to_markdown_table,
+    get_dataset_artifact_path,
     load_data,
-    PROJECT_ROOT,
 )
 
 CATBOOST_PARAMS = {
@@ -121,9 +121,9 @@ def main() -> None:
     plt.savefig(chrono_plot, bbox_inches="tight")
     plt.close()
 
-    seed_file = PROJECT_ROOT / "experiments" / "scripts" / "lolo_random_seed_10.txt"
+    seed_file = get_dataset_artifact_path("lolo_seed_10_path")
     lake_ids = [line.strip() for line in seed_file.read_text(encoding="utf-8").splitlines() if line.strip()]
-    missing_path = PROJECT_ROOT / "data" / "lake_missingness.csv"
+    missing_path = get_dataset_artifact_path("lake_missingness_path")
     missingness_df = pd.read_csv(missing_path) if missing_path.exists() else pd.DataFrame()
 
     lolo_rows = []
@@ -198,7 +198,7 @@ def main() -> None:
             f"CatBoost parameters: {CATBOOST_PARAMS}\n\n"
             f"MissForest-style imputer: {MISSFOREST_IMPUTER}\n\n"
             f"Feature set (CHLA excluded): {features}\n\n"
-            "LOLO seed file: `lolo_random_seed_10.txt`"
+            "LOLO seed: dataset-bound 10-lake seed artifact"
         ),
         results=(
             "### Baseline Comparison\n\n"

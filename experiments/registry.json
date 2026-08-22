@@ -1,20 +1,12 @@
 {
-  "datasets": [
-    {
-      "path": "data/Merged_Dataset.csv",
-      "role": "canonical_research_data"
-    },
-    {
-      "path": "data/Merged_Dataset_Metadata.csv",
-      "role": "canonical_research_metadata"
-    }
-  ],
+  "data_catalog": "data/catalog.json",
   "experiments": [
     {
       "id": "01",
       "slug": "missingness_overview",
       "title": "Missingness and data quality overview",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/01_missingness_overview.py",
       "report": "reports/01_missingness_overview.md",
       "artifacts": [],
@@ -25,6 +17,7 @@
       "slug": "univariate_distributions",
       "title": "Univariate feature distributions",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/02_univariate_distributions.py",
       "report": "reports/02_univariate_distributions.md",
       "artifacts": [],
@@ -37,6 +30,7 @@
       "slug": "correlations_and_redundancy",
       "title": "Correlations and feature redundancy",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/03_correlations_and_redundancy.py",
       "report": "reports/03_correlations_and_redundancy.md",
       "artifacts": [],
@@ -49,6 +43,7 @@
       "slug": "predictor_secchi_relationships",
       "title": "Predictor-to-secchi relationships",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/04_predictor_secchi_relationships.py",
       "report": "reports/04_predictor_secchi_relationships.md",
       "artifacts": [],
@@ -61,6 +56,7 @@
       "slug": "feature_necessity_and_sets",
       "title": "Feature necessity and candidate sets",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/05_feature_necessity_and_sets.py",
       "report": "reports/05_feature_necessity_and_sets.md",
       "artifacts": [],
@@ -74,6 +70,7 @@
       "slug": "temporal_trends",
       "title": "Temporal trends and seasonality",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/06_temporal_trends.py",
       "report": "reports/06_temporal_trends.md",
       "artifacts": [],
@@ -86,6 +83,7 @@
       "slug": "spatial_variance_midas",
       "title": "Lake-level spatial variance",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/07_spatial_variance_midas.py",
       "report": "reports/07_spatial_variance_midas.md",
       "artifacts": [],
@@ -98,6 +96,7 @@
       "slug": "nonlinear_and_interactions",
       "title": "Nonlinear structure and interactions",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/08_nonlinear_and_interactions.py",
       "report": "reports/08_nonlinear_and_interactions.md",
       "artifacts": [],
@@ -112,6 +111,7 @@
       "slug": "deep_vs_shallow",
       "title": "Deep versus shallow lake structure",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/09_deep_vs_shallow.py",
       "report": "reports/09_deep_vs_shallow.md",
       "artifacts": [
@@ -127,6 +127,7 @@
       "slug": "baseline_model",
       "title": "Baseline predictive model",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/10_baseline_model.py",
       "report": "reports/10_baseline_model.md",
       "artifacts": [
@@ -143,6 +144,7 @@
       "slug": "divergent_depth_models",
       "title": "Divergent depth-specific models",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/11_divergent_depth_models.py",
       "report": "reports/11_divergent_depth_models.md",
       "artifacts": [
@@ -158,6 +160,7 @@
       "slug": "lake_type_models",
       "title": "Lake type and trophic state models",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/12_lake_type_models.py",
       "report": "reports/12_lake_type_models.md",
       "artifacts": [
@@ -174,6 +177,7 @@
       "slug": "ecological_class_impact",
       "title": "Ecological class versus geography",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/13_ecological_class_impact.py",
       "report": "reports/13_ecological_class_impact.md",
       "artifacts": [
@@ -189,6 +193,7 @@
       "slug": "lake_generalization",
       "title": "Lake generalization under leave-one-lake-out",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/14_lake_generalization.py",
       "report": "reports/14_lake_generalization.md",
       "artifacts": [
@@ -204,6 +209,7 @@
       "slug": "chemical_features",
       "title": "Chemical feature expansion",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/15_chemical_features.py",
       "report": "reports/15_chemical_features.md",
       "artifacts": [
@@ -219,6 +225,7 @@
       "slug": "expanding_window",
       "title": "Expanding window temporal validation",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/16_expanding_window.py",
       "report": "reports/16_expanding_window.md",
       "artifacts": [
@@ -234,6 +241,7 @@
       "slug": "backward_expanding",
       "title": "Backward expanding validation",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/17_backward_expanding.py",
       "report": "reports/17_backward_expanding.md",
       "artifacts": [
@@ -248,6 +256,7 @@
       "slug": "local_vs_global",
       "title": "Local versus global modeling",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/18_local_vs_global.py",
       "report": "reports/18_local_vs_global.md",
       "artifacts": [
@@ -265,6 +274,7 @@
       "slug": "spatial_autocorrelation",
       "title": "Spatial autocorrelation and neighborhood features",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/19_spatial_autocorrelation.py",
       "report": "reports/19_spatial_autocorrelation.md",
       "artifacts": [
@@ -279,6 +289,7 @@
       "slug": "xgboost_chemical",
       "title": "XGBoost with chemical feature support",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/20_xgboost_chemical.py",
       "report": "reports/20_xgboost_chemical.md",
       "artifacts": [
@@ -295,6 +306,7 @@
       "slug": "lightgbm_chemical",
       "title": "LightGBM with chemical feature support",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/21_lightgbm_chemical.py",
       "report": "reports/21_lightgbm_chemical.md",
       "artifacts": [
@@ -311,6 +323,7 @@
       "slug": "missforest_chrono",
       "title": "MissForest chronological baseline",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/22_missforest_chrono.py",
       "report": "reports/22_missforest_chrono.md",
       "artifacts": [
@@ -327,6 +340,7 @@
       "slug": "missforest_lolo",
       "title": "MissForest leave-one-lake-out generalization",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/23_missforest_lolo.py",
       "report": "reports/23_missforest_lolo.md",
       "artifacts": [],
@@ -339,6 +353,7 @@
       "slug": "missforest_elimination",
       "title": "MissForest backward elimination",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/24_missforest_elimination.py",
       "report": "reports/24_missforest_elimination.md",
       "artifacts": [
@@ -353,6 +368,7 @@
       "slug": "minimum_sample_threshold",
       "title": "Minimum sample threshold sensitivity",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/25_minimum_sample_threshold.py",
       "report": "reports/25_minimum_sample_threshold.md",
       "artifacts": [
@@ -369,6 +385,7 @@
       "slug": "missforest_chrono_t100",
       "title": "Dense-lake MissForest benchmark",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/26_missforest_chrono_t100.py",
       "report": "reports/26_missforest_chrono_t100.md",
       "artifacts": [
@@ -386,6 +403,7 @@
       "slug": "mlp_chrono",
       "title": "MLP chronological baseline",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/27_mlp_chrono.py",
       "report": "reports/27_mlp_chrono.md",
       "artifacts": [
@@ -401,6 +419,7 @@
       "slug": "tabnet_chrono",
       "title": "TabNet chronological baseline",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/28_tabnet_chrono.py",
       "report": "reports/28_tabnet_chrono.md",
       "artifacts": [
@@ -417,6 +436,7 @@
       "slug": "ft_transformer_chrono",
       "title": "FT-Transformer chronological baseline",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/29_ft_transformer_chrono.py",
       "report": "reports/29_ft_transformer_chrono.md",
       "artifacts": [
@@ -432,6 +452,7 @@
       "slug": "region_coastal_missforest",
       "title": "Regional MissForest benchmark: coastal",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/30_region_coastal_missforest.py",
       "report": "reports/30_region_coastal_missforest.md",
       "artifacts": [],
@@ -446,6 +467,7 @@
       "slug": "region_inland_missforest",
       "title": "Regional MissForest benchmark: inland",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/31_region_inland_missforest.py",
       "report": "reports/31_region_inland_missforest.md",
       "artifacts": [],
@@ -460,6 +482,7 @@
       "slug": "region_northern_missforest",
       "title": "Regional MissForest benchmark: northern",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/32_region_northern_missforest.py",
       "report": "reports/32_region_northern_missforest.md",
       "artifacts": [],
@@ -474,6 +497,7 @@
       "slug": "catboost_chemical",
       "title": "CatBoost with chemical feature support",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/33_catboost_chemical.py",
       "report": "reports/33_catboost_chemical.md",
       "artifacts": [
@@ -490,6 +514,7 @@
       "slug": "catboost_tuned",
       "title": "Chronological hyperparameter tuning for CatBoost",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/34_catboost_tuned.py",
       "report": "reports/34_catboost_tuned.md",
       "artifacts": [
@@ -505,6 +530,7 @@
       "slug": "catboost_tuned_lolo",
       "title": "Tuned CatBoost leave-one-lake-out evaluation",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/35_catboost_tuned_lolo.py",
       "report": "reports/35_catboost_tuned_lolo.md",
       "artifacts": [
@@ -519,6 +545,7 @@
       "slug": "imputation_benchmark",
       "title": "Numerical chemistry imputation benchmark",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/36_imputation_benchmark.py",
       "report": "reports/36_imputation_benchmark.md",
       "artifacts": [
@@ -536,6 +563,7 @@
       "slug": "catboost_imputation",
       "title": "Tuned CatBoost with MissForest imputation",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/37_catboost_imputation.py",
       "report": "reports/37_catboost_imputation.md",
       "artifacts": [
@@ -553,6 +581,7 @@
       "slug": "catboost_lolo_quality_thresholds",
       "title": "LOLO quality thresholds for tuned CatBoost",
       "status": "canonical",
+      "dataset_id": "secchi-merged-2025-04-17-r1",
       "script": "experiments/scripts/38_catboost_lolo_quality_thresholds.py",
       "report": "reports/38_catboost_lolo_quality_thresholds.md",
       "artifacts": [

@@ -4,8 +4,8 @@ This folder is the center of the repository. The experiment sequence is preserve
 
 ## Canonical Inputs
 
-- `data/Merged_Dataset.csv` is the canonical modeling dataset.
-- `data/Merged_Dataset_Metadata.csv` is the canonical metadata companion.
+- Every registry entry records an immutable processed `dataset_id` from `data/catalog.json`.
+- Experiments `01`–`38` use `secchi-merged-2025-04-17-r1`; new experiments should record the catalog's active research dataset ID when they are created.
 
 ## How to Read the Experiment History
 

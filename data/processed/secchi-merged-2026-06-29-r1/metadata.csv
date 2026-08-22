@@ -1,0 +1,58 @@
+Field,Description,Source Dataset
+MIDAS,Canonical lake identifier derived from the lake portion of the provider MIDAS field.,Secchi 2026-06-29
+STATION,Sampling station number extracted from the provider MIDAS field.,Secchi 2026-06-29
+MTB,NA,Secchi 2026-06-29
+LAKE_NAME,Lake name(s).,MaineLakes Geography & Morphometry
+REGION,"Region assignment for each MIDAS-matched lake record (e.g., Coastal, Inland, Northern).",Lake classification workbook (undated)
+SAMPDATE,Date on which the measurement was taken.,Secchi 2026-06-29
+SECCHI,Secchi disk transparency in meters. There can be multiple readings on the same day.,Secchi 2026-06-29
+SECCBOT,Did the Secchi disk hit the bottom of the lake? Valid values are Y or N.,Secchi 2026-06-29
+DEPTH,NA,Secchi 2026-06-29
+TMAX,The maximum temperature in Celsius from a profile on a given date after data cleaning.,Secchi 2026-06-29
+TMIN,The minimum temperature in Celsius from a profile on a given date after data cleaning.,Secchi 2026-06-29
+DOMAX,The maximum dissolved oxygen in ppm from a profile on a given date after data cleaning.,Secchi 2026-06-29
+DOMIN,The minimum dissolved oxygen in ppm from a profile on a given date after data cleaning.,Secchi 2026-06-29
+MLD,Mixed layer depth in meters. The exact processing definition for this delivery was not provided.,Secchi 2026-06-29
+MAXBF,NA,Secchi 2026-06-29
+CTR_BUOY,NA,Secchi 2026-06-29
+EPI_TEMP,NA,Secchi 2026-06-29
+HYPO_TEMP,NA,Secchi 2026-06-29
+INT_ENER,NA,Secchi 2026-06-29
+SCHMIDT,Schmidt stability in J/m2. The exact processing definition for this delivery was not provided.,Secchi 2026-06-29
+THERMO,Thermocline depth in meters. The exact processing definition for this delivery was not provided.,Secchi 2026-06-29
+WHOLE_TEMP,NA,Secchi 2026-06-29
+OXIC_DEPTH,Oxic layer depth in meters. The exact oxygen threshold and processing definition for this delivery were not provided.,Secchi 2026-06-29
+FRAC_ANOXIC,NA,Secchi 2026-06-29
+TPEC,Total phosphorus in ppb from epicore samples. Data points from the same day were averaged.,Secchi 2026-06-29
+TPBG,Total phosphorus in ppb from bottom grabs designated by sample depth. Data points from the same day were averaged.,Secchi 2026-06-29
+CHLA,Chlorophyll-a in ppb from epicore samples. Data points from the same day were averaged.,Secchi 2026-06-29
+PH,Fixed lake descriptor: mean pH across unique legacy station-date observations.,Secchi 2025-04-17 lake-level average
+COLOR,Fixed lake descriptor: mean color in SPU across unique legacy station-date observations.,Secchi 2025-04-17 lake-level average
+CONDUCT,Fixed lake descriptor: mean specific conductivity in uS/cm across unique legacy station-date observations.,Secchi 2025-04-17 lake-level average
+ALK,Fixed lake descriptor: mean alkalinity in ppm across unique legacy station-date observations.,Secchi 2025-04-17 lake-level average
+WATER_QUALITY_STATEMENT,General statement about the lake's water quality,MaineLakes Geography & Morphometry
+TROPHIC_CATEGORY,"Trophic category: OLIGOtrophic, MESOtrophic, EUTROphic",MaineLakes Geography & Morphometry
+AREA_ACRES,"Lake area, in acres",MaineLakes Geography & Morphometry
+PERIMETER_MILES,"Lake perimeter, in miles",MaineLakes Geography & Morphometry
+DEPTH_MEAN_FEET,"Mean lake depth, in feet",MaineLakes Geography & Morphometry
+DEPTH_MAX_FEET,"Maximum lake depth, in feet",MaineLakes Geography & Morphometry
+VOLUME_ACREFEET,"Lake volume, in acre-feet",MaineLakes Geography & Morphometry
+DIRECT_DRAINAGE_AREA_SQ_MILES,"Area of direct-drainage watershed, in square miles.",MaineLakes Geography & Morphometry
+TOTAL_DRAINAGE_AREA_SQ_MILES,"Total drainage area of the lake, in square miles.",MaineLakes Geography & Morphometry
+FLUSHING_RATE_TIMES_YR,Number of times that the water in the lake is (theoretically) replaced (by water inputs) during a year.,MaineLakes Geography & Morphometry
+ELEVATION_FEET,"Surface elevation of the lake, in feet",MaineLakes Geography & Morphometry
+DAM,Dam significance status (1=no functional dam; 2=large increase; 3=small increase),MaineLakes Geography & Morphometry
+LATITUDE,Latitude (approximate lake center),MaineLakes Geography & Morphometry
+LONGITUDE,Longitude (approximate lake center),MaineLakes Geography & Morphometry
+UTM_X,"UTM-X (easting) coordinate - UTM zone 19, NAD 83",MaineLakes Geography & Morphometry
+UTM_Y,"UTM-Y (northing) coordinate - UTM zone 19, NAD 83",MaineLakes Geography & Morphometry
+TOWNS,Town(s) in which the lake occurs,MaineLakes Geography & Morphometry
+COUNTY,County in which the lake occurs,MaineLakes Geography & Morphometry
+DELORME_PAGE,Page in the DeLorme gazeteer on which the lake appears,MaineLakes Geography & Morphometry
+USGS_QUAD24,USGS topographic map on which the lake appears,MaineLakes Geography & Morphometry
+MAJOR_DRAINAGE,Name of the major drainage in which the lake occurs,MaineLakes Geography & Morphometry
+SUB_DRAINAGE,Name of the sub-drainage in which the lake occurs,MaineLakes Geography & Morphometry
+HUC10_NAME,Name of the HUC-10 'watershed',MaineLakes Geography & Morphometry
+HUC10_CODE,Code of the HUC-10 'watershed',MaineLakes Geography & Morphometry
+INVASIVE_PLANT_INFESTATION,Status of known infestations of invasive aquatic plants.,MaineLakes Geography & Morphometry
+FISHERY_MANAGEMENT,Fisheries management type.,MaineLakes Geography & Morphometry

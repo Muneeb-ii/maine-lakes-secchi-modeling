@@ -8,7 +8,13 @@ from catboost import CatBoostRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from tqdm.auto import tqdm
 
-from experiment_utils import ensure_reports_dir, write_markdown_report, df_to_markdown_table, load_data, PROJECT_ROOT
+from experiment_utils import (
+    ensure_reports_dir,
+    write_markdown_report,
+    df_to_markdown_table,
+    get_dataset_artifact_path,
+    load_data,
+)
 
 BEST_PARAMS = {
     "iterations": 700,
@@ -102,11 +108,11 @@ def main():
     model_df = model_df.sort_values(by='SAMPDATE').reset_index(drop=True)
     features = base_features + valid_chems
 
-    missing_path = PROJECT_ROOT / 'data' / 'lake_missingness.csv'
+    missing_path = get_dataset_artifact_path('lake_missingness_path')
     missingness_df = pd.read_csv(missing_path) if missing_path.exists() else pd.DataFrame()
 
-    ten_seed_path = PROJECT_ROOT / 'experiments' / 'scripts' / 'lolo_random_seed_10.txt'
-    hundred_seed_path = PROJECT_ROOT / 'experiments' / 'scripts' / 'lolo_random_seed_100_seed42.txt'
+    ten_seed_path = get_dataset_artifact_path('lolo_seed_10_path')
+    hundred_seed_path = get_dataset_artifact_path('lolo_seed_100_path')
 
     ten_lakes = [line.strip() for line in ten_seed_path.read_text(encoding='utf-8').splitlines() if line.strip()]
     hundred_lakes = [line.strip() for line in hundred_seed_path.read_text(encoding='utf-8').splitlines() if line.strip()]

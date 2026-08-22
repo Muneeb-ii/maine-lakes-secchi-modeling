@@ -145,7 +145,7 @@ def main() -> None:
             "per-row missingness, and compare completeness patterns across MIDAS, year, and season."
         ),
         parameters=(
-            "Input dataset: `data/Merged_Dataset.csv`.\n\n"
+            f"Input dataset ID: `{data.dataset_id}`.\n\n"
             "Grouping dimensions evaluated: `MIDAS`, `year`, and `season` when present.\n\n"
             "No model fitting is performed in this experiment."
         ),

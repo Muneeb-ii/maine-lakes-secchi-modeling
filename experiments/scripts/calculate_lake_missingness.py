@@ -1,5 +1,5 @@
 import pandas as pd
-from experiment_utils import load_data, PROJECT_ROOT
+from experiment_utils import get_dataset_artifact_path, load_data
 
 def main():
     print("Loading dataset...")
@@ -52,7 +52,9 @@ def main():
     missingness_df = pd.DataFrame(records)
     missingness_df = missingness_df.sort_values("pct_missing_chemical_overall", ascending=True)
     
-    output_path = PROJECT_ROOT / "data" / "lake_missingness.csv"
+    output_path = get_dataset_artifact_path(
+        "lake_missingness_path", must_exist=False
+    )
     missingness_df.to_csv(output_path, index=False)
     print(f"Missingness matrix successfully saved to {output_path}")
     print(missingness_df.head())

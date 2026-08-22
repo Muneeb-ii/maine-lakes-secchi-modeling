@@ -51,7 +51,7 @@ Do not embed experiment logic in the dashboard. Do not hard-code model assumptio
 
 | Path | Purpose | Touch when |
 |------|---------|------------|
-| `data/` | Canonical inputs: `Merged_Dataset.csv`, `Merged_Dataset_Metadata.csv`, plus source exports | Dataset or metadata changes |
+| `data/` | Immutable raw deliveries, versioned processed/derived snapshots, and `catalog.json` lineage | Dataset or metadata changes |
 | `experiments/` | Registry, runner (`run.py`), scripts (`scripts/`), utils, RUNBOOK | Adding/rerunning experiments |
 | `experiments/registry.json` | Source of truth for experiment IDs, scripts, reports, artifacts, dependencies | Any new or changed experiment |
 | `reports/` | Committed markdown reports and PNG figures from experiments | After intentional experiment reruns |

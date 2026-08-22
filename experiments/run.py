@@ -7,17 +7,28 @@ import subprocess
 import sys
 from pathlib import Path
 
-from tqdm.auto import tqdm
+try:
+    from tqdm.auto import tqdm
+except ImportError:  # Keep registry/list/validation usable in minimal environments.
+    def tqdm(iterable, **_kwargs):
+        return iterable
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = PROJECT_ROOT / "experiments" / "registry.json"
+DATA_CATALOG_PATH = PROJECT_ROOT / "data" / "catalog.json"
+DATASET_ID_ENV = "SECCHI_DATASET_ID"
 RUNNABLE_STATUSES = {"canonical", "script_only"}
 VALIDATION_STATUSES = {"canonical"}
 
 
 def load_registry() -> dict:
     with REGISTRY_PATH.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def load_data_catalog() -> dict:
+    with DATA_CATALOG_PATH.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
@@ -29,7 +40,11 @@ def experiments_by_id() -> dict[str, dict]:
 def list_experiments() -> int:
     for entry in load_registry()["experiments"]:
         report = entry["report"]
-        print(f"{entry['id']} [{entry['status']}] {entry['title']} -> {report}")
+        dataset_id = entry.get("dataset_id", "MISSING_DATASET_ID")
+        print(
+            f"{entry['id']} [{entry['status']}] {entry['title']} "
+            f"[{dataset_id}] -> {report}"
+        )
     return 0
 
 
@@ -42,7 +57,14 @@ def run_experiment(entry: dict) -> None:
     if not script_path.exists():
         raise FileNotFoundError(f"Missing script for experiment {entry['id']}: {script_path}")
 
+    dataset_id = entry.get("dataset_id")
+    if not dataset_id:
+        raise RuntimeError(f"Experiment {entry['id']} does not declare a dataset_id.")
+    if dataset_id not in load_data_catalog().get("processed_datasets", {}):
+        raise KeyError(f"Experiment {entry['id']} references unknown dataset {dataset_id}.")
+
     env = os.environ.copy()
+    env[DATASET_ID_ENV] = dataset_id
     env.setdefault("MPLCONFIGDIR", str(PROJECT_ROOT / ".cache" / "matplotlib"))
     env.setdefault("MPLBACKEND", "Agg")
     env.setdefault("OBJC_DISABLE_INITIALIZE_FORK_SAFETY", "YES")
@@ -52,7 +74,10 @@ def run_experiment(entry: dict) -> None:
     env.setdefault("NUMEXPR_NUM_THREADS", "1")
     Path(env["MPLCONFIGDIR"]).mkdir(parents=True, exist_ok=True)
 
-    print(f"Running experiment {entry['id']}: {entry['title']}")
+    print(
+        f"Running experiment {entry['id']}: {entry['title']} "
+        f"(dataset: {dataset_id})"
+    )
     subprocess.run([sys.executable, str(script_path)], cwd=PROJECT_ROOT, env=env, check=True)
 
 
@@ -63,6 +88,12 @@ def validate_outputs(include_script_only: bool = False) -> int:
     for entry in load_registry()["experiments"]:
         if entry.get("status") not in statuses:
             continue
+
+        dataset_id = entry.get("dataset_id")
+        if not dataset_id:
+            failures.append(f"{entry['id']}: missing dataset_id")
+        elif dataset_id not in load_data_catalog().get("processed_datasets", {}):
+            failures.append(f"{entry['id']}: unknown dataset_id {dataset_id}")
 
         expected_paths = [entry["report"], *entry.get("artifacts", [])]
         missing = [path for path in expected_paths if not (PROJECT_ROOT / path).exists()]

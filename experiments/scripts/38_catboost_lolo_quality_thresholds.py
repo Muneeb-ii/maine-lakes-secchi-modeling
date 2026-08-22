@@ -15,8 +15,8 @@ from experiment_utils import (
     ensure_reports_dir,
     write_canonical_report,
     df_to_markdown_table,
+    get_dataset_artifact_path,
     load_data,
-    PROJECT_ROOT,
 )
 
 BEST_PARAMS = {
@@ -127,11 +127,11 @@ def main() -> None:
     subset_cols = [target, 'SAMPDATE', 'MIDAS'] + num_cols
     model_df = df.dropna(subset=subset_cols).copy().sort_values('SAMPDATE').reset_index(drop=True)
 
-    missing_path = PROJECT_ROOT / 'data' / 'lake_missingness.csv'
+    missing_path = get_dataset_artifact_path('lake_missingness_path')
     missingness_df = pd.read_csv(missing_path)
 
-    ten_seed_path = PROJECT_ROOT / 'experiments' / 'scripts' / 'lolo_random_seed_10.txt'
-    hundred_seed_path = PROJECT_ROOT / 'experiments' / 'scripts' / 'lolo_random_seed_100_seed42.txt'
+    ten_seed_path = get_dataset_artifact_path('lolo_seed_10_path')
+    hundred_seed_path = get_dataset_artifact_path('lolo_seed_100_path')
     ten_lakes = [line.strip() for line in ten_seed_path.read_text(encoding='utf-8').splitlines() if line.strip()]
     hundred_lakes = [line.strip() for line in hundred_seed_path.read_text(encoding='utf-8').splitlines() if line.strip()]
 
@@ -253,7 +253,7 @@ def main() -> None:
             f"Tuned CatBoost parameters: {BEST_PARAMS}\n\n"
             f"Feature set (CHLA excluded): {features}\n\n"
             f"Quality-threshold scenarios: {QUALITY_SCENARIOS}\n\n"
-            f'Observation counts were computed from the full modeling frame after target/date/base-feature filtering. Lake missingness came from `data/lake_missingness.csv`. Top 100-lake confirmations run: {TOP_X100_CONFIRMATIONS}.'
+            f'Observation counts were computed from the full modeling frame after target/date/base-feature filtering. Lake missingness came from the dataset-bound derived artifact. Top 100-lake confirmations run: {TOP_X100_CONFIRMATIONS}.'
         ),
         results=(
             '### Scenario Summary\n\n'

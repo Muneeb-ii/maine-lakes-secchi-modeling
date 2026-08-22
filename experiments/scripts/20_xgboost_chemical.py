@@ -8,7 +8,13 @@ from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from tqdm import tqdm
 
-from experiment_utils import ensure_reports_dir, write_markdown_report, df_to_markdown_table, load_data, PROJECT_ROOT
+from experiment_utils import (
+    ensure_reports_dir,
+    write_markdown_report,
+    df_to_markdown_table,
+    get_dataset_artifact_path,
+    load_data,
+)
 
 def evaluate_model(y_true, y_pred, depth):
     if len(y_true) == 0:
@@ -61,7 +67,7 @@ def main():
     model_df = model_df.sort_values(by="SAMPDATE").reset_index(drop=True)
     
     # Load missingness data
-    missing_path = PROJECT_ROOT / "data" / "lake_missingness.csv"
+    missing_path = get_dataset_artifact_path("lake_missingness_path")
     missingness_df = pd.read_csv(missing_path) if missing_path.exists() else pd.DataFrame()
     
     print(f"Total Rows passed to XGBoost (Native NaNs intact for chem fields): {len(model_df):,}")
@@ -103,7 +109,7 @@ def main():
     plt.close()
     
     # --- LOLO Evaluation ---
-    seed_file = PROJECT_ROOT / "experiments" / "scripts" / "lolo_random_seed_10.txt"
+    seed_file = get_dataset_artifact_path("lolo_seed_10_path")
     sample_lakes = []
     if seed_file.exists():
         with open(seed_file, "r") as f:
