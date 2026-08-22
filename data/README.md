@@ -13,8 +13,8 @@ Snapshot IDs use the provider release date: `secchi-YYYY-MM-DD`. Processed IDs a
 
 ## Current datasets
 
-- `secchi-merged-2025-04-17-r1` is the immutable historical input for experiments `01`–`38` and the current dashboard artifacts.
-- `secchi-merged-2026-06-29-r1` is the active input for new research. The June delivery supersedes April; both contain measurements through 2024-12-03.
+- `secchi-merged-2025-04-17-r1` is the immutable historical input for experiments `01`–`38`.
+- `secchi-merged-2026-06-29-r1` is the active input for new research and the current dashboard artifacts. The June delivery supersedes April; both contain measurements through 2024-12-03.
 
 In the active snapshot, `PH`, `COLOR`, `CONDUCT`, and `ALK` are fixed lake-level means derived from legacy station-date observations. Future interfaces must join these values by `MIDAS`, not expose them as user-editable inputs.
 

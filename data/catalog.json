@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "active_research_dataset_id": "secchi-merged-2026-06-29-r1",
-  "dashboard_artifact_dataset_id": "secchi-merged-2025-04-17-r1",
+  "dashboard_artifact_dataset_id": "secchi-merged-2026-06-29-r1",
   "raw_sources": {
     "secchi-2025-04-17": {
       "kind": "secchi_provider_delivery",

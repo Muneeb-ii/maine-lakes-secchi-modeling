@@ -15,7 +15,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'experiments', 'scripts')))
 from experiment_utils import PROJECT_ROOT  # noqa: E402
 
-DASHBOARD_DATASET_ID = "secchi-merged-2025-04-17-r1"
+DASHBOARD_DATASET_ID = "secchi-merged-2026-06-29-r1"
 
 FEATURES = [
     "year",
@@ -278,7 +278,7 @@ The dashboard is restricted to lakes with:
     manifest = {
         "schema_version": "1.0.0",
         "model_id": "secchi-catboost-supported-lakes",
-        "model_version": "2026-05-28-exp34-exp38",
+        "model_version": "2026-06-29-exp34-exp38",
         "dataset_id": DASHBOARD_DATASET_ID,
         "dataset_sha256": sha256_for_file(csv_path),
         "trained_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),

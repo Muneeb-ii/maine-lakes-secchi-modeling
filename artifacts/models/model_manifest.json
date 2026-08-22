@@ -1,8 +1,10 @@
 {
   "schema_version": "1.0.0",
   "model_id": "secchi-catboost-supported-lakes",
-  "model_version": "2026-05-28-exp34-exp38",
-  "trained_at": "2026-05-28T15:31:39Z",
+  "model_version": "2026-06-29-exp34-exp38",
+  "dataset_id": "secchi-merged-2026-06-29-r1",
+  "dataset_sha256": "a59d00d5a221a8d86c6c1be21e920d95cd558764972556e191967441fb617ba4",
+  "trained_at": "2026-08-22T04:05:07Z",
   "feature_order": [
     "year",
     "month",
@@ -24,13 +26,13 @@
       "name": "predictor",
       "path": "catboost_predictor.joblib",
       "required": true,
-      "sha256": "ad414214e8967b20cb03b7ef58291ce5ee0cd3f757f773cf2bcfeb9e259fba7f"
+      "sha256": "11ebee65905b0edee7f8ffd0679aa28c234bf2c16fa6b25c5c88e7fd9f245c64"
     },
     {
       "name": "baseline",
       "path": "baseline_lakes_summary.json",
       "required": true,
-      "sha256": "35e222022bcc8a4609e833dcbe4e85fb952baaa021001fb58a1ace010da387bc"
+      "sha256": "0db7f5a05bc5afef38121622fe708d04b1a3815fa4a9fccc82cc40d572e4f61d"
     },
     {
       "name": "lake_names",
@@ -42,13 +44,13 @@
       "name": "support_policy",
       "path": "supported_lakes_policy.json",
       "required": true,
-      "sha256": "9967b1f3a38f0903b3db8f875aeff11f215ee5069587072cceb0774a4f114a4f"
+      "sha256": "18d5d545a88d03b0d87932aa0a3a583458218820f6a6ffded327a2f9a75699a1"
     },
     {
       "name": "model_report",
       "path": "dashboard_model_report.md",
       "required": true,
-      "sha256": "bdbbe1d5704e6388228aad7094019396b2ba609a98fff65d74c00b90eb65dbcd"
+      "sha256": "d68e6f2e12c2648213a3e1f7ca994ff6a8416862da5eb106c1744f272945871f"
     }
   ],
   "explainability": {
@@ -85,12 +87,12 @@
   ],
   "metrics": {
     "chronological_supported_lakes": {
-      "MAE": 0.8023576355785451,
-      "MSE": 1.1823987499332644,
-      "RMSE": 1.0873816027197005,
-      "R2": 0.721992863626292,
-      "MAE_Norm": 0.017750930413728157,
-      "RMSE_Norm": 0.025338247603461265
+      "MAE": 0.7928730515210356,
+      "MSE": 1.173229050674747,
+      "RMSE": 1.0831569833937955,
+      "R2": 0.7333522774650275,
+      "MAE_Norm": 0.017971654838769283,
+      "RMSE_Norm": 0.025826023001868592
     }
   },
   "compatibility": {

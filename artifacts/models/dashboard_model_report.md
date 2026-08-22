@@ -18,12 +18,12 @@ The dashboard is restricted to lakes with:
 
 | Metric | Count |
 | :--- | ---: |
-| Total lakes after base filtering | 994 |
-| Supported lakes | 187 |
-| Unsupported lakes | 807 |
-| Total rows after base filtering | 154,304 |
-| Supported rows | 87,116 |
-| Unsupported rows | 67,188 |
+| Total lakes after base filtering | 1,011 |
+| Supported lakes | 360 |
+| Unsupported lakes | 651 |
+| Total rows after base filtering | 163,185 |
+| Supported rows | 151,686 |
+| Unsupported rows | 11,499 |
 
 ## Proof Trail
 
@@ -38,11 +38,11 @@ The dashboard is restricted to lakes with:
 
 | Metric | Value |
 | :--- | ---: |
-| R2 | 0.721993 |
-| MAE | 0.802358 m |
-| RMSE | 1.087382 m |
-| Normalized MAE | 0.017751 |
-| Normalized RMSE | 0.025338 |
+| R2 | 0.733352 |
+| MAE | 0.792873 m |
+| RMSE | 1.083157 m |
+| Normalized MAE | 0.017972 |
+| Normalized RMSE | 0.025826 |
 
 ## Feature Set
 
@@ -67,17 +67,17 @@ The dashboard is restricted to lakes with:
 
 | Feature | Importance |
 | :--- | ---: |
-| DEPTH_MAX_FEET | 29.113977 |
-| LONGITUDE | 21.597720 |
-| LATITUDE | 16.484699 |
-| AREA_ACRES | 15.237715 |
-| year | 6.788923 |
-| month | 4.163235 |
-| TPEC | 2.988308 |
-| DOMAX | 1.350616 |
-| COLOR | 0.941409 |
-| DOMIN | 0.856974 |
-| ALK | 0.200811 |
-| PH | 0.165890 |
-| CONDUCT | 0.060517 |
-| TPBG | 0.049206 |
+| COLOR | 27.992654 |
+| DEPTH_MAX_FEET | 13.977690 |
+| year | 8.703900 |
+| CONDUCT | 8.264948 |
+| AREA_ACRES | 7.640370 |
+| LONGITUDE | 6.778320 |
+| LATITUDE | 6.111150 |
+| ALK | 5.846726 |
+| PH | 5.807372 |
+| month | 4.686127 |
+| TPEC | 1.633503 |
+| DOMAX | 1.337252 |
+| DOMIN | 1.057873 |
+| TPBG | 0.162115 |

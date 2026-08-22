@@ -8,8 +8,8 @@ Agent-oriented map of the Maine Lakes Secchi-depth modeling repository. Read thi
 |------|--------|
 | Experiments | **38 canonical** experiments (`01`–`38`), all registered in `experiments/registry.json` |
 | Research narrative | Phases 1–4 complete through CatBoost tuning, imputation benchmarks, and LOLO quality thresholds |
-| Active dashboard model | **Tuned native-missing CatBoost** (no `CHLA`), version `2026-05-28-exp34-exp38` |
-| Supported lakes | **187 of 994** lakes after base filtering (`n_obs >= 100`, chemistry missingness `<= 0.90`) |
+| Active dashboard model | **Tuned native-missing CatBoost** (no `CHLA`), version `2026-06-29-exp34-exp38` |
+| Supported lakes | **360 of 1,011** lakes after base filtering (`n_obs >= 100`, chemistry missingness `<= 0.90`) |
 | Deployment | Render Blueprint (`render.yaml`); CI gates deploy via `checksPass` |
 | Python | **3.11** (backend + experiments) |
 | Frontend | React 18 + Vite 6 + Tailwind; client-side routes at `/`, `/playground`, `/trends`, `/contributors`, `/modeling-process` |
