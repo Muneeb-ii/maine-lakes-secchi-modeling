@@ -8,8 +8,8 @@ export const FRIENDLY_FEATURE_LABELS = {
   DEPTH_MAX_FEET: "Maximum depth (ft)",
   DOMAX: "Highest dissolved oxygen",
   DOMIN: "Lowest dissolved oxygen",
-  TPEC: "Total phosphorus at lake bottom",
-  TPBG: "Total phosphorus in surface water",
+  TPEC: "Total phosphorus in surface water",
+  TPBG: "Total phosphorus at lake bottom",
   PH: "pH",
   COLOR: "Water color",
   CONDUCT: "Conductivity",
@@ -27,11 +27,11 @@ export const FEATURE_HELP_CONTENT = {
   },
   TPEC: {
     title: FRIENDLY_FEATURE_LABELS.TPEC,
-    body: "Total phosphorus from a bottom-water sample. Phosphorus is a key nutrient for algae; higher values often indicate greater risk of murkier water.",
+    body: "Total phosphorus from an epicore sample of the upper water column. Phosphorus is a key nutrient for algae; higher values often indicate greater risk of murkier water.",
   },
   TPBG: {
     title: FRIENDLY_FEATURE_LABELS.TPBG,
-    body: "Total phosphorus from the main water-column sample used for surface conditions. It represents nutrient availability that can support algae growth.",
+    body: "Total phosphorus from a bottom grab sample near the lake bed. It can reflect nutrients released from sediments, especially when deep water loses oxygen.",
   },
   PH: {
     title: FRIENDLY_FEATURE_LABELS.PH,

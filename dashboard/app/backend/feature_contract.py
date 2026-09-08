@@ -77,7 +77,7 @@ FEATURE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
         "icon": "Beaker",
     },
     "TPEC": {
-        "label": "Total Phosphorus (Bottom Grab)",
+        "label": "Total Phosphorus (Epicore)",
         "group": "chemistry",
         "editable": True,
         "slider": {"min": 0, "max": 60, "step": 0.5},
@@ -85,7 +85,7 @@ FEATURE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
         "icon": "Beaker",
     },
     "TPBG": {
-        "label": "Total Phosphorus (Epicore)",
+        "label": "Total Phosphorus (Bottom Grab)",
         "group": "chemistry",
         "editable": True,
         "slider": {"min": 0, "max": 14000, "step": 0.5},

@@ -21,8 +21,8 @@ describe("featureLabels", () => {
   });
 
   it("uses phosphorus wording aligned with sample types", () => {
-    assert.match(FRIENDLY_FEATURE_LABELS.TPEC, /bottom/i);
-    assert.match(FRIENDLY_FEATURE_LABELS.TPBG, /surface/i);
+    assert.match(FRIENDLY_FEATURE_LABELS.TPEC, /surface/i);
+    assert.match(FRIENDLY_FEATURE_LABELS.TPBG, /bottom/i);
   });
 
   it("falls back to API label when no override exists", () => {

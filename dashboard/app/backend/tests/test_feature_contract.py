@@ -10,8 +10,8 @@ from feature_contract import CANONICAL_FEATURE_ORDER, FEATURE_DEFINITIONS
 METADATA_ALIGNED_FEATURES = {
     "DOMAX": {"label": "Dissolved Oxygen Max", "unit": "ppm"},
     "DOMIN": {"label": "Dissolved Oxygen Min", "unit": "ppm"},
-    "TPEC": {"label": "Total Phosphorus (Bottom Grab)", "unit": "ppb"},
-    "TPBG": {"label": "Total Phosphorus (Epicore)", "unit": "ppb"},
+    "TPEC": {"label": "Total Phosphorus (Epicore)", "unit": "ppb"},
+    "TPBG": {"label": "Total Phosphorus (Bottom Grab)", "unit": "ppb"},
     "PH": {"label": "pH", "unit": ""},
     "COLOR": {"label": "Color", "unit": "SPU"},
     "CONDUCT": {"label": "Specific Conductivity", "unit": "uS/cm"},
