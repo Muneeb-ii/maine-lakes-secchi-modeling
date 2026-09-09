@@ -39,17 +39,20 @@ Use `python -m uvicorn` (not a global `uvicorn` on your PATH). A global install 
 The current dashboard artifact set serves the tuned native-missing CatBoost model selected from the later experiment sequence.
 
 - Model family: `CatBoostRegressor`
-- Prediction feature set: no `CHLA`; uses the same 14-feature order as Experiment 34.
-- Supported-lake policy: `n_obs >= 100` after base filtering and `pct_missing_chemical_overall <= 0.90`.
-- Current coverage: 187 supported lakes out of 994 lakes after base filtering.
-- Active proof trail: Experiments `34`, `35`, `37`, and `38`.
+- Prediction feature set: no `CHLA`; 16 features per Experiment 47 — six editable measured inputs (`DOMAX`, `DOMIN`, `TMAX`, `TMIN`, `TPEC`, `TPBG`) plus locked lake context (`year`, `month`, geography, and the fixed lake-level `PH`, `COLOR`, `CONDUCT`, `ALK`).
+- Supported-lake policy: `n_obs >= 100` after base filtering. The inherited 2025 chemistry-missingness cutoff remains in the artifact but is nearly inert on the June snapshot (Experiment 47).
+- Current coverage: 360 supported lakes out of 1,011 lakes after base filtering (152 of those supported lakes are flagged `thin_history`).
+- Published Playground metrics are a chronological 80/20 holdout. The served CatBoost is a separate fit on all supported rows.
+- Active proof trail: Experiments `34`, `35`, `37`, `38` (2025 snapshot decisions) and `47` (June contract and support rule).
+- Support tiers: `supported` (`n_obs >= 100`) drives selectability; `thin_history` (supported but measured slider fields missing > 90%) only drives the amber warning in the playground header (`LakeSupportNote`).
 
 Why these experiments matter:
 
-- `34` establishes tuned no-CHLA CatBoost as the strongest chronological model path.
-- `35` shows unrestricted LOLO generalization is still weak.
-- `37` shows MissForest imputation hurts CatBoost, so the dashboard keeps native missing-value handling.
-- `38` shows the supported-lake policy improves confirmed 100-lake LOLO average R2 from the unrestricted baseline.
+- `34` (2025) chose the CatBoost hyperparameters transferred to June.
+- `35` (2025) shows unrestricted LOLO generalization is still weak.
+- `37` (2025) shows MissForest imputation hurts CatBoost, so the dashboard keeps native missing-value handling.
+- `38` (2025) chose the `n_obs >= 100` cutoff. Its chemistry-missingness rule does not do meaningful work on June data.
+- `47` (June) is the served feature contract, the thin-history warning, and the June chronological/LOLO check.
 
 The detailed artifact-level report is `artifacts/models/dashboard_model_report.md`, and the machine-readable support metadata is `artifacts/models/supported_lakes_policy.json`.
 
@@ -92,3 +95,11 @@ Behind Render/Nginx, limits use the client IP from `X-Forwarded-For`.
 - Default local path is `artifacts/models/`.
 - Required files are validated via `model_manifest.json` before the API reports itself as ready.
 - Swapping models should be done by replacing or regenerating artifacts, not by editing the API code.
+
+## Trends
+
+Trends uses the June 2026 dataset: summer observations through 2024 for 1,084 lakes. Experiment 45 withholds a skillful multi-year forecast. Experiment 46 supports a labeled local-level baseline outlook for 2025–2029, with empirical 80% and 95% ranges. Experiment 48 is a simple-model challenger; Experiment 49 is the replacement test and does not swap the served model until post-2024 outcomes exist.
+
+Forecasts require at least 10 observed summer years and an observation in 2022 or later; other lakes retain historical charts. Rebuild the separate serving artifact with `.venv/bin/python artifacts/models/build_trends_artifact.py` after the Experiment 46 assessment and calibration outputs are finalized. Restart the API after rebuilding.
+
+`GET /trends` serves the index and validation metadata; `GET /trends/lakes/{midas_id}` serves one lake's history and available outlook. The API reads `artifacts/models/trends_artifact.json` without running research code.

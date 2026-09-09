@@ -47,6 +47,9 @@ out/
 .env.*
 !.env.example
 
+# Browser capture dumps from local verification
+.playwright-cli/
+
 # Local plotting/runtime caches
 .mplconfig_*/
 

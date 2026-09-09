@@ -63,8 +63,29 @@ This folder is the center of the repository. The experiment sequence is preserve
 - `37` Tuned CatBoost with MissForest imputation. Output: `reports/37_catboost_imputation.md`. This applies the winning imputer from Experiment 36 to the no-CHLA CatBoost setup and compares it directly against the native-missing CatBoost baselines from Experiments 34 and 35.
 - `38` LOLO quality thresholds for tuned CatBoost. Output: `reports/38_catboost_lolo_quality_thresholds.md`. This tests whether leave-one-lake-out performance becomes materially more stable when evaluation is restricted to lakes with stronger observation support and lower chemistry missingness.
 
+## Phase 5: Playground Contract on the June Dataset
+
+Read this before the Trends sequence. The numeric ID stays `47`; it is listed here because it defines the served Playground model.
+
+- `47` Playground feature contract on the June dataset. Output: `reports/47_playground_feature_contract.md` plus the summary figure and per-lake LOLO table. `PH`, `COLOR`, `CONDUCT`, and `ALK` are fixed lake-level means, so only directly measured fields (`DOMAX`, `DOMIN`, `TMAX`, `TMIN`, `TPEC`, `TPBG`) are editable. The 16-feature measured-plus-locked-chemistry contract matches the legacy 14-feature chronological accuracy. The inherited Experiment 38 chemistry-missingness cutoff is nearly inert here; selectability is `n_obs >= 100`, and lakes with sparse slider measurements stay selectable with a `thin_history` warning.
+
+## Phase 6: Direct Secchi Forecasting (Trends)
+
+How to read this block: `39`–`40` set the annual summer target and simple baselines. `41`–`44` are the serious skillful-forecast attempts and their failures. `45` is only the release decision. `46` is the labeled persistence outlook that Trends serves. `48` is a simple-model challenger. `49` is the frozen replacement test; it cannot swap the served model until post-2024 outcomes exist.
+
+- `39` Forecast target and eligibility. Output: `reports/39_forecast_target_eligibility.md` and the dataset-bound annual summer lake-year panel. Station-balanced June–September Secchi per lake-year, plus history/recency/gap support counts.
+- `40` Direct Secchi forecasting baselines. Output: `reports/40_forecasting_baselines.md`. Last-value, recent-mean, Theil-Sen, and local-level rolling-origin forecasts, plus target-definition sensitivity.
+- `41` Hierarchical Bayesian state-space. Output: `reports/41_hierarchical_state_space.md`. Shared regional dynamics with predictive intervals. All ten origin fits exhausted the ADVI budget (`convergence_valid` false); treat the numbers as a failed candidate, not a usable posterior forecast.
+- `42` Direct multi-horizon CatBoost. Output: `reports/42_direct_multihorizon_catboost.md`. Global quantile model from lags, trend features, and lake traits.
+- `43` Hierarchical GAM trend-shape challenger. Output: `reports/43_trend_shape_challenger.md`. Nonlinear smooths with region and lake factors.
+- `44` Interval calibration and support policy. Output: `reports/44_interval_calibration_support.md`. Residual calibration of the CatBoost intervals; ten-year calibration is not identified in this backtest.
+- `45` Forecast release decision. Output: `reports/45_final_model_selection.md` and the artifact contract. Applies the skill gates to `40`–`44` and records **no release**. This is a decision memo, not a new model. Persistence baselines cannot pass these gates because beating recent-mean is required.
+- `46` Later-origin baseline outlook. Output: `reports/46_baseline_forecast_validation.md`. Local-level vs recent 5-year mean on 2020–2024 outcomes, with empirical intervals. This is the served Trends model. It does not override Experiment 45.
+- `48` Simple long-horizon level models. Output: `reports/48_simple_long_horizon_models.md`. Transparent window means, EWMA, and shrinkage versus local-level. Historical MAE may favor a 10-year mean; interval metrics use model-specific widths. Not a swap license.
+- `49` Trends replacement protocol. Output: `reports/49_trends_replacement_protocol.md`. Frozen gates (model-specific coverage, MAE improvement, lake and region checks, independent outcomes after 2024). Dry-run only until a later snapshot exists.
+
 ## How This Feeds the Dashboard
 
-- The dashboard should only consume model artifacts that survive this experiment sequence.
+- Playground CatBoost: Experiment 34 hyperparameters, Experiment 47 feature contract and June support rule (`n_obs >= 100`, thin-history warning). Served weights use all supported rows; published accuracy is the chronological holdout.
+- Trends: Experiment 45 withholds a skillful forecast. Experiment 46 supplies the labeled local-level outlook. Experiment 49 decides any later swap.
 - `artifacts/models/` is the boundary between research code and dashboard serving code.
-- Once a final model or small final model set is chosen, the dashboard can be refined without reorganizing the experiment layer again.

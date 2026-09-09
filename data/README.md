@@ -16,7 +16,17 @@ Snapshot IDs use the provider release date: `secchi-YYYY-MM-DD`. Processed IDs a
 - `secchi-merged-2025-04-17-r1` is the immutable historical input for experiments `01`–`38`.
 - `secchi-merged-2026-06-29-r1` is the active input for new research and the current dashboard artifacts. The June delivery supersedes April; both contain measurements through 2024-12-03.
 
-In the active snapshot, `PH`, `COLOR`, `CONDUCT`, and `ALK` are fixed lake-level means derived from legacy station-date observations. Future interfaces must join these values by `MIDAS`, not expose them as user-editable inputs.
+In the active snapshot, `PH`, `COLOR`, `CONDUCT`, and `ALK` are fixed lake-level means derived from legacy station-date observations. Future interfaces must join these values by `MIDAS`, not expose them as user-editable inputs. The playground follows this: they are locked lake descriptors (Experiment 47).
+
+The LOLO seed lists under `derived/secchi-merged-2026-06-29-r1/` are the same lake lists as the 2025 snapshot seeds so leave-one-lake-out results stay comparable across snapshots.
+
+Regenerate a snapshot's lake-missingness matrix with:
+
+```bash
+SECCHI_DATASET_ID=secchi-merged-2026-06-29-r1 python experiments/scripts/calculate_lake_missingness.py
+```
+
+The script writes only the chemistry and profile columns present on that dataset, so the same command works for `secchi-merged-2025-04-17-r1`.
 
 Rebuild the active processed snapshot with:
 

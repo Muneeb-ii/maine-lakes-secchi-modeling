@@ -6,10 +6,12 @@ Agent-oriented map of the Maine Lakes Secchi-depth modeling repository. Read thi
 
 | Area | Status |
 |------|--------|
-| Experiments | **38 canonical** experiments (`01`–`38`), all registered in `experiments/registry.json` |
-| Research narrative | Phases 1–4 complete through CatBoost tuning, imputation benchmarks, and LOLO quality thresholds |
-| Active dashboard model | **Tuned native-missing CatBoost** (no `CHLA`), version `2026-06-29-exp34-exp38` |
-| Supported lakes | **360 of 1,011** lakes after base filtering (`n_obs >= 100`, chemistry missingness `<= 0.90`) |
+| Experiments | **49 canonical** experiments (`01`–`49`), all registered in `experiments/registry.json` |
+| Research narrative | Phases 1–4 on the 2025 snapshot; Phase 5 is the June Playground contract (`47`); Phase 6 is Trends (`39`–`46`, `48`, `49`) |
+| Active dashboard model | **Tuned native-missing CatBoost** (no `CHLA`), version `2026-06-29-exp34-exp38-exp47`. Served weights use all supported rows; published metrics are chronological holdout. |
+| Supported lakes | **360 of 1,011** lakes with `n_obs >= 100`. The inherited Experiment 38 chemistry-missingness cutoff is nearly inert on June data. |
+| Thin-history flag | **152** supported lakes whose measured slider fields (`DOMAX`, `DOMIN`, `TMAX`, `TMIN`, `TPEC`, `TPBG`) are missing on `> 90%` of records stay selectable but get an amber warning (`thin_history` in `supported_lakes_policy.json` and `GET /lake/{id}`; Experiment 47) |
+| Trends outlook | Precomputed Experiment 46 local-level baseline for **352** of **1,084** lakes (`trends_artifact.json`). Experiment 45 withholds a skillful forecast. Experiment 49 is the replacement test (no swap until post-2024 outcomes). |
 | Deployment | Render Blueprint (`render.yaml`); CI gates deploy via `checksPass` |
 | Python | **3.11** (backend + experiments) |
 | Frontend | React 18 + Vite 6 + Tailwind; client-side routes at `/`, `/playground`, `/trends`, `/contributors`, `/modeling-process` |
@@ -20,17 +22,18 @@ Current dashboard UX:
 
 - `/` — landing page with hero copy, clarity bands, and workspace destination cards.
 - `/playground` — CatBoost scenario explorer (sliders, trajectory, SHAP drivers).
-- `/trends` — Trend Following placeholder (model in development).
+- `/trends` — observed summer Secchi through 2024 and a labeled five-year local-level baseline outlook for full-support lakes.
 - `/contributors` and `/modeling-process` — static info pages linked from the shared footer.
 - Light, WCAG-oriented theme with semantic section accents (`lib/theme.js`), clarity-band theming, 18 px base type, and colorblind-safe status colors (`dashboard/DESIGN.md`).
-- **Claro** — mint-green guided tour on `/playground` only (`components/claro/`, `lib/claroTourContent.js`); `data-claro-target` anchors on key panels. Trends and info routes do not mount `ClaroGuide`.
+- **Claro** — mint-green guided tour on `/playground` and `/trends` (`components/claro/`, `lib/claroTourContent.js`); `data-claro-target` anchors on key panels. Info routes do not mount `ClaroGuide`.
 - **Save & compare** — labeled snapshots in `localStorage` (`lib/savedScenarios.js`, schema v1); lake-scoped compare, load, delete; trajectory chart + change-log table share `chartHistory`.
-- Playground supports **per-feature include toggles**; excluded chemistry fields are sent as `null` so CatBoost uses native missing-value handling.
+- Playground supports **per-feature include toggles**; excluded measurements are sent as `null` so CatBoost uses native missing-value handling.
+- Editable sliders are the six directly measured per-visit fields, grouped as **Oxygen & temperature** (`DOMAX`, `DOMIN`, `TMAX`, `TMIN`) and **Phosphorus** (`TPEC`, `TPBG`). `PH`, `COLOR`, `CONDUCT`, `ALK` are fixed lake-level means in the June dataset and render read-only in the lake profile card (“Typical water chemistry”); the backend always takes them from the lake baseline (`LOCKED_BASELINE_FEATURES`).
 - **Brand mark** — lake + Secchi disk logo (`components/brand/DashboardLogo.jsx`, `SiteBrand.jsx`); favicon at `app/frontend/public/favicon.svg`; primary blue `#005AB5` (`theme-color` in `index.html`). Distinct from the green Claro mascot.
 - **Site chrome** — `InfoPageNav` shows logo + optional page eyebrow; playground/trends use eyebrows instead of duplicate header pills.
 - **Info pages** — contributors and modeling-process show `PageInProgressNotice` while copy evolves (`lib/siteStatus.js` toggle).
 - **Unit system** — Metric (m / ha) vs Imperial (ft / acres) display toggle in playground nav (`UnitSystemToggle`, `context/UnitSystemContext.jsx`, `lib/units.js`); persisted in `localStorage` (`dashboardUnitSystem`). Display-only — canonical model units in API payloads never change. Legacy stored value `us` maps to `imperial`.
-- **Parameter sensitivity** — each chemistry slider shows a local clearer/murkier/flat/mixed hint from `POST /predict_scenario/sensitivity` (`hooks/useScenarioSensitivity.js`); debounced after slider commits, lake- and scenario-specific.
+- **Parameter sensitivity** — each editable slider shows a local clearer/murkier/flat/mixed hint from `POST /predict_scenario/sensitivity` (`hooks/useScenarioSensitivity.js`); debounced after slider commits, lake- and scenario-specific.
 - **Lake map** — Leaflet modal picker on playground (`LakeMapPicker.jsx`); loads pins from `GET /lakes/locations`; map icon beside search plus “Show on map” in results. Pin labels appear at zoom 11+; popup cards use lake-accent styling (not Claro green).
 - Partner logos in `dashboard/app/frontend/src/assets/logos/`; copy in `lib/copy.js`, `lib/infoPagesCopy.js`, `lib/featureLabels.js`.
 - Routing uses `history.pushState` + `popstate` (no router package); Render/Nginx serves `index.html` for all paths.
@@ -74,8 +77,9 @@ Key files:
 - `supported_lakes_policy.json` — which lakes the dashboard will serve
 - `baseline_lakes_summary.json`, `lake_names.json` — lake metadata for the UI
 - `dashboard_model_report.md` — human-readable artifact summary
+- `trends_artifact.json` — precomputed Trends history/outlook (built by `build_trends_artifact.py`; not listed in `model_manifest.json`)
 
-Feature order (14 features, **no `CHLA`**): `year`, `month`, `LATITUDE`, `LONGITUDE`, `AREA_ACRES`, `DEPTH_MAX_FEET`, `DOMAX`, `DOMIN`, `TPEC`, `TPBG`, `PH`, `COLOR`, `CONDUCT`, `ALK`.
+Feature order (16 features, **no `CHLA`**, feature schema `2.0.0`): `year`, `month`, `LATITUDE`, `LONGITUDE`, `AREA_ACRES`, `DEPTH_MAX_FEET`, `DOMAX`, `DOMIN`, `TMAX`, `TMIN`, `TPEC`, `TPBG`, `PH`, `COLOR`, `CONDUCT`, `ALK`. Only `DOMAX`, `DOMIN`, `TMAX`, `TMIN`, `TPEC`, `TPBG` are editable; everything else is locked to the lake baseline.
 
 Shared definitions live in:
 
@@ -83,12 +87,13 @@ Shared definitions live in:
 - `dashboard/app/backend/feature_contract.py` → `CANONICAL_FEATURE_ORDER`
 - `dashboard/app/frontend/src/lib/contracts.js` → must stay aligned (`buildPayloadFeatures` supports `null` excluded features)
 
-Proof trail for the current model: experiments **34**, **35**, **37**, **38** (see manifest `proof_experiments` and `dashboard/README.md`).
+Proof trail for the current model: experiments **34**, **35**, **37**, **38** (2025 decisions) and **47** (June contract). Holdout metrics live in the manifest; served weights are a full supported-row refit.
 
 To retrain or swap the served model:
 
 ```bash
 python artifacts/models/train_dashboard_model.py
+python artifacts/models/build_trends_artifact.py
 ```
 
 Then verify manifest checksums, backend startup, and tests before committing.
@@ -103,8 +108,10 @@ Full narrative: `experiments/README.md`. Registry metadata: `experiments/registr
 | 2 — Baselines & generalization | `09`–`18` | Depth/type splits, RF baseline, LOLO, chemical features, temporal validation |
 | 3 — Trees & MissForest | `19`–`26` | Spatial features, XGB/LGBM/CatBoost, MissForest chronology and elimination |
 | 4 — Deep learning & CatBoost follow-ups | `27`–`38` | MLP/TabNet/FT-Transformer, regional benchmarks, tuned CatBoost, imputation benchmark, LOLO quality thresholds |
+| 5 — Playground contract | `47` | June editable vs locked chemistry contract; `n_obs >= 100` plus thin-history warning |
+| 6 — Direct Secchi forecasting | `39`–`46`, `48`, `49` | Annual summer target, failed skillful-forecast attempts, Experiment 45 decision memo, served Experiment 46 baseline, 48/49 challenger and replacement protocol |
 
-Latest experiments (`36`–`38`) cover imputation comparison and supported-lake policy selection for the dashboard.
+Experiments `01`–`38` remain on the 2025 processed snapshot. New work (`39`–`49`, including `47`) and the served artifacts use `secchi-merged-2026-06-29-r1`.
 
 ## Task routing (for agents)
 
@@ -125,6 +132,7 @@ Latest experiments (`36`–`38`) cover imputation comparison and supported-lake 
 | Change display units | `lib/units.js`, `context/UnitSystemContext.jsx`, `components/layout/UnitSystemToggle.jsx`, `lib/formattersCore.js` |
 | Change parameter sensitivity hints | `hooks/useScenarioSensitivity.js`, `POST /predict_scenario/sensitivity`, `ParameterSlider.jsx`, backend `main.py` |
 | Change lake map picker | `components/lake/LakeMapPicker.jsx`, `GET /lakes/locations`, `lib/contracts.js` |
+| Change Trends history/outlook | `artifacts/models/build_trends_artifact.py`, `trends_artifact.json`, `dashboard/app/backend/trends.py`, `components/trends/` |
 | Change save/compare snapshots | `lib/savedScenarios.js`, `hooks/useSavedScenarios.js`, `ScenarioActionBar.jsx` |
 | Change rate limits | `dashboard/app/backend/rate_limit.py`, `dashboard/README.md` |
 | Work on API | `dashboard/app/backend/main.py`, adapters in `model_adapters.py` |
@@ -196,6 +204,8 @@ Base path locally: `http://localhost:8000`. On Render, proxied at `/api/*`.
 | `GET` | `/lakes/locations` | All lakes with finite coordinates for the map picker |
 | `POST` | `/predict_scenario` | Scenario prediction + explainability; editable features may be `null` when excluded in the UI |
 | `POST` | `/predict_scenario/sensitivity` | Per-feature local/range Secchi sensitivity for current lake + scenario (slider hints) |
+| `GET` | `/trends` | Trends index: lakes, support policy, Experiment 46 validation metadata |
+| `GET` | `/trends/lakes/{midas_id}` | One lake’s summer history and, when available, the five-year baseline outlook |
 
 Rate limits (sliding 60 s window, per client IP): `API_RATE_LIMIT_PER_MINUTE` default **180** on all routes; `PREDICT_RATE_LIMIT_PER_MINUTE` default **60** on predict (counts toward the API total). Over-limit → HTTP `429` with `Retry-After`. See `dashboard/README.md` and `rate_limit.py`.
 

@@ -2,7 +2,7 @@
 
 Agent-oriented UI reference for the dashboard frontend. For repo architecture, routes, commands, and API contracts, see `CONTEXT.md` at the repository root.
 
-**Quick map:** `/` landing · `/playground` scenario explorer · `/trends` placeholder · `/contributors` · `/modeling-process` · localStorage snapshots (`dashboardSavedScenarios`) · Claro tour on **playground only**.
+**Quick map:** `/` landing · `/playground` scenario explorer · `/trends` historical clarity and baseline outlook · `/contributors` · `/modeling-process` · localStorage snapshots (`dashboardSavedScenarios`) · Claro tours on both workspaces.
 
 ---
 
@@ -60,13 +60,22 @@ Playground `InfoPageNav` also exposes an **`actions`** slot (right side) for the
 - **Popup card:** use a compact white card with a `lake-sectionLake`/`lake-accent` rail, MIDAS badge, labeled coordinate/area rows, and a subtle popup-enter motion. Keep radius at `rounded-lg`; do not nest cards inside the popup.
 - **Selection:** popup “Use this lake” calls the same `onSelectLake` handler as search.
 - **Color rule:** map picker is lake/workspace UI, not Claro. Use `lake-sectionLake` / `lake-accent`; do not use Claro green (`--claro`, `claro-button`) inside map popup cards.
-- **Claro tour:** map button anchor `data-claro-target="lake-map-button"`; tour step `lake-map` before lake profile. `ClaroGuide` accepts `onStepExit` so leaving the map step closes an open map modal.
+- **Claro tour:** map button anchor `data-claro-target="lake-map-button"`; the Playground tour places `lake-map` before lake profile and Trends uses `trends-map` before the lake list. `ClaroGuide` accepts `onStepExit` so leaving a map step closes an open map modal.
+
+---
+
+## Water conditions layout and lake profile
+
+- Sliders are grouped by `PARAMETER_GROUPS` (`lib/constants.js`): **Oxygen**, **Temperature**, and **Phosphorus** (two sliders each). Group keys match the backend contract `group` values.
+- At `xl` the three groups sit side by side (4 + 4 + 4 columns) with the pair stacked in each group. Below `xl` groups stack; within a group the pair sits two-up from `sm`.
+- Locked lake chemistry (`PH`, `COLOR`, `CONDUCT`, `ALK`) is **not** a slider. `LakeProfileCard.jsx` renders a “Typical water chemistry” block from `featureConfig.locked_features` where `group === "lake_chemistry"`, using the same `info-card` styling as the geography fields with units in the label. Values come from the lake baseline and never change while exploring.
+- The prediction card stretches to the lake profile’s height. The predicted Secchi value is display-size type with a smaller unit; typical and change sit as supporting metrics. A compact clarity scale marks the current prediction, and a footer line reports the prediction as a share of this lake’s maximum depth plus typical model error (~0.80 m MAE).
 
 ---
 
 ## Parameter sensitivity hints
 
-Each editable chemistry slider (`ParameterSlider.jsx`) shows a **local effect** hint below the control after the scenario commits (`featureCommitVersion`).
+Each editable slider (`ParameterSlider.jsx`) shows a **local effect** hint below the control after the scenario commits (`featureCommitVersion`).
 
 | Direction | Meaning | Style |
 |-----------|---------|-------|
@@ -88,7 +97,7 @@ Each editable chemistry slider (`ParameterSlider.jsx`) shows a **local effect** 
 
 When enabled, `PageInProgressNotice` renders an amber callout on `/contributors` and `/modeling-process`. Set the flag `false` and remove the component when copy is finalized.
 
-`/modeling-process` content is split into **Playground** (served model narrative) and **Trends** (placeholder section with link to `/trends`).
+`/modeling-process` content is split into **Playground** (served model narrative) and **Trends** (summer history and an empirically calibrated baseline outlook).
 
 ---
 
@@ -158,7 +167,7 @@ Body copy on tinted surfaces stays `text-slate-900` / `text-slate-700`. Status n
 
 ### Persona copy (unchanged)
 
-Claro: calm, plain-spoken water-clarity guide. v1 is a deterministic **playground-only** tour; later agent features reuse the same `data-claro-target` anchors and `CLARO_PERSONA` copy in `lib/claroTourContent.js`. Do not mount `ClaroGuide` on `/trends` or info routes.
+Claro: calm, plain-spoken water-clarity guide. The tours are deterministic and workspace-specific; both `/playground` and `/trends` reuse the same `data-claro-target` anchors, shell, and `CLARO_PERSONA` copy in `lib/claroTourContent.js`. Do not mount `ClaroGuide` on info routes.
 
 ---
 

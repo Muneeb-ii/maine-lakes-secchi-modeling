@@ -34,10 +34,10 @@ This repository is used to iterate on Secchi-depth modeling experiments and keep
 
 ## Current Research Status
 
-- The experiment system is the source of truth for model exploration (38 canonical experiments, `01`–`38`).
+- The experiment system is the source of truth for model exploration (49 canonical experiments, `01`–`49`).
 - Reports are committed outputs, not final interpretation documents.
 - The dashboard is intentionally downstream of model selection and serves one active artifact set today.
-- A tuned native-missing CatBoost model is live in the playground; trend forecasting remains a future workspace.
+- A tuned native-missing CatBoost model is live in the playground; Trends serves summer history and a labeled five-year baseline outlook from Experiment 46. Experiment 45 withholds a skillful forecast; Experiment 49 is the later replacement test.
 
 ## Dashboard and Model Selection
 
