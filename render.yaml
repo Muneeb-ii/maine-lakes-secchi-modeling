@@ -5,7 +5,9 @@ services:
     plan: free
     dockerfilePath: ./dashboard/render.Dockerfile
     dockerContext: .
-    healthCheckPath: /api/
+    # Nginx serves the SPA immediately while the model-backed API warms up.
+    # Probing /api/ during startup can fail because model loading takes ~45s.
+    healthCheckPath: /
     autoDeployTrigger: checksPass
     envVars:
       - key: MODEL_ARTIFACTS_PATH

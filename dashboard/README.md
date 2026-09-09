@@ -65,7 +65,7 @@ The Render deployment uses one free Docker web service so the frontend and backe
 - `dashboard/render.Dockerfile` builds the React frontend with `VITE_API_URL=/api`, installs the FastAPI backend, and copies the committed model artifacts into the image.
 - `dashboard/nginx.render.conf.template` serves the static frontend and proxies `/api/*` to FastAPI on `127.0.0.1:8000`.
 - `dashboard/start-render.sh` starts both Uvicorn and Nginx inside the Render container.
-- Render health checks use `/api/`, which is proxied to the FastAPI root endpoint.
+- Render health checks use `/`, served by Nginx while the model-backed API warms up.
 
 Recommended Render setup:
 
