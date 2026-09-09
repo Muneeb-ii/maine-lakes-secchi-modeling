@@ -1,0 +1,35 @@
+{
+  "dataset_id": "secchi-merged-2026-06-29-r1",
+  "evaluation": "Later-origin retrospective check (origins 2015-2019, forecast years 2020-2024); not a pristine holdout because those years were present in earlier reports.",
+  "maximum_horizon_years": 5,
+  "recommended_model": "Local-level state-space",
+  "baseline_defensible": true,
+  "recommendation": "Local-level state-space is the lower-MAE five-year baseline in this later-origin check and has empirically near-nominal pooled interval coverage; a clearly labeled persistence outlook is defensible only with support tiers and interval availability exposed. This is descriptive evidence, does not establish trend skill, and does not waive or satisfy the registered Experiment 45 release gates.",
+  "evaluation_metrics": [
+    "MAE",
+    "RMSE",
+    "MASE",
+    "pct_lakes_beat_persistence",
+    "coverage_80",
+    "coverage_95",
+    "width_80",
+    "width_95"
+  ],
+  "support_policy": {
+    "Full": {
+      "minimum_history_years": 10,
+      "maximum_gap_years": 2
+    },
+    "Limited": {
+      "minimum_history_years": 2,
+      "maximum_gap_years": 4
+    }
+  },
+  "metrics_csv": "46_baseline_forecast_metrics.csv",
+  "support_metrics_csv": "46_baseline_support_metrics.csv",
+  "limitations": [
+    "Pooled rolling-origin residuals are serially correlated empirical calibration scores, not formal coverage guarantees.",
+    "Full-year target sensitivity is handled separately in Experiment 40.",
+    "The registered Experiment 45 release gates remain unchanged."
+  ]
+}

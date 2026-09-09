@@ -1,0 +1,5 @@
+model,role,n_cases,n_lakes,MAE,coverage_80,coverage_95,mae_improvement_vs_incumbent,pct_lakes_better_mae,regions_worse_than_incumbent,coverage_gate,mae_gate,lake_gate,region_gate,independent_outcomes_gate,would_replace
+Local-level state-space,incumbent,1402,339,0.6353452362475593,0.7781740370898717,0.9450784593437945,0.0,,0,True,True,True,True,False,False
+Recent 10-calendar-year mean,challenger,1402,339,0.6111074022027086,0.7902995720399429,0.9479315263908702,0.024237834044850692,56.63716814159292,1,True,True,True,True,False,False
+EWMA alpha 0.20,challenger,1402,339,0.6121916537561696,0.7881597717546363,0.9450784593437945,0.023153582491389768,60.766961651917406,1,True,True,True,True,False,False
+Last 10 observed-year mean,challenger,1402,339,0.6152367209049201,0.7952924393723253,0.9514978601997147,0.020108515342639244,53.687315634218294,2,True,True,True,False,False,False

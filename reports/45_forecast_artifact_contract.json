@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "dataset_id": "secchi-merged-2026-06-29-r1",
+  "target": "station-balanced annual summer Secchi depth (meters)",
+  "selected_model": null,
+  "release_status": "withheld",
+  "maximum_recommended_horizon_years": 0,
+  "forecast_origin_year": 2024,
+  "labeled_baseline_follow_on": "46",
+  "limitations": [
+    "These gates measure skill over last-value and recent-mean baselines, not whether a labeled persistence outlook is useful.",
+    "Bayesian state-space fits in Experiment 41 did not converge and cannot pass."
+  ]
+}

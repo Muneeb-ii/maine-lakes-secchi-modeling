@@ -592,6 +592,197 @@
         "34",
         "35"
       ]
+    },
+    {
+      "id": "47",
+      "slug": "playground_feature_contract",
+      "title": "Playground feature contract on the June dataset",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/47_playground_feature_contract.py",
+      "report": "reports/47_playground_feature_contract.md",
+      "artifacts": [
+        "reports/47_playground_feature_contract.png",
+        "reports/47_lolo_per_lake.csv"
+      ],
+      "depends_on": [
+        "34",
+        "35",
+        "38"
+      ]
+    },
+    {
+      "id": "39",
+      "slug": "forecast_target_eligibility",
+      "title": "Forecast target and eligibility",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/39_forecast_target_eligibility.py",
+      "report": "reports/39_forecast_target_eligibility.md",
+      "artifacts": [
+        "data/derived/secchi-merged-2026-06-29-r1/annual-summer-lake-year.csv"
+      ],
+      "depends_on": [
+        "38"
+      ]
+    },
+    {
+      "id": "40",
+      "slug": "forecasting_baselines",
+      "title": "Direct Secchi forecasting baselines",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/40_forecasting_baselines.py",
+      "report": "reports/40_forecasting_baselines.md",
+      "artifacts": [
+        "reports/40_forecasting_baselines.png"
+      ],
+      "depends_on": [
+        "39"
+      ]
+    },
+    {
+      "id": "41",
+      "slug": "hierarchical_state_space",
+      "title": "Hierarchical state-space Secchi forecasting",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/41_hierarchical_state_space.py",
+      "report": "reports/41_hierarchical_state_space.md",
+      "artifacts": [
+        "reports/41_hierarchical_state_space.png",
+        "reports/41_state_space_examples.png",
+        "reports/41_state_space_predictions.csv"
+      ],
+      "depends_on": [
+        "40"
+      ]
+    },
+    {
+      "id": "42",
+      "slug": "direct_multihorizon_catboost",
+      "title": "Direct multi-horizon CatBoost forecasting",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/42_direct_multihorizon_catboost.py",
+      "report": "reports/42_direct_multihorizon_catboost.md",
+      "artifacts": [
+        "reports/42_direct_multihorizon_catboost.png",
+        "reports/42_catboost_predictions.csv"
+      ],
+      "depends_on": [
+        "41"
+      ]
+    },
+    {
+      "id": "43",
+      "slug": "trend_shape_challenger",
+      "title": "Hierarchical GAM trend-shape challenger",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/43_trend_shape_challenger.py",
+      "report": "reports/43_trend_shape_challenger.md",
+      "artifacts": [
+        "reports/43_trend_shape_challenger.png",
+        "reports/43_spline_predictions.csv"
+      ],
+      "depends_on": [
+        "42"
+      ]
+    },
+    {
+      "id": "44",
+      "slug": "interval_calibration_support",
+      "title": "Interval calibration and forecast support policy",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/44_interval_calibration_support.py",
+      "report": "reports/44_interval_calibration_support.md",
+      "artifacts": [
+        "reports/44_interval_calibration_support.png",
+        "reports/44_calibrated_predictions.csv"
+      ],
+      "depends_on": [
+        "42",
+        "43"
+      ]
+    },
+    {
+      "id": "45",
+      "slug": "forecast_release_decision",
+      "title": "Forecast release decision",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/45_final_model_selection.py",
+      "report": "reports/45_final_model_selection.md",
+      "artifacts": [
+        "reports/45_forecast_artifact_contract.json"
+      ],
+      "depends_on": [
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ]
+    },
+    {
+      "id": "46",
+      "slug": "baseline_forecast_validation",
+      "title": "Later-origin baseline forecast validation",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/46_baseline_forecast_validation.py",
+      "report": "reports/46_baseline_forecast_validation.md",
+      "artifacts": [
+        "reports/46_baseline_forecast_validation.csv",
+        "reports/46_baseline_calibration_residuals.csv",
+        "reports/46_baseline_forecast_assessment.json",
+        "reports/46_baseline_forecast_metrics.csv",
+        "reports/46_baseline_support_metrics.csv",
+        "reports/46_baseline_forecast_validation.png"
+      ],
+      "depends_on": [
+        "39",
+        "40",
+        "45"
+      ]
+    },
+    {
+      "id": "48",
+      "slug": "simple_long_horizon_models",
+      "title": "Simple long-horizon level models",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/48_simple_long_horizon_models.py",
+      "report": "reports/48_simple_long_horizon_models.md",
+      "artifacts": [
+        "reports/48_simple_long_horizon_predictions.csv",
+        "reports/48_simple_long_horizon_metrics.csv",
+        "reports/48_simple_long_horizon_models.png"
+      ],
+      "depends_on": [
+        "39",
+        "40",
+        "46"
+      ]
+    },
+    {
+      "id": "49",
+      "slug": "trends_replacement_protocol",
+      "title": "Trends baseline replacement protocol",
+      "status": "canonical",
+      "dataset_id": "secchi-merged-2026-06-29-r1",
+      "script": "experiments/scripts/49_trends_replacement_protocol.py",
+      "report": "reports/49_trends_replacement_protocol.md",
+      "artifacts": [
+        "reports/49_trends_replacement_assessment.json",
+        "reports/49_trends_replacement_metrics.csv"
+      ],
+      "depends_on": [
+        "46",
+        "48"
+      ]
     }
   ]
 }

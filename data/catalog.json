@@ -144,7 +144,14 @@
     },
     "secchi-merged-2026-06-29-r1": {
       "lake_missingness_path": "data/derived/secchi-merged-2026-06-29-r1/lake-missingness.csv",
-      "lake_missingness_sha256": "ea73ddb7402ec6e2b05e5af3db5176dc5ed790350feaa241eaf2b2239f5c265c"
+      "lake_missingness_sha256": "ea73ddb7402ec6e2b05e5af3db5176dc5ed790350feaa241eaf2b2239f5c265c",
+      "annual_summer_target_path": "data/derived/secchi-merged-2026-06-29-r1/annual-summer-lake-year.csv",
+      "annual_summer_target_sha256": "b453cc80eb3395f9864984e33cddfc850c9248659965a703514a242b24b1b402",
+      "lolo_seed_10_path": "data/derived/secchi-merged-2026-06-29-r1/lolo-random-seed-10.txt",
+      "lolo_seed_10_sha256": "9fe84b9cece098c324886006bfbb7fa4a5186f3127b31fd8b6e2dfa90970f7b0",
+      "lolo_seed_100_path": "data/derived/secchi-merged-2026-06-29-r1/lolo-random-seed-100-seed42.txt",
+      "lolo_seed_100_sha256": "331bca5df52f22604a549f2919b4cc9be16573a633e34a396e92e3b262554def",
+      "lolo_seed_note": "Same lake lists as the 2025 snapshot seeds so LOLO results stay comparable with experiments 35 and 38."
     }
   }
 }

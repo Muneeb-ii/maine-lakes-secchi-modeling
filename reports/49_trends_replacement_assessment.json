@@ -1,0 +1,30 @@
+{
+  "dataset_id": "secchi-merged-2026-06-29-r1",
+  "incumbent": "Local-level state-space",
+  "latest_observed_year": 2024,
+  "independent_outcomes_available": false,
+  "independent_after_year": 2024,
+  "confirmation": {
+    "split": "later",
+    "horizon_years": 5,
+    "support_tier": "Full",
+    "evaluation_cohort": "2020\u20132024 dry run",
+    "note": "2020\u20132024 later-origin check is a dry run, not an independent post-2024 test."
+  },
+  "gates": {
+    "min_mae_improvement_m": 0.02,
+    "coverage_80": [
+      0.7,
+      0.9
+    ],
+    "coverage_95": [
+      0.85,
+      1.0
+    ],
+    "majority_lakes_better_mae": true,
+    "max_regions_worse_than_incumbent": 1,
+    "require_independent_outcomes_after": 2024
+  },
+  "selected_replacement": null,
+  "decision": "Keep the served local-level Trends baseline. No challenger may replace it until post-2024 outcomes exist and the remaining gates pass on that window."
+}

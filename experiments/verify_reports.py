@@ -47,9 +47,14 @@ def audit_entry(entry: dict) -> dict:
 
     declared_artifacts = {Path(path).name for path in entry.get("artifacts", [])}
     referenced_images = {Path(path).name for path in image_refs}
-    missing_declared_refs = sorted(declared_artifacts - referenced_images)
+    # Forecasting reports also declare CSV/JSON data artifacts, cited in prose.
+    cited_artifacts = referenced_images | {name for name in declared_artifacts if name in text}
+    missing_declared_refs = sorted(declared_artifacts - cited_artifacts)
     for artifact in missing_declared_refs:
         issues.append(f"declared artifact not referenced in report: {artifact}")
+    for artifact_path in entry.get("artifacts", []):
+        if not (PROJECT_ROOT / artifact_path).exists():
+            issues.append(f"missing declared artifact: {artifact_path}")
 
     canonical_overlap = CANONICAL_HEADINGS.intersection(headings)
     if entry["id"] in {"01", "10", "22"} and canonical_overlap != CANONICAL_HEADINGS:

@@ -66,6 +66,8 @@ def run_experiment(entry: dict) -> None:
     env = os.environ.copy()
     env[DATASET_ID_ENV] = dataset_id
     env.setdefault("MPLCONFIGDIR", str(PROJECT_ROOT / ".cache" / "matplotlib"))
+    env.setdefault("XDG_CACHE_HOME", str(PROJECT_ROOT / ".cache" / "xdg"))
+    env.setdefault("PYTENSOR_FLAGS", f"base_compiledir={PROJECT_ROOT / '.cache' / 'pytensor'}")
     env.setdefault("MPLBACKEND", "Agg")
     env.setdefault("OBJC_DISABLE_INITIALIZE_FORK_SAFETY", "YES")
     env.setdefault("OMP_NUM_THREADS", "1")
