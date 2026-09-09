@@ -1,10 +1,11 @@
 {
   "schema_version": "1.0.0",
+  "feature_schema_version": "2.0.0",
   "model_id": "secchi-catboost-supported-lakes",
-  "model_version": "2026-06-29-exp34-exp38",
+  "model_version": "2026-06-29-exp34-exp38-exp47",
   "dataset_id": "secchi-merged-2026-06-29-r1",
   "dataset_sha256": "a59d00d5a221a8d86c6c1be21e920d95cd558764972556e191967441fb617ba4",
-  "trained_at": "2026-08-22T04:05:07Z",
+  "trained_at": "2026-09-09T18:08:40Z",
   "feature_order": [
     "year",
     "month",
@@ -14,8 +15,24 @@
     "DEPTH_MAX_FEET",
     "DOMAX",
     "DOMIN",
+    "TMAX",
+    "TMIN",
     "TPEC",
     "TPBG",
+    "PH",
+    "COLOR",
+    "CONDUCT",
+    "ALK"
+  ],
+  "editable_features": [
+    "DOMAX",
+    "DOMIN",
+    "TMAX",
+    "TMIN",
+    "TPEC",
+    "TPBG"
+  ],
+  "locked_lake_chemistry": [
     "PH",
     "COLOR",
     "CONDUCT",
@@ -25,32 +42,32 @@
     {
       "name": "predictor",
       "path": "catboost_predictor.joblib",
-      "required": true,
-      "sha256": "11ebee65905b0edee7f8ffd0679aa28c234bf2c16fa6b25c5c88e7fd9f245c64"
+      "required": 1.0,
+      "sha256": "f25758be6d379547e9114c94742842101ace322e3b4faa89b1291de19752ca9f"
     },
     {
       "name": "baseline",
       "path": "baseline_lakes_summary.json",
-      "required": true,
-      "sha256": "0db7f5a05bc5afef38121622fe708d04b1a3815fa4a9fccc82cc40d572e4f61d"
+      "required": 1.0,
+      "sha256": "d51c944a05e474924bccc6ac094af20bc6663d3dc8f87205b989e06934c8d369"
     },
     {
       "name": "lake_names",
       "path": "lake_names.json",
-      "required": true,
+      "required": 1.0,
       "sha256": "1795de8f8616f449fbf83b7e055050635166a47e3bb804d454f3b7bb718c110e"
     },
     {
       "name": "support_policy",
       "path": "supported_lakes_policy.json",
-      "required": true,
-      "sha256": "18d5d545a88d03b0d87932aa0a3a583458218820f6a6ffded327a2f9a75699a1"
+      "required": 1.0,
+      "sha256": "cfe1f4e8c56d81a1da3d63c8da5e0dcb262fc825678ab807c4ae1c84d02e0fdf"
     },
     {
       "name": "model_report",
       "path": "dashboard_model_report.md",
-      "required": true,
-      "sha256": "d68e6f2e12c2648213a3e1f7ca994ff6a8416862da5eb106c1744f272945871f"
+      "required": 1.0,
+      "sha256": "a464c7ff54f3ff77de65ef74bd2ee0cdff2839c74d560cfb9269d1eb21ac36c7"
     }
   ],
   "explainability": {
@@ -60,41 +77,54 @@
   "support_policy": {
     "min_observations": 100,
     "max_pct_missing_chemical_overall": 0.9,
-    "source_experiment": "38",
-    "rationale": "Experiment 38 found the best confirmed LOLO operating policy at obs >= 100 and chemistry missingness <= 0.90."
+    "n_obs_threshold_source_experiment": "38",
+    "source_experiment": "47",
+    "rationale": "The n_obs >= 100 cutoff comes from Experiment 38 on the 2025 snapshot. On the June 2026 snapshot, Experiment 47 found the inherited chemistry-missingness cutoff is nearly inert because PH/COLOR/CONDUCT/ALK are filled lake means (360 supported lakes vs 361 with n_obs >= 100 alone). Lakes remain selectable under n_obs >= 100; sparse measured slider fields are flagged thin_history.",
+    "thin_history_max_pct_missing_measured_editable": 0.9,
+    "thin_history_source_experiment": "47"
   },
   "proof_experiments": [
     {
       "id": "34",
       "report": "reports/34_catboost_tuned.md",
-      "finding": "Tuned no-CHLA native-missing CatBoost reached chronological R2 0.7324, MAE 0.8122, RMSE 1.0903."
+      "finding": "On the 2025 snapshot, tuned no-CHLA native-missing CatBoost reached chronological R2 0.7324, MAE 0.8122, RMSE 1.0903. Those hyperparameters were transferred to the June model without retuning."
     },
     {
       "id": "35",
       "report": "reports/35_catboost_tuned_lolo.md",
-      "finding": "Unrestricted tuned CatBoost LOLO remained weak: x10 average R2 -1.3806 and x100 average R2 -2.2441."
+      "finding": "On the 2025 snapshot, unrestricted tuned CatBoost LOLO remained weak: x10 average R2 -1.3806 and x100 average R2 -2.2441."
     },
     {
       "id": "37",
       "report": "reports/37_catboost_imputation.md",
-      "finding": "MissForest imputation made tuned CatBoost worse than native missing-value handling."
+      "finding": "On the 2025 snapshot, MissForest imputation made tuned CatBoost worse than native missing-value handling."
     },
     {
       "id": "38",
       "report": "reports/38_catboost_lolo_quality_thresholds.md",
-      "finding": "Restricting to obs >= 100 and missingness <= 0.90 improved confirmed x100 LOLO average R2 to -1.084."
+      "finding": "On the 2025 snapshot, restricting evaluation to obs >= 100 and chemistry missingness <= 0.90 improved confirmed x100 LOLO average R2 to -1.084. That missingness statistic does not transfer to the June snapshot (see Experiment 47)."
+    },
+    {
+      "id": "47",
+      "report": "reports/47_playground_feature_contract.md",
+      "finding": "On the June snapshot, the 16-feature measured-plus-locked-chemistry contract matched the legacy 14-feature chronological accuracy (R2 0.734 vs 0.733). Leave-one-lake-out on the retained 2025 seed lakes stayed negative (catalog-policy x100 average R2 -0.571). n_obs >= 100 is the operative support rule; 152 supported lakes are flagged thin_history."
     }
   ],
   "metrics": {
     "chronological_supported_lakes": {
-      "MAE": 0.7928730515210356,
-      "MSE": 1.173229050674747,
-      "RMSE": 1.0831569833937955,
-      "R2": 0.7333522774650275,
-      "MAE_Norm": 0.017971654838769283,
-      "RMSE_Norm": 0.025826023001868592
+      "MAE": 0.7891727250546517,
+      "MSE": 1.1693842221808133,
+      "RMSE": 1.0813807017793564,
+      "R2": 0.7342261177103363,
+      "MAE_Norm": 0.017958742021848814,
+      "RMSE_Norm": 0.02589232399957549
+    },
+    "chronological_holdout_window": {
+      "start_year": 2017,
+      "end_year": 2024
     }
   },
+  "served_model_training": "all_supported_rows",
   "compatibility": {
     "python": "3.11",
     "catboost": "1.2.10",
