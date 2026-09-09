@@ -28,6 +28,9 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 COPY dashboard/app/backend /app/dashboard/app/backend
 COPY artifacts/models /app/artifacts/models
 COPY --from=frontend-build /app/dist /usr/share/nginx/html
+# Keep static assets readable by the unprivileged Nginx worker even when a
+# source image was created with restrictive local file permissions.
+RUN chmod -R a+rX /usr/share/nginx/html
 COPY dashboard/nginx.render.conf.template /etc/nginx/templates/default.conf.template
 COPY dashboard/start-render.sh /app/start-render.sh
 

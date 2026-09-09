@@ -15,6 +15,13 @@ export const PARAMETER_GROUPS = [
   { key: "phosphorus", label: "Phosphorus" },
 ];
 
+// Paired measurements describe the same physical range. The UI keeps the
+// lower slider from moving above the upper slider, and vice versa.
+export const LINKED_SLIDER_PAIRS = [
+  { minKey: "DOMIN", maxKey: "DOMAX" },
+  { minKey: "TMIN", maxKey: "TMAX" },
+];
+
 // Locked, lake-level descriptors shown read-only in the lake profile card.
 export const LAKE_CHEMISTRY_GROUP = "lake_chemistry";
 

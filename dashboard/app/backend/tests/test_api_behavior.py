@@ -273,6 +273,46 @@ class ApiBehaviorTests(unittest.TestCase):
         self.assertEqual(error_ctx.exception.status_code, 400)
         self.assertIn("TMAX", error_ctx.exception.detail)
 
+    def test_predict_rejects_reversed_paired_measurements(self):
+        class StubRegistry:
+            def is_ready(self):
+                return True
+
+            def startup_errors(self):
+                return []
+
+            def active_model_metadata(self):
+                return {"model_id": "stub", "model_version": "v1"}
+
+            def predict(self, features, model_id=None, include_explainability=True):
+                raise AssertionError("Should not predict reversed paired measurements")
+
+        main.registry = StubRegistry()
+        main.baseline_data = {
+            "C3420": {
+                "year": 2026,
+                "month": 7,
+                "LATITUDE": 44.1,
+                "LONGITUDE": -69.1,
+                "AREA_ACRES": 120.0,
+                "DEPTH_MAX_FEET": 30.0,
+                "PH": 7.0,
+                "COLOR": 20.0,
+                "CONDUCT": 100.0,
+                "ALK": 30.0,
+            }
+        }
+        payload = ScenarioPayload(
+            midas_id="C3420",
+            features={"DOMIN": 8.0, "DOMAX": 2.0},
+        )
+
+        with self.assertRaises(HTTPException) as error_ctx:
+            main.predict_scenario(payload, request_for())
+
+        self.assertEqual(error_ctx.exception.status_code, 400)
+        self.assertIn("Dissolved oxygen", error_ctx.exception.detail)
+
     def test_sensitivity_returns_items_and_overwrites_locked_baseline(self):
         captured = []
 

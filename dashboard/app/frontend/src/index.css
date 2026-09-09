@@ -273,6 +273,7 @@
 
   .landing-playground-preview {
     @apply grid h-full grid-rows-2 gap-1.5 bg-slate-100 p-1.5;
+    grid-template-rows: minmax(0, 1.3fr) minmax(0, 0.7fr);
   }
 
   .landing-trends-preview-panel,
@@ -292,7 +293,10 @@
     @apply block h-full w-full object-cover object-top;
   }
 
-  .landing-trends-preview-panel:last-child > img,
+  .landing-trends-preview-panel:last-child > img {
+    object-position: center bottom;
+  }
+
   .landing-playground-preview-panel:last-child > img {
     object-position: center bottom;
   }

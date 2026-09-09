@@ -1,16 +1,27 @@
 import { Sparkles } from "lucide-react";
 import { PARAMETER_PANEL_INTRO, SECTION_LABELS } from "../../lib/copy";
-import { PARAMETER_GROUPS } from "../../lib/constants";
+import { LINKED_SLIDER_PAIRS, PARAMETER_GROUPS } from "../../lib/constants";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { SECTION_ACCENTS } from "../../lib/theme";
 import { SectionHeading } from "../ui/SectionHeading";
 import { ParameterSlider } from "./ParameterSlider";
 
-function getSliderBounds(config) {
-  return {
-    min: config?.slider?.min ?? 0,
-    max: config?.slider?.max ?? 100,
-  };
+function getSliderBounds(config, featureKey, features) {
+  const baseMin = Number(config?.slider?.min ?? 0);
+  const baseMax = Number(config?.slider?.max ?? 100);
+  const pair = LINKED_SLIDER_PAIRS.find(
+    ({ minKey, maxKey }) => minKey === featureKey || maxKey === featureKey
+  );
+  if (!pair) return { min: baseMin, max: baseMax };
+
+  const counterpartKey = pair.minKey === featureKey ? pair.maxKey : pair.minKey;
+  const counterpartValue = Number(features?.[counterpartKey]);
+  if (!Number.isFinite(counterpartValue)) return { min: baseMin, max: baseMax };
+
+  if (pair.minKey === featureKey) {
+    return { min: baseMin, max: Math.max(baseMin, Math.min(baseMax, counterpartValue)) };
+  }
+  return { min: Math.min(baseMax, Math.max(baseMin, counterpartValue)), max: baseMax };
 }
 
 // At xl, groups sit side by side on a 12-column grid. Each group of two sliders
@@ -91,7 +102,7 @@ export function ParameterPanel({
               {group.keys.map((key) => {
                 const config = featureConfig.features[key];
                 const val = features[key] !== undefined ? features[key] : 0;
-                const { min, max } = getSliderBounds(config);
+                const { min, max } = getSliderBounds(config, key, features);
                 return (
                   <ParameterSlider
                     key={key}

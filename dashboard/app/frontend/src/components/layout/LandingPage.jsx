@@ -199,14 +199,12 @@ export function LandingPage() {
                   href={playgroundPath}
                   icon={FlaskConical}
                   preview={(
-                    <div className="landing-playground-preview" aria-label="Wilson Lake Playground showing a predicted Secchi depth and scenario history">
+                    <div className="landing-playground-preview" aria-label="Wilson Lake Playground showing predicted Secchi depth and scenario changes">
                       <div className="landing-playground-preview-panel">
-                        <span>Predicted Secchi depth</span>
                         <img src="/landing/wilson-playground-prediction-strip.png" alt="" loading="lazy" />
                       </div>
                       <div className="landing-playground-preview-panel">
-                        <span>Scenario history</span>
-                        <img src="/landing/wilson-playground-graph-strip.png" alt="" loading="lazy" />
+                        <img src="/landing/wilson-playground-changes-strip.png" alt="" loading="lazy" />
                       </div>
                     </div>
                   )}

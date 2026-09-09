@@ -52,6 +52,10 @@ trends_store = TrendsStore(models_path / "trends_artifact.json")
 SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
 SENSITIVITY_FLAT_THRESHOLD_METERS = 0.01
 SENSITIVITY_RANGE_SAMPLE_COUNT = 5
+LINKED_EDITABLE_PAIRS = (
+    ("DOMIN", "DOMAX", "Dissolved oxygen"),
+    ("TMIN", "TMAX", "Water temperature"),
+)
 
 
 @asynccontextmanager
@@ -227,6 +231,21 @@ def _prediction_features(payload: ScenarioPayload) -> dict:
             raise HTTPException(status_code=400, detail=f"Feature {feature_name} must be numeric.")
         _validate_editable_feature(feature_name, value)
         normalized_features[feature_name] = value
+
+    for lower_key, upper_key, label in LINKED_EDITABLE_PAIRS:
+        lower_value = normalized_features.get(lower_key)
+        upper_value = normalized_features.get(upper_key)
+        if (
+            lower_value is not None
+            and upper_value is not None
+            and math.isfinite(lower_value)
+            and math.isfinite(upper_value)
+            and lower_value > upper_value
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail=f"{label} minimum cannot exceed maximum.",
+            )
     return normalized_features
 
 def _model_prediction(features: dict, model_id: str | None = None) -> float:
