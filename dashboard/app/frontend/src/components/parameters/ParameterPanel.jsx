@@ -3,8 +3,7 @@ import { PARAMETER_PANEL_INTRO, SECTION_LABELS } from "../../lib/copy";
 import { PARAMETER_GROUPS } from "../../lib/constants";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { SECTION_ACCENTS } from "../../lib/theme";
-import { SectionHelp } from "../ui/SectionHelp";
-import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
+import { SectionHeading } from "../ui/SectionHeading";
 import { ParameterSlider } from "./ParameterSlider";
 
 function getSliderBounds(config) {
@@ -12,6 +11,42 @@ function getSliderBounds(config) {
     min: config?.slider?.min ?? 0,
     max: config?.slider?.max ?? 100,
   };
+}
+
+// At xl, groups sit side by side on a 12-column grid. Each group of two sliders
+// stacks (one column), so Oxygen / Temperature / Phosphorus each span 4 columns.
+// Below xl, groups stack and the pair sits two-up from sm. Tailwind needs
+// literal class names, hence the lookup tables.
+const GROUP_ROWS = 2;
+const SPAN_CLASS_BY_TWELFTHS = {
+  3: "xl:col-span-3",
+  4: "xl:col-span-4",
+  6: "xl:col-span-6",
+  8: "xl:col-span-8",
+  9: "xl:col-span-9",
+  12: "xl:col-span-12",
+};
+const COLUMNS_CLASS = {
+  1: "xl:grid-cols-1",
+  2: "xl:grid-cols-2",
+  3: "xl:grid-cols-3",
+  4: "xl:grid-cols-4",
+};
+
+function groupLayout(groups) {
+  const columns = groups.map((group) => Math.ceil(group.keys.length / GROUP_ROWS));
+  const totalColumns = columns.reduce((sum, count) => sum + count, 0);
+  const evenSplit = totalColumns > 0 && 12 % totalColumns === 0;
+  return groups.map((group, index) => {
+    const spanClass = evenSplit
+      ? SPAN_CLASS_BY_TWELFTHS[(12 / totalColumns) * columns[index]]
+      : undefined;
+    const columnsClass = COLUMNS_CLASS[columns[index]];
+    if (!spanClass || !columnsClass) {
+      return { ...group, spanClass: "xl:col-span-12", columnsClass: "xl:grid-cols-4" };
+    }
+    return { ...group, spanClass, columnsClass };
+  });
 }
 
 export function ParameterPanel({
@@ -28,10 +63,12 @@ export function ParameterPanel({
 }) {
   const editableKeys = featureConfig?.editable_features || [];
 
-  const grouped = PARAMETER_GROUPS.map((group) => ({
-    ...group,
-    keys: editableKeys.filter((key) => featureConfig.features[key]?.group === group.key),
-  })).filter((group) => group.keys.length > 0);
+  const grouped = groupLayout(
+    PARAMETER_GROUPS.map((group) => ({
+      ...group,
+      keys: editableKeys.filter((key) => featureConfig.features[key]?.group === group.key),
+    })).filter((group) => group.keys.length > 0)
+  );
 
   return (
     <div
@@ -39,18 +76,18 @@ export function ParameterPanel({
       className={`panel p-4 sm:p-5 ${SECTION_ACCENTS.parameters.panelAccentClass}`}
     >
       <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
-        <h2 className="section-heading">
-          <SectionHeadingIcon section="parameters" icon={Sparkles} />
+        <SectionHeading section="parameters" icon={Sparkles} help={HELP_CONTENT.parameters}>
           {SECTION_LABELS.parameters}
-          <SectionHelp content={HELP_CONTENT.parameters} />
-        </h2>
+        </SectionHeading>
         <p className="body-copy max-w-2xl">{PARAMETER_PANEL_INTRO}</p>
       </div>
-      <div className="mt-4 space-y-5">
+      <div className="mt-4 grid grid-cols-1 gap-5 xl:grid-cols-12 xl:gap-4">
         {grouped.map((group) => (
-          <div key={group.key}>
-            <h3 className="group-label-accent mb-3">{group.label}</h3>
-            <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div key={group.key} className={`flex flex-col ${group.spanClass}`}>
+            <h3 className="group-label-accent mb-3 self-start">{group.label}</h3>
+            <div
+              className={`grid flex-1 grid-cols-1 items-stretch gap-4 sm:grid-cols-2 ${group.columnsClass}`}
+            >
               {group.keys.map((key) => {
                 const config = featureConfig.features[key];
                 const val = features[key] !== undefined ? features[key] : 0;

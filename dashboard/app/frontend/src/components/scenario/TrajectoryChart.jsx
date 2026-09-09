@@ -49,8 +49,7 @@ import { formatSecchiThreshold, SECTION_ACCENTS } from "../../lib/theme";
 import { toDisplay } from "../../lib/units";
 import { useReducedMotion } from "../../lib/useReducedMotion";
 import { useUnitSystem } from "../../context/UnitSystemContext";
-import { SectionHelp } from "../ui/SectionHelp";
-import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
+import { SectionHeading } from "../ui/SectionHeading";
 
 function TrajectoryTooltip({ active, payload, system }) {
   if (!active || !payload?.length) return null;
@@ -243,11 +242,9 @@ export function TrajectoryChart({
     >
       <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
         <div>
-          <h2 className="section-heading">
-            <SectionHeadingIcon section="trajectory" icon={Activity} />
+          <SectionHeading section="trajectory" icon={Activity} help={HELP_CONTENT.trajectory}>
             {SECTION_LABELS.trajectory}
-            <SectionHelp content={HELP_CONTENT.trajectory} />
-          </h2>
+          </SectionHeading>
           <p className="mt-2 max-w-2xl body-copy leading-relaxed">
             The first dot is this lake’s typical condition. Each later dot is a meaningful
             slider adjustment you tried, so the line shows how your scenario changed predicted

@@ -2,6 +2,7 @@ import json
 import math
 import os
 from contextlib import asynccontextmanager
+from numbers import Integral, Real
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,6 +28,7 @@ from feature_contract import (
 )
 from model_registry import ModelRegistry
 from rate_limit import enforce_api_rate_limit, enforce_predict_rate_limit
+from trends import TrendsStore
 
 
 def _dashboard_debug() -> bool:
@@ -46,6 +48,7 @@ baseline_data = {}
 lake_names_data = {}
 support_policy_data = {}
 registry = ModelRegistry(models_path=models_path)
+trends_store = TrendsStore(models_path / "trends_artifact.json")
 SUPPORTED_REQUESTED_OUTPUTS = {"prediction", "explainability"}
 SENSITIVITY_FLAT_THRESHOLD_METERS = 0.01
 SENSITIVITY_RANGE_SAMPLE_COUNT = 5
@@ -57,6 +60,7 @@ async def lifespan(app: FastAPI):
     print("Mounting ML memory and model registry...")
 
     registry.load()
+    trends_store.load()
     if registry.is_ready():
         print("Active prediction model loaded.")
     else:
@@ -82,6 +86,9 @@ async def lifespan(app: FastAPI):
         with open(support_file, "r") as f:
             support_policy_data = json.load(f)
         print("Loaded supported-lake policy metadata.")
+
+    if trends_store.error:
+        print(f"Trends artifact error: {trends_store.error}")
 
     yield
 
@@ -157,6 +164,26 @@ def _finite_float_or_none(value) -> float | None:
         return None
     return numeric if math.isfinite(numeric) else None
 
+
+def _json_safe(value):
+    """Convert non-finite numeric values to JSON null at the API boundary.
+
+    The model itself can use NaN as CatBoost's native missing-value marker, but
+    JSON (and Starlette's response encoder) cannot represent NaN or Infinity.
+    Keep the in-memory baseline untouched for prediction and sanitize only the
+    object that is sent to clients.
+    """
+    if isinstance(value, dict):
+        return {key: _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, Integral) and not isinstance(value, bool):
+        return int(value)
+    if isinstance(value, Real):
+        numeric = float(value)
+        return numeric if math.isfinite(numeric) else None
+    return value
+
 def _lake_location_item(midas_id: str) -> LakeSearchItem | None:
     normalized_id = str(midas_id).upper()
     if normalized_id == "GLOBAL_FALLBACK" or normalized_id not in baseline_data:
@@ -183,7 +210,12 @@ def _prediction_features(payload: ScenarioPayload) -> dict:
     normalized_features = {}
     for feature_name in CANONICAL_FEATURE_ORDER:
         if feature_name in LOCKED_BASELINE_FEATURES:
-            normalized_features[feature_name] = float(baseline[feature_name])
+            baseline_value = baseline[feature_name]
+            # JSON artifacts represent missing medians as null; CatBoost still
+            # receives its native missing-value marker internally.
+            normalized_features[feature_name] = (
+                float("nan") if baseline_value is None else float(baseline_value)
+            )
             continue
         raw_value = payload.features.get(feature_name, baseline.get(feature_name, 0.0))
         if raw_value is None:
@@ -358,23 +390,25 @@ def get_lake_baseline(midas_id: str):
 
     # Attempt strict match, otherwise return global fallback.
     if midas_id in baseline_data:
-        return {
+        return _json_safe({
             "status": "success",
             "lake_name": lake_name,
             "baseline": baseline_data[midas_id],
             "supported": midas_id in supported_ids,
+            "thin_history": bool(quality and quality.get("thin_history")),
             "support_policy": policy,
             "lake_quality": quality,
-        }
+        })
     elif "GLOBAL_FALLBACK" in baseline_data:
-        return {
+        return _json_safe({
             "status": "fallback",
             "lake_name": "Global Fallback Average",
             "baseline": baseline_data["GLOBAL_FALLBACK"],
             "supported": False,
+            "thin_history": False,
             "support_policy": policy,
             "lake_quality": quality,
-        }
+        })
     else:
         raise HTTPException(status_code=404, detail="We could not find enough information for that lake.")
 
@@ -411,6 +445,25 @@ def get_lake_locations():
             results.append(item)
     results.sort(key=lambda item: (item.lake_name, item.midas_id))
     return LakeLocationsResponse(results=results).model_dump()
+
+
+@app.get("/trends")
+def get_trends():
+    try:
+        return trends_store.index()
+    except RuntimeError:
+        raise HTTPException(status_code=503, detail="Trends service is unavailable.")
+
+
+@app.get("/trends/lakes/{midas_id}")
+def get_trends_lake(midas_id: str):
+    try:
+        detail = trends_store.detail(midas_id)
+    except RuntimeError:
+        raise HTTPException(status_code=503, detail="Trends service is unavailable.")
+    if detail is None:
+        raise HTTPException(status_code=404, detail="Lake trends were not found.")
+    return detail
 
 @app.post("/predict_scenario")
 def predict_scenario(payload: ScenarioPayload, request: Request):

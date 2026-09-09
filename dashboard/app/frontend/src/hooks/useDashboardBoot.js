@@ -3,7 +3,7 @@ import { API_URL } from "../lib/constants";
 import { UNKNOWN_LAKE_NAME } from "../lib/copy";
 import { parseApiError, validateFeatureConfig } from "../lib/contracts";
 
-export function useDashboardBoot({ onLakeLoaded }) {
+export function useDashboardBoot({ onLakeLoaded, initialLakeId = "C3420" }) {
   const [bootState, setBootState] = useState("loading");
   const [bootError, setBootError] = useState("");
   const [featureConfig, setFeatureConfig] = useState(null);
@@ -26,6 +26,7 @@ export function useDashboardBoot({ onLakeLoaded }) {
 
       const lakeSupport = {
         supported: Boolean(payload.supported),
+        thinHistory: Boolean(payload.thin_history),
         status: payload.status || "success",
         isFallback: payload.status === "fallback",
       };
@@ -60,7 +61,7 @@ export function useDashboardBoot({ onLakeLoaded }) {
           );
         }
 
-        await loadLakeBaseline("C3420", undefined, featureData);
+        await loadLakeBaseline(initialLakeId, undefined, featureData);
         setFeatureConfig(featureData);
         setBootState("ready");
       } catch (error) {
@@ -70,7 +71,7 @@ export function useDashboardBoot({ onLakeLoaded }) {
     };
 
     boot();
-  }, [loadLakeBaseline]);
+  }, [initialLakeId, loadLakeBaseline]);
 
   return { bootState, bootError, featureConfig, loadLakeBaseline };
 }

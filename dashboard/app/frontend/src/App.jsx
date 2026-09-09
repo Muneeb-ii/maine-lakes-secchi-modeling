@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BarChart3, FlaskConical, Waves } from "lucide-react";
+import { Waves } from "lucide-react";
 import { ClaroGuide } from "./components/claro/ClaroGuide";
 import { AppFooter } from "./components/layout/AppFooter";
 import { AppShell } from "./components/layout/AppShell";
@@ -9,7 +9,6 @@ import { InfoPageNav } from "./components/layout/InfoPageNav";
 import { UnitSystemToggle } from "./components/layout/UnitSystemToggle";
 import { LandingPage } from "./components/layout/LandingPage";
 import { ModelingProcessPage } from "./components/layout/ModelingProcessPage";
-import { PageFrame } from "./components/layout/PageFrame";
 import { DashboardHeader } from "./components/lake/DashboardHeader";
 import { LakeProfileCard } from "./components/lake/LakeProfileCard";
 import { ExplainabilityPanel } from "./components/explainability/ExplainabilityPanel";
@@ -24,8 +23,6 @@ import { useSavedScenarios } from "./hooks/useSavedScenarios";
 import { useScenarioPrediction } from "./hooks/useScenarioPrediction";
 import { useScenarioSensitivity } from "./hooks/useScenarioSensitivity";
 import {
-  LANDING_DESTINATIONS,
-  LANDING_TRENDS_PAGE_NOTE,
   PLAYGROUND_EYEBROW,
   SCENARIO_DELETED_STATUS,
   SCENARIO_DELETE_CONFIRM,
@@ -35,7 +32,6 @@ import {
   UNKNOWN_LAKE_NAME,
   parseLakeSearchInput,
 } from "./lib/copy";
-import { PAGE_CONTAINER } from "./lib/layoutClasses";
 import { stepSearchSuggestion } from "./lib/playgroundGuards";
 import { ROUTES, navigateTo } from "./lib/routes";
 import { getClaroRouteId } from "./lib/claroTourContent";
@@ -47,8 +43,7 @@ import {
   hasScenarioChangesFromBaseline,
   isCompareScenarioActive,
 } from "./lib/savedScenarios";
-import { SECTION_ACCENTS } from "./lib/theme";
-import { SectionHeadingIcon } from "./components/ui/SectionHeadingIcon";
+import { TrendsPage } from "./components/trends/TrendsPage";
 
 const SLIDER_IDLE_COMMIT_MS = 700;
 
@@ -75,45 +70,12 @@ function useCurrentPath() {
   return path;
 }
 
-function TrendsPage() {
-  return (
-    <PageFrame>
-      <section className={`${PAGE_CONTAINER} flex min-h-[calc(100vh-96px)] flex-col justify-center py-12`}>
-        <InfoPageNav
-          eyebrow={LANDING_DESTINATIONS.trends.title}
-          eyebrowTone="amber"
-        />
-        <div
-          data-claro-target="trends-page"
-          className={`panel p-8 ${SECTION_ACCENTS.trends.panelAccentClass}`}
-          style={{
-            backgroundImage:
-              "linear-gradient(135deg, rgba(230, 159, 0, 0.08) 0%, #ffffff 55%)",
-          }}
-        >
-          <h1 className="display-title flex items-center gap-3 text-4xl">
-            <SectionHeadingIcon section="trends" icon={BarChart3} />
-            {LANDING_DESTINATIONS.trends.status}
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-700">
-            {LANDING_DESTINATIONS.trends.description} {LANDING_TRENDS_PAGE_NOTE}
-          </p>
-          <button
-            type="button"
-            onClick={() => navigateTo(ROUTES.playground)}
-            className="action-button-primary mt-8"
-          >
-            <FlaskConical className="h-4 w-4" aria-hidden />
-            {LANDING_DESTINATIONS.playground.cta}
-          </button>
-        </div>
-      </section>
-    </PageFrame>
-  );
-}
-
 function PlaygroundPage() {
-  const [lakeId, setLakeId] = useState("C3420");
+  const initialLakeId = useMemo(() => {
+    const requested = new URLSearchParams(window.location.search).get("lake");
+    return String(requested || "C3420").trim().toUpperCase();
+  }, []);
+  const [lakeId, setLakeId] = useState(initialLakeId);
   const [lakeName, setLakeName] = useState("");
   const [baseline, setBaseline] = useState(null);
   const [features, setFeatures] = useState({});
@@ -144,6 +106,7 @@ function PlaygroundPage() {
 
   const { bootState, bootError, featureConfig, loadLakeBaseline } = useDashboardBoot({
     onLakeLoaded: handleLakeLoaded,
+    initialLakeId,
   });
 
   const lakeSearch = useLakeSearch();
@@ -388,7 +351,11 @@ function PlaygroundPage() {
       footer={
         <>
           <AppFooter />
-          <ClaroGuide routeId={getClaroRouteId(ROUTES.playground)} onStepExit={handleClaroStepExit} />
+          <ClaroGuide
+            routeId={getClaroRouteId(ROUTES.playground)}
+            onStepExit={handleClaroStepExit}
+            isMapOpen={isLakeMapOpen}
+          />
         </>
       }
       header={
@@ -425,7 +392,7 @@ function PlaygroundPage() {
           />
         </>
       }
-      lakeSection={<LakeProfileCard baseline={baseline} />}
+      lakeSection={<LakeProfileCard baseline={baseline} featureConfig={featureConfig} />}
       parametersSection={
         <ParameterPanel
           featureConfig={featureConfig}
@@ -445,6 +412,7 @@ function PlaygroundPage() {
           forecast={forecast}
           predictionError={predictionError}
           isPredicting={isPredicting}
+          baseline={baseline}
         />
       }
       scenarioSection={

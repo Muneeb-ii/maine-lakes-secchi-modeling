@@ -1,15 +1,15 @@
 export const HELP_CONTENT = {
   lakeProfile: {
     title: "About this lake",
-    body: "Latitude, longitude, area, and maximum depth for the lake you picked. They stay the same while you explore different water conditions.",
+    body: "Location, area, and maximum depth for the lake you picked, plus its typical pH, color, conductivity, and alkalinity averaged over its monitoring history. They stay the same while you explore different water conditions.",
   },
   parameters: {
     title: "Water conditions",
-    body: "Change chemistry and related measurements to see how Secchi depth might respond. Location and lake size stay tied to your selection.",
+    body: "Change measured oxygen, temperature, and phosphorus values to see how Secchi depth might respond. Location, lake size, and typical chemistry stay tied to your selection. If this lake has thin slider history, the amber note means those effects lean on other lakes.",
   },
   prediction: {
     title: "Predicted Secchi depth",
-    body: "The depth the model expects for your current slider settings.",
+    body: "The depth the model expects for your current slider settings. Typical for this lake is the estimate at this lake’s usual measurements. Change from typical updates as you move sliders. The scale shows where the prediction sits among Maine clarity bands, and the comparison to maximum depth is this lake’s recorded basin depth—not a model output.",
   },
   modelBaseline: {
     title: "Typical for this lake",

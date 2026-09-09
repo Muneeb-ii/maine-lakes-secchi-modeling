@@ -16,23 +16,34 @@ import {
 
 test("Claro only registers workspace routes", () => {
   assert.equal(getClaroRouteId("/playground"), CLARO_ROUTE_IDS.playground);
-  assert.equal(getClaroRouteId("/trends"), "");
+  assert.equal(getClaroRouteId("/trends"), CLARO_ROUTE_IDS.trends);
   assert.equal(getClaroRouteId("/"), "");
   assert.equal(isClaroRoute("/playground"), true);
-  assert.equal(isClaroRoute("/trends"), false);
+  assert.equal(isClaroRoute("/trends"), true);
   assert.equal(isClaroRoute("/contributors"), false);
 });
 
 test("playground route has the full walkthrough", () => {
   const config = getClaroRouteConfig(CLARO_ROUTE_IDS.playground);
   assert.ok(config);
-  assert.equal(config.steps.length, 13);
+  assert.equal(config.steps.length, 14);
   assert.equal(config.steps[0].id, "intro");
   assert.equal(config.steps.at(-1).id, "scenario-reset");
 });
 
+test("trends route explains the observed record and baseline outlook", () => {
+  const config = getClaroRouteConfig(CLARO_ROUTE_IDS.trends);
+  assert.ok(config);
+  assert.equal(config.steps[0].id, "trends-intro");
+  assert.deepEqual(
+    config.steps.map((step) => step.id),
+    ["trends-intro", "trends-units", "trends-search", "trends-map", "trends-list", "trends-detail", "trends-history", "trends-forecast"]
+  );
+});
+
 test("playground tour orders try-change before save and reset last", () => {
   const ids = getClaroRouteConfig(CLARO_ROUTE_IDS.playground).steps.map((step) => step.id);
+  const units = ids.indexOf("unit-system");
   const lakeSearch = ids.indexOf("lake-search");
   const lakeMap = ids.indexOf("lake-map");
   const lakeProfile = ids.indexOf("lake-profile");
@@ -44,6 +55,7 @@ test("playground tour orders try-change before save and reset last", () => {
   const useSaved = ids.indexOf("scenario-use-saved");
   const reset = ids.indexOf("scenario-reset");
 
+  assert.ok(units < lakeSearch);
   assert.ok(lakeSearch < lakeMap);
   assert.ok(lakeMap < lakeProfile);
   assert.ok(parameterPanel < metrics);
@@ -83,8 +95,8 @@ test("prompt state dismisses and completes per route", () => {
 });
 
 test("step progress label omits internal route id", () => {
-  assert.equal(formatClaroStepProgress(0, 13), "1 of 13");
-  assert.equal(formatClaroStepProgress(12, 13), "13 of 13");
+  assert.equal(formatClaroStepProgress(0, 14), "1 of 14");
+  assert.equal(formatClaroStepProgress(13, 14), "14 of 14");
   assert.equal(formatClaroStepProgress(-1, 13), "");
 });
 

@@ -1,8 +1,10 @@
 from typing import Dict, List, Any
 
 
-FEATURE_SCHEMA_VERSION = "1.0.0"
+FEATURE_SCHEMA_VERSION = "2.0.0"
 
+# Order must match artifacts/models/model_manifest.json `feature_order`
+# and the Experiment 47 `C_measured_locked_chem` feature set.
 CANONICAL_FEATURE_ORDER: List[str] = [
     "year",
     "month",
@@ -12,6 +14,8 @@ CANONICAL_FEATURE_ORDER: List[str] = [
     "DEPTH_MAX_FEET",
     "DOMAX",
     "DOMIN",
+    "TMAX",
+    "TMIN",
     "TPEC",
     "TPBG",
     "PH",
@@ -20,6 +24,9 @@ CANONICAL_FEATURE_ORDER: List[str] = [
     "ALK",
 ]
 
+# Always taken from the lake baseline; client-supplied values are ignored.
+# PH, COLOR, CONDUCT, and ALK are fixed lake-level means in the active
+# dataset (see data/README.md), so they are lake descriptors, not scenario inputs.
 LOCKED_BASELINE_FEATURES: List[str] = [
     "year",
     "month",
@@ -27,6 +34,10 @@ LOCKED_BASELINE_FEATURES: List[str] = [
     "LONGITUDE",
     "AREA_ACRES",
     "DEPTH_MAX_FEET",
+    "PH",
+    "COLOR",
+    "CONDUCT",
+    "ALK",
 ]
 
 FEATURE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
@@ -62,23 +73,39 @@ FEATURE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
     },
     "DOMAX": {
         "label": "Dissolved Oxygen Max",
-        "group": "chemistry",
+        "group": "oxygen",
         "editable": True,
         "slider": {"min": 0, "max": 20, "step": 0.1},
         "unit": "ppm",
-        "icon": "Beaker",
+        "icon": "Droplet",
     },
     "DOMIN": {
         "label": "Dissolved Oxygen Min",
-        "group": "chemistry",
+        "group": "oxygen",
         "editable": True,
         "slider": {"min": 0, "max": 16, "step": 0.1},
         "unit": "ppm",
-        "icon": "Beaker",
+        "icon": "Droplet",
+    },
+    "TMAX": {
+        "label": "Water Temperature Max",
+        "group": "temperature",
+        "editable": True,
+        "slider": {"min": 0, "max": 35, "step": 0.1},
+        "unit": "°C",
+        "icon": "Thermometer",
+    },
+    "TMIN": {
+        "label": "Water Temperature Min",
+        "group": "temperature",
+        "editable": True,
+        "slider": {"min": 0, "max": 30, "step": 0.1},
+        "unit": "°C",
+        "icon": "Thermometer",
     },
     "TPEC": {
         "label": "Total Phosphorus (Epicore)",
-        "group": "chemistry",
+        "group": "phosphorus",
         "editable": True,
         "slider": {"min": 0, "max": 60, "step": 0.5},
         "unit": "ppb",
@@ -86,7 +113,7 @@ FEATURE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
     },
     "TPBG": {
         "label": "Total Phosphorus (Bottom Grab)",
-        "group": "chemistry",
+        "group": "phosphorus",
         "editable": True,
         "slider": {"min": 0, "max": 14000, "step": 0.5},
         "unit": "ppb",
@@ -94,35 +121,27 @@ FEATURE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
     },
     "PH": {
         "label": "pH",
-        "group": "chemistry",
-        "editable": True,
-        "slider": {"min": 4.0, "max": 10.0, "step": 0.1},
+        "group": "lake_chemistry",
+        "editable": False,
         "unit": "",
-        "icon": "Beaker",
     },
     "COLOR": {
         "label": "Color",
-        "group": "chemistry",
-        "editable": True,
-        "slider": {"min": 0, "max": 120, "step": 1},
+        "group": "lake_chemistry",
+        "editable": False,
         "unit": "SPU",
-        "icon": "Droplet",
     },
     "CONDUCT": {
         "label": "Specific Conductivity",
-        "group": "chemistry",
-        "editable": True,
-        "slider": {"min": 0, "max": 1200, "step": 1},
+        "group": "lake_chemistry",
+        "editable": False,
         "unit": "uS/cm",
-        "icon": "Activity",
     },
     "ALK": {
         "label": "Alkalinity",
-        "group": "chemistry",
-        "editable": True,
-        "slider": {"min": 0, "max": 100, "step": 0.1},
+        "group": "lake_chemistry",
+        "editable": False,
         "unit": "ppm",
-        "icon": "Beaker",
     },
 }
 

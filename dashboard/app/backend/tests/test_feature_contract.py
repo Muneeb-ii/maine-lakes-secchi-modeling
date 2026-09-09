@@ -3,19 +3,21 @@ import json
 import math
 from pathlib import Path
 
-from feature_contract import CANONICAL_FEATURE_ORDER, FEATURE_DEFINITIONS
+from feature_contract import CANONICAL_FEATURE_ORDER, FEATURE_DEFINITIONS, LOCKED_BASELINE_FEATURES
 
 
 # Expected dashboard labels/units aligned with the dashboard dataset metadata in data/catalog.json
 METADATA_ALIGNED_FEATURES = {
-    "DOMAX": {"label": "Dissolved Oxygen Max", "unit": "ppm"},
-    "DOMIN": {"label": "Dissolved Oxygen Min", "unit": "ppm"},
-    "TPEC": {"label": "Total Phosphorus (Epicore)", "unit": "ppb"},
-    "TPBG": {"label": "Total Phosphorus (Bottom Grab)", "unit": "ppb"},
-    "PH": {"label": "pH", "unit": ""},
-    "COLOR": {"label": "Color", "unit": "SPU"},
-    "CONDUCT": {"label": "Specific Conductivity", "unit": "uS/cm"},
-    "ALK": {"label": "Alkalinity", "unit": "ppm"},
+    "DOMAX": {"label": "Dissolved Oxygen Max", "unit": "ppm", "group": "oxygen", "editable": True},
+    "DOMIN": {"label": "Dissolved Oxygen Min", "unit": "ppm", "group": "oxygen", "editable": True},
+    "TMAX": {"label": "Water Temperature Max", "unit": "°C", "group": "temperature", "editable": True},
+    "TMIN": {"label": "Water Temperature Min", "unit": "°C", "group": "temperature", "editable": True},
+    "TPEC": {"label": "Total Phosphorus (Epicore)", "unit": "ppb", "group": "phosphorus", "editable": True},
+    "TPBG": {"label": "Total Phosphorus (Bottom Grab)", "unit": "ppb", "group": "phosphorus", "editable": True},
+    "PH": {"label": "pH", "unit": "", "group": "lake_chemistry", "editable": False},
+    "COLOR": {"label": "Color", "unit": "SPU", "group": "lake_chemistry", "editable": False},
+    "CONDUCT": {"label": "Specific Conductivity", "unit": "uS/cm", "group": "lake_chemistry", "editable": False},
+    "ALK": {"label": "Alkalinity", "unit": "ppm", "group": "lake_chemistry", "editable": False},
 }
 
 
@@ -25,7 +27,19 @@ class FeatureContractTests(unittest.TestCase):
             definition = FEATURE_DEFINITIONS[feature_name]
             self.assertEqual(definition["label"], expected["label"], feature_name)
             self.assertEqual(definition["unit"], expected["unit"], feature_name)
-            self.assertEqual(definition["group"], "chemistry", feature_name)
+            self.assertEqual(definition["group"], expected["group"], feature_name)
+            self.assertEqual(definition["editable"], expected["editable"], feature_name)
+
+    def test_fixed_lake_chemistry_is_locked_to_baseline(self):
+        for feature_name in ("PH", "COLOR", "CONDUCT", "ALK"):
+            self.assertIn(feature_name, LOCKED_BASELINE_FEATURES)
+            self.assertNotIn("slider", FEATURE_DEFINITIONS[feature_name])
+
+    def test_locked_and_editable_partition_canonical_order(self):
+        editable = [f for f in CANONICAL_FEATURE_ORDER if FEATURE_DEFINITIONS[f]["editable"]]
+        self.assertEqual(editable, ["DOMAX", "DOMIN", "TMAX", "TMIN", "TPEC", "TPBG"])
+        for feature_name in LOCKED_BASELINE_FEATURES:
+            self.assertFalse(FEATURE_DEFINITIONS[feature_name]["editable"], feature_name)
 
     def test_all_canonical_features_have_definitions(self):
         for feature_name in CANONICAL_FEATURE_ORDER:

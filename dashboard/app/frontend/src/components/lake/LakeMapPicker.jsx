@@ -31,6 +31,12 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+const POPUP_ARROW_ICON = `
+  <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+    <path d="M4 10h11M10.5 5.5 15 10l-4.5 4.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+  </svg>
+`;
+
 function markerIcon(isCurrent) {
   return L.divIcon({
     className: `lake-map-pin ${isCurrent ? "lake-map-pin-current" : ""}`,
@@ -47,6 +53,7 @@ export function LakeMapPicker({
   currentLakeId,
   onClose,
   onSelectLake,
+  workspace = "playground",
 }) {
   const { system } = useUnitSystem();
   const mapRef = useRef(null);
@@ -154,6 +161,8 @@ export function LakeMapPicker({
 
     lakes.forEach((lake) => {
       const buttonId = `lake-map-select-${lake.midasId}`;
+      const compactViewport = typeof window !== "undefined" && window.matchMedia("(max-width: 40rem)").matches;
+      const popupMaxWidth = compactViewport ? Math.max(220, window.innerWidth - 96) : 360;
       const marker = L.marker([lake.latitude, lake.longitude], {
         icon: markerIcon(lake.midasId === currentLakeId),
         riseOnHover: true,
@@ -170,7 +179,7 @@ export function LakeMapPicker({
       const areaLine =
         typeof lake.areaAcres === "number"
           ? `<div class="lake-map-popup-row">
-              <span class="lake-map-popup-label">Area</span>
+              <span class="lake-map-popup-label"><span class="lake-map-popup-row-mark lake-map-popup-row-mark-area" aria-hidden="true"></span>Area</span>
               <span class="lake-map-popup-value">${escapeHtml(
               formatQuantity(lake.areaAcres, {
                 canonicalUnit: "acres",
@@ -182,20 +191,30 @@ export function LakeMapPicker({
           : "";
       marker.bindPopup(`
         <div class="lake-map-popup">
-          <div class="lake-map-popup-header">
-            <p class="lake-map-popup-title">${escapeHtml(lake.lakeName)}</p>
-            <span class="lake-map-popup-badge">${escapeHtml(lake.midasId)}</span>
+          <div class="lake-map-popup-hero">
+            <span class="lake-map-popup-mark" aria-hidden="true"><span></span></span>
+            <div class="lake-map-popup-heading">
+              <span class="lake-map-popup-kicker">Lake location</span>
+              <div class="lake-map-popup-title-row">
+                <p class="lake-map-popup-title">${escapeHtml(lake.lakeName)}</p>
+                <span class="lake-map-popup-badge">${escapeHtml(lake.midasId)}</span>
+              </div>
+            </div>
           </div>
           <div class="lake-map-popup-details">
             <div class="lake-map-popup-row">
-              <span class="lake-map-popup-label">Coordinates</span>
+              <span class="lake-map-popup-label"><span class="lake-map-popup-row-mark lake-map-popup-row-mark-coordinate" aria-hidden="true"></span>Coordinates</span>
               <span class="lake-map-popup-value">${escapeHtml(formatCoordinates(lake))}</span>
             </div>
             ${areaLine}
           </div>
-          <button type="button" id="${buttonId}" class="lake-map-popup-button">Use this lake</button>
+          <button type="button" id="${buttonId}" class="lake-map-popup-button"><span>Use this lake</span>${POPUP_ARROW_ICON}</button>
         </div>
-      `, { maxWidth: 320, minWidth: 240 });
+      `, {
+        autoPanPadding: [24, 24],
+        maxWidth: popupMaxWidth,
+        minWidth: Math.min(280, popupMaxWidth),
+      });
       marker.on("popupopen", () => {
         const button = document.getElementById(buttonId);
         const handler = async () => {
@@ -239,10 +258,10 @@ export function LakeMapPicker({
   return createPortal(
     <div className="lake-map-layer" role="dialog" aria-modal="true" aria-label="Choose a lake from the map">
       <div className="lake-map-scrim" aria-hidden onClick={onClose} />
-      <section className="lake-map-modal">
+      <section className="lake-map-modal" data-workspace={workspace}>
         <div className="flex items-start justify-between gap-3 border-b border-slate-200 pb-3">
           <div>
-            <p className="claro-kicker">
+            <p className={`workspace-kicker workspace-kicker-${workspace}`}>
               <MapPin className="h-4 w-4" aria-hidden />
               Lake map
             </p>
@@ -250,7 +269,7 @@ export function LakeMapPicker({
               Choose a lake by location
             </h2>
           </div>
-          <button type="button" className="claro-icon-button" onClick={onClose} aria-label="Close lake map">
+          <button type="button" className={`workspace-icon-button workspace-icon-button-${workspace}`} onClick={onClose} aria-label="Close lake map">
             <X className="h-5 w-5" aria-hidden />
           </button>
         </div>

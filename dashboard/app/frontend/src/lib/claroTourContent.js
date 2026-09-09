@@ -10,13 +10,14 @@ export const CLARO_ROUTE_IDS = {
 
 export const CLARO_ROUTE_BY_PATH = {
   [ROUTES.playground]: CLARO_ROUTE_IDS.playground,
+  [ROUTES.trends]: CLARO_ROUTE_IDS.trends,
 };
 
 export const CLARO_PERSONA = {
   name: CLARO_NAME,
   tagline: "Water-clarity guide",
   intro:
-    "I can point out what each workspace area does and how to use it without changing your scenario.",
+    "I can point out what each workspace area does and how to use it without taking over your work.",
 };
 
 export const claroTourRoutes = {
@@ -32,6 +33,15 @@ export const claroTourRoutes = {
         body:
           "This walkthrough goes from lake selection to trying a change, reading the results, and optionally saving or resetting your scenario.",
         placement: "center",
+      },
+      {
+        id: "unit-system",
+        target: "unit-system-toggle",
+        title: "Choose how measurements are shown",
+        body:
+          "Switch between Metric and Imperial in the top bar. This changes display labels and values without changing the model’s underlying measurements.",
+        placement: "bottom",
+        cursorHint: "click",
       },
       {
         id: "lake-search",
@@ -56,7 +66,7 @@ export const claroTourRoutes = {
         target: "lake-profile",
         title: "Check fixed lake traits",
         body:
-          "These traits describe the selected lake itself, like location, area, and depth. They stay fixed while you test water conditions.",
+          "These traits describe the selected lake itself: location, area, depth, and its typical water chemistry. They stay fixed while you test water conditions.",
         placement: "left",
       },
       {
@@ -64,7 +74,7 @@ export const claroTourRoutes = {
         target: "prediction-card",
         title: "Read predicted clarity",
         body:
-          "This is the model’s current Secchi-depth estimate. Larger values mean clearer water. Beside it, Typical for this lake is this lake’s usual prediction, and Change from typical shows how far your scenario sits above or below that reference.",
+          "This is the model’s current Secchi-depth estimate. Larger values mean clearer water. Typical for this lake and Change from typical sit beside it. The scale shows where the estimate falls among Maine clarity bands.",
         placement: "bottom",
       },
       {
@@ -72,7 +82,7 @@ export const claroTourRoutes = {
         target: "parameter-include",
         title: "Include only known measurements",
         body:
-          "Use the checkbox when a measurement is known. If you leave it out, the model treats that chemistry value as missing instead of guessing.",
+          "Use the checkbox when a measurement is known. If you leave it out, the model treats that measurement as missing instead of guessing.",
         placement: "right",
         cursorHint: "click",
       },
@@ -106,7 +116,7 @@ export const claroTourRoutes = {
         target: "drivers-panel",
         title: "See what drove the estimate",
         body:
-          "Drivers show which lake traits and adjusted measurements pushed the prediction toward clearer or murkier water.",
+          "Water conditions you changed are listed in full. Lake characteristics stay collapsed until you open them.",
         placement: "top",
       },
       {
@@ -139,17 +149,75 @@ export const claroTourRoutes = {
   },
   [CLARO_ROUTE_IDS.trends]: {
     routeId: CLARO_ROUTE_IDS.trends,
-    promptTitle: "Claro will guide Trend Following when it is ready.",
+    promptTitle: "Want a quick tour of Trends?",
     promptBody:
-      "This workspace is still in development, so Claro only has a short orientation here for now.",
+      "Claro will show you how to choose a lake, read its observed history, and interpret the baseline outlook.",
     steps: [
       {
         id: "trends-intro",
-        target: "trends-page",
-        title: "Trend Following is coming",
+        title: "Meet Trends",
         body:
-          "When this workspace gains interactive trend tools, Claro can use the same guided tour system to explain them.",
+          "This workspace separates what was measured from the baseline outlook, so you can read the record first and then explore what the reference scenario shows next.",
+        placement: "center",
+      },
+      {
+        id: "trends-units",
+        target: "unit-system-toggle",
+        title: "Choose how depth is shown",
+        body:
+          "Use Metric or Imperial in the top bar. The charts and summary values update together while the underlying record stays the same.",
         placement: "bottom",
+        cursorHint: "click",
+      },
+      {
+        id: "trends-search",
+        target: "trends-lake-search",
+        title: "Choose a lake",
+        body:
+          "Search by lake name or MIDAS ID. Select a result to update the history and outlook shown on the right.",
+        placement: "right",
+        cursorHint: "select",
+      },
+      {
+        id: "trends-map",
+        target: "lake-map-button",
+        title: "Find a lake on the map",
+        body:
+          "Use the amber map button to browse lake locations, zoom in for names, and choose a lake from its pin card.",
+        placement: "right",
+        cursorHint: "click",
+      },
+      {
+        id: "trends-list",
+        target: "trends-lake-list",
+        title: "Browse the lake list",
+        body:
+          "The list shows the available history for each lake. A green label marks lakes with enough recent support for the baseline outlook; history-only lakes still remain useful for the observed record.",
+        placement: "right",
+      },
+      {
+        id: "trends-detail",
+        target: "trends-detail",
+        title: "Read the lake summary",
+        body:
+          "Start with the latest observed value, the end of the baseline outlook when available, and how many years are in the record.",
+        placement: "left",
+      },
+      {
+        id: "trends-history",
+        target: "trends-history-chart",
+        title: "Start with observed history",
+        body:
+          "This chart shows measured summer Secchi depth by year. Hover a point to see the value and the number of monitoring readings behind it.",
+        placement: "left",
+      },
+      {
+        id: "trends-forecast",
+        target: "trends-forecast-chart",
+        title: "Interpret the baseline outlook",
+        body:
+          "The amber line is a reference scenario, while the shaded bands show empirical uncertainty. It is a planning range, not a promise that the lake will improve or decline.",
+        placement: "left",
       },
     ],
   },

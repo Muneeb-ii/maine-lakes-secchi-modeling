@@ -15,50 +15,39 @@ export const LANDING_HEADER_HOOK_LINES = [
   "Secchi depth is how far a standard disk stays visible underwater, recorded in meters.",
   "It tells us about the water clarity of a lake.",
 ];
-export const LANDING_HEADER_STATS = [
-  { label: "Lakes ready to explore", value: "187" },
-  { label: "Monitoring records", value: "87,000+" },
-  { label: "Measurements in the model", value: "14" },
-];
 export const LANDING_CLARITY_TITLE = "How to read Secchi depth";
-export const LANDING_HOW_IT_WORKS_TITLE = "What you can do here";
-export const LANDING_HIGHLIGHTS = [
-  {
-    title: "Try “what if” scenarios",
-    body: "Pick a lake, adjust chemistry or temperature, and watch predicted Secchi depth update. See which measurements matter most.",
-  },
-  {
-    title: "Trends (coming soon)",
-    body: "Track clarity year by year and explore future outlooks. That view is in development. The Playground is ready for hands-on exploration now.",
-  },
-  {
-    title: "Grounded in monitoring data",
-    body: "Estimates draw on years of Maine lake monitoring, so results reflect real patterns, not rough guesses.",
-  },
-];
 export const LANDING_WORKSPACES_TITLE = "Get started";
+export const LANDING_FEATURED_LAKE = {
+  id: "C3920",
+  name: "Wilson Lake",
+  region: "Coastal Maine",
+  historyYears: 46,
+  latestYear: 2024,
+};
 
 export const LANDING_DESTINATIONS = {
   trends: {
     title: "Trends",
     description:
-      "Explore how clarity has changed over time and what may lie ahead for Maine lakes. Available when the trend model launches.",
-    status: "Coming soon",
-    cta: "Learn more",
+      "Explore monitored clarity through 2024 and five-year baseline outlooks for Maine lakes.",
+    cta: "Explore trends",
   },
   playground: {
     title: "Playground",
     description:
       "Search for a lake, adjust water measurements with sliders, and compare your scenario to that lake’s usual profile.",
-    status: "Ready to use",
     cta: "Launch Playground",
   },
 };
 
 export const LANDING_TRENDS_PAGE_NOTE =
-  "While Trends is being built, use the Playground to explore how water conditions affect Secchi depth for a lake you choose.";
+  "Use the Playground to explore how water conditions affect Secchi depth for a lake you choose.";
 
 export const SECCHI_DIRECTION_NOTE = "Higher Secchi depth usually means clearer water";
+export const PREDICTION_TYPICAL_NOTE = "Usual conditions for this lake";
+export const PREDICTION_DELTA_NOTE = "From this lake’s typical prediction";
+export const PREDICTION_SCALE_LABEL = "Where this sits";
+export const TYPICAL_PREDICTION_MAE_METERS = 0.8;
 
 export const SECTION_LABELS = {
   lakeProfile: "About this lake",
@@ -96,6 +85,10 @@ export function getLakeFieldLabels(system = DEFAULT_UNIT_SYSTEM) {
   };
 }
 
+export const LAKE_CHEMISTRY_HEADING = "Typical water chemistry";
+export const LAKE_CHEMISTRY_NOTE = "Long-term lake averages. Fixed while you explore.";
+export const LAKE_CHEMISTRY_UNAVAILABLE = "--";
+
 export const UNKNOWN_LAKE_NAME = "Unknown lake";
 
 export const LAKE_SUPPORT_MESSAGES = {
@@ -103,6 +96,8 @@ export const LAKE_SUPPORT_MESSAGES = {
     "This lake has fewer monitoring records, so treat predictions as rough estimates.",
   fallback:
     "We don’t have a full profile for this lake, so values use a statewide average instead.",
+  thinHistory:
+    "This lake has many Secchi readings but few measured oxygen, temperature, or phosphorus values, so slider effects lean on patterns from other lakes.",
 };
 
 export const PARAMETER_PANEL_INTRO =
@@ -112,10 +107,10 @@ export const EXPLAINABILITY_INTRO =
   "How lake traits and the water measurements you changed pushed this prediction toward clearer or murkier water.";
 export const EXPLAINABILITY_LAKE_CONTEXT_HEADING = "Lake characteristics";
 export const EXPLAINABILITY_LAKE_CONTEXT_NOTE =
-  "Location, size, and depth for this lake. These stay fixed while you explore.";
+  "Location, size, depth, and typical chemistry for this lake. These stay fixed while you explore.";
 export const EXPLAINABILITY_ADJUSTMENTS_HEADING = "Water conditions you changed";
-export const EXPLAINABILITY_SHOW_ALL = "See all water condition factors";
-export const EXPLAINABILITY_HIDE_ALL = "Hide full water condition list";
+export const EXPLAINABILITY_SHOW_ALL = "See lake characteristics";
+export const EXPLAINABILITY_HIDE_ALL = "Hide lake characteristics";
 export const EXPLAINABILITY_MISSING =
   "Factor details aren’t available for this prediction.";
 export const CONTRIBUTOR_CURRENT_VALUE = "Current value";

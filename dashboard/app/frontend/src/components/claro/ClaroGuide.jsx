@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowLeft, ArrowRight, MousePointer2, X } from "lucide-react";
 import { ClaroMascot } from "./ClaroMascot";
@@ -206,13 +206,14 @@ function ClaroOverlay({ steps, stepIndex, onPrevious, onNext, onEnd }) {
   );
 }
 
-export function ClaroGuide({ routeId, onStepExit }) {
+export function ClaroGuide({ routeId, onStepExit, isMapOpen = false }) {
   const routeConfig = getClaroRouteConfig(routeId);
   const [state, setState] = useState(() => readClaroState());
   const [tourOpen, setTourOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(Boolean(routeConfig));
   const [stepIndex, setStepIndex] = useState(0);
   const [targetVersion, setTargetVersion] = useState(0);
+  const targetSignatureRef = useRef("");
   const footerBottomOffset = useClaroFooterOffset();
 
   const dockStyle = { bottom: `${footerBottomOffset}px` };
@@ -223,6 +224,7 @@ export function ClaroGuide({ routeId, onStepExit }) {
   }, [routeConfig, targetVersion]);
 
   const promptVisible = routeConfig && promptOpen && !tourOpen;
+  const tourSuspended = tourOpen && isMapOpen;
 
   useEffect(() => {
     const nextState = readClaroState();
@@ -236,6 +238,27 @@ export function ClaroGuide({ routeId, onStepExit }) {
     const timer = window.setTimeout(() => setTargetVersion((previous) => previous + 1), 0);
     return () => window.clearTimeout(timer);
   }, [routeId]);
+
+  useEffect(() => {
+    if (!routeConfig) return undefined;
+    targetSignatureRef.current = "";
+    const refreshTargets = () => {
+      const signature = routeConfig.steps
+        .map((step) => (step.target ? `${step.target}:${Boolean(getTargetElement(step.target))}` : step.id))
+        .join("|");
+      if (signature === targetSignatureRef.current) return;
+      targetSignatureRef.current = signature;
+      setTargetVersion((previous) => previous + 1);
+    };
+    refreshTargets();
+    const observer = new MutationObserver(refreshTargets);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [routeConfig]);
+
+  useEffect(() => {
+    setStepIndex((current) => Math.min(current, Math.max(0, steps.length - 1)));
+  }, [steps.length]);
 
   if (!routeConfig) return null;
 
@@ -306,19 +329,21 @@ export function ClaroGuide({ routeId, onStepExit }) {
           </aside>
         </div>
       )}
-      <button
-        type="button"
-        className="claro-launcher"
-        style={dockStyle}
-        onClick={openTour}
-        aria-label="Start Claro guided tour"
-      >
-        <span className="claro-launcher-mark">
-          <ClaroMascot className="h-7 w-7 lg:h-8 lg:w-8" />
-        </span>
-        <span>{CLARO_NAME}</span>
-      </button>
-      {tourOpen && steps.length > 0 && (
+      {!isMapOpen && (
+        <button
+          type="button"
+          className="claro-launcher"
+          style={dockStyle}
+          onClick={openTour}
+          aria-label="Start Claro guided tour"
+        >
+          <span className="claro-launcher-mark">
+            <ClaroMascot className="h-7 w-7 lg:h-8 lg:w-8" />
+          </span>
+          <span>{CLARO_NAME}</span>
+        </button>
+      )}
+      {tourOpen && !tourSuspended && steps.length > 0 && (
         <ClaroOverlay
           steps={steps}
           stepIndex={stepIndex}

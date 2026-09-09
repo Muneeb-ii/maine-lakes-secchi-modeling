@@ -26,10 +26,10 @@ export function DashboardHeader({
         </div>
         <div className="relative z-10 w-full lg:max-w-md shrink-0 space-y-3" data-claro-target="lake-search">
           <div className="flex items-start gap-2">
-            <LakeSearchCombobox {...searchProps} />
+            <LakeSearchCombobox {...searchProps} workspace="playground" />
             <button
               type="button"
-              className="action-button h-12 w-12 shrink-0 px-0"
+              className="workspace-action-button workspace-action-button-playground h-12 w-12 shrink-0 px-0"
               data-claro-target="lake-map-button"
               onClick={() => onOpenMap()}
               aria-label="Choose a lake from map"
@@ -44,6 +44,7 @@ export function DashboardHeader({
         isOpen={isMapOpen}
         initialLake={mapFocusLake}
         currentLakeId={searchProps.lakeId}
+        workspace="playground"
         onClose={onCloseMap}
         onSelectLake={searchProps.onSelectLake}
       />

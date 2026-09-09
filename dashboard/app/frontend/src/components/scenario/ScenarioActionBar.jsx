@@ -23,8 +23,7 @@ import { SAVED_SCENARIO_LABEL_MAX } from "../../lib/savedScenarios";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { SECTION_ACCENTS } from "../../lib/theme";
 import { useUnitSystem } from "../../context/UnitSystemContext";
-import { SectionHelp } from "../ui/SectionHelp";
-import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
+import { SectionHeading } from "../ui/SectionHeading";
 
 export function ScenarioActionBar({
   onReset,
@@ -57,11 +56,14 @@ export function ScenarioActionBar({
         compareActive ? "panel-accent-left panel-accent-compare" : SECTION_ACCENTS.scenario.panelAccentClass
       }`}
     >
-      <div className="section-heading mb-4">
-        <SectionHeadingIcon section="scenario" icon={Bookmark} />
+      <SectionHeading
+        section="scenario"
+        icon={Bookmark}
+        help={HELP_CONTENT.scenarioActions}
+        className="mb-4"
+      >
         {SECTION_LABELS.scenarioActions}
-        <SectionHelp content={HELP_CONTENT.scenarioActions} />
-      </div>
+      </SectionHeading>
 
       <div className="space-y-5">
         <section className="scenario-action-group space-y-2 border-t border-slate-200 pt-4 first:border-t-0 first:pt-0">

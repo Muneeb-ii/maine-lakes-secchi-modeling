@@ -27,6 +27,7 @@ export function LakeSearchCombobox({
   onSelectLake,
   onShowLakeOnMap,
   onSearchKeyDown,
+  workspace = "playground",
 }) {
   const { system } = useUnitSystem();
   const listboxId = useId();
@@ -52,7 +53,12 @@ export function LakeSearchCombobox({
 
   return (
     <div className="w-full relative">
-      <Search className="absolute left-3 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" aria-hidden />
+      <Search
+        className={`absolute left-3 top-3.5 h-4 w-4 pointer-events-none ${
+          workspace === "trends" ? "text-lake-amber" : "text-lake-accent"
+        }`}
+        aria-hidden
+      />
       <input
         type="text"
         role="combobox"
@@ -75,7 +81,7 @@ export function LakeSearchCombobox({
         onBlur={() => setTimeout(() => onSearchFocusedChange(false), 150)}
         onKeyDown={onSearchKeyDown}
         placeholder={SEARCH_PLACEHOLDER}
-        className="input-field"
+        className={`input-field workspace-input-${workspace}`}
       />
       {searchFocused && (
         <ul
@@ -99,7 +105,9 @@ export function LakeSearchCombobox({
                 <div
                   className={`flex min-h-12 items-center gap-2 rounded-lg text-base transition ${
                     index === activeSuggestion
-                      ? "bg-lake-accent/10 text-lake-accent"
+                      ? workspace === "trends"
+                        ? "workspace-search-option-trends"
+                        : "workspace-search-option-playground"
                       : "hover:bg-slate-100"
                   }`}
                 >
@@ -120,7 +128,11 @@ export function LakeSearchCombobox({
                   {typeof result.latitude === "number" && typeof result.longitude === "number" && (
                     <button
                       type="button"
-                      className="mr-2 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-slate-600 transition hover:bg-white hover:text-lake-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
+                      className={`mr-2 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-slate-600 transition focus-visible:outline focus-visible:outline-2 ${
+                        workspace === "trends"
+                          ? "workspace-map-link-trends"
+                          : "workspace-map-link-playground"
+                      }`}
                       aria-label={`Show ${result.lakeName} on map`}
                       onMouseDown={(event) => {
                         event.preventDefault();

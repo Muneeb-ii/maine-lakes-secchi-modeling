@@ -7,6 +7,7 @@ import {
   EXPLAINABILITY_ADJUSTMENTS_HEADING,
   EXPLAINABILITY_HIDE_ALL,
   EXPLAINABILITY_LAKE_CONTEXT_HEADING,
+  EXPLAINABILITY_LAKE_CONTEXT_NOTE,
   EXPLAINABILITY_MISSING,
   EXPLAINABILITY_SHOW_ALL,
   SECTION_LABELS,
@@ -19,8 +20,7 @@ import { getContributionDisplay } from "../../lib/playgroundGuards";
 import { HELP_CONTENT } from "../../lib/helpContent";
 import { SECTION_ACCENTS } from "../../lib/theme";
 import { useUnitSystem } from "../../context/UnitSystemContext";
-import { SectionHelp } from "../ui/SectionHelp";
-import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
+import { SectionHeading } from "../ui/SectionHeading";
 
 function CompactContributorRow({ item, featureConfig, system, rankClass = "" }) {
   const { tone } = getContributionDisplay(item.contribution);
@@ -56,7 +56,7 @@ function CompactContributorRow({ item, featureConfig, system, rankClass = "" }) 
 
 export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
   const { system } = useUnitSystem();
-  const [expanded, setExpanded] = useState(false);
+  const [lakeExpanded, setLakeExpanded] = useState(false);
   const lakeContextFeatures = useMemo(
     () => new Set(EXPLAINABILITY_LAKE_CONTEXT_FEATURES),
     []
@@ -80,11 +80,8 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
       .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
   }, [editableFeatures, waterfall]);
 
-  const topEditable = useMemo(() => editableWaterfall.slice(0, 3), [editableWaterfall]);
-  const remainingEditable = useMemo(() => editableWaterfall.slice(3), [editableWaterfall]);
-
   useEffect(() => {
-    setExpanded(false);
+    setLakeExpanded(false);
   }, [lakeId, forecast?.predictionMeters, forecast?.modelVersion]);
 
   const hasDrivers = contextWaterfall.length > 0 || editableWaterfall.length > 0;
@@ -94,35 +91,12 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
       data-claro-target="drivers-panel"
       className={`panel flex h-full flex-col p-4 sm:p-5 ${SECTION_ACCENTS.drivers.panelAccentClass}`}
     >
-      <h2 className="section-heading">
-        <SectionHeadingIcon section="drivers" icon={Gauge} />
+      <SectionHeading section="drivers" icon={Gauge} help={HELP_CONTENT.explainability}>
         {SECTION_LABELS.explainability}
-        <SectionHelp content={HELP_CONTENT.explainability} />
-      </h2>
+      </SectionHeading>
 
       {hasDrivers ? (
         <div className="mt-4 space-y-4">
-          {contextWaterfall.length > 0 && (
-            <section aria-labelledby="explainability-lake-context-heading">
-              <h3
-                id="explainability-lake-context-heading"
-                className="section-subheading"
-              >
-                {EXPLAINABILITY_LAKE_CONTEXT_HEADING}
-              </h3>
-              <div className="mt-2 space-y-0">
-                {contextWaterfall.map((item) => (
-                  <CompactContributorRow
-                    key={item.feature}
-                    item={item}
-                    featureConfig={featureConfig}
-                    system={system}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
           {editableWaterfall.length > 0 && (
             <section aria-labelledby="explainability-adjustments-heading">
               <h3
@@ -132,40 +106,49 @@ export function ExplainabilityPanel({ forecast, featureConfig, lakeId }) {
                 {EXPLAINABILITY_ADJUSTMENTS_HEADING}
               </h3>
               <div className="mt-2 space-y-0">
-                {topEditable.map((item, index) => (
+                {editableWaterfall.map((item, index) => (
                   <CompactContributorRow
                     key={item.feature}
                     item={item}
                     featureConfig={featureConfig}
                     system={system}
-                    rankClass={`driver-row-ranked-${index + 1}`}
+                    rankClass={index < 3 ? `driver-row-ranked-${index + 1}` : ""}
                   />
                 ))}
               </div>
+            </section>
+          )}
 
-              {remainingEditable.length > 0 && (
-                <>
-                  <button
-                    type="button"
-                    className="mt-3 rounded px-1 text-base font-semibold text-lake-accent transition hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
-                    onClick={() => setExpanded((previous) => !previous)}
-                    aria-expanded={expanded}
-                  >
-                    {expanded ? EXPLAINABILITY_HIDE_ALL : EXPLAINABILITY_SHOW_ALL}
-                  </button>
-                  {expanded && (
-                    <div className="mt-2 space-y-0">
-                      {remainingEditable.map((item) => (
-                        <CompactContributorRow
-                          key={item.feature}
-                          item={item}
-                          featureConfig={featureConfig}
-                          system={system}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </>
+          {contextWaterfall.length > 0 && (
+            <section aria-labelledby="explainability-lake-context-heading">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h3
+                  id="explainability-lake-context-heading"
+                  className="section-subheading"
+                >
+                  {EXPLAINABILITY_LAKE_CONTEXT_HEADING}
+                </h3>
+                <button
+                  type="button"
+                  className="rounded px-1 text-base font-semibold text-lake-accent transition hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lake-accent"
+                  onClick={() => setLakeExpanded((previous) => !previous)}
+                  aria-expanded={lakeExpanded}
+                >
+                  {lakeExpanded ? EXPLAINABILITY_HIDE_ALL : EXPLAINABILITY_SHOW_ALL}
+                </button>
+              </div>
+              <p className="mt-1 text-base text-slate-600">{EXPLAINABILITY_LAKE_CONTEXT_NOTE}</p>
+              {lakeExpanded && (
+                <div className="mt-2 space-y-0">
+                  {contextWaterfall.map((item) => (
+                    <CompactContributorRow
+                      key={item.feature}
+                      item={item}
+                      featureConfig={featureConfig}
+                      system={system}
+                    />
+                  ))}
+                </div>
               )}
             </section>
           )}

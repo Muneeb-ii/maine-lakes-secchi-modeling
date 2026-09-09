@@ -1,120 +1,153 @@
-import { AnimatePresence, motion } from "framer-motion";
 import { Minus, Plus, Waves } from "lucide-react";
 import {
   METRIC_LABELS,
+  PREDICTION_DELTA_NOTE,
+  PREDICTION_SCALE_LABEL,
+  PREDICTION_TYPICAL_NOTE,
   PREDICTION_UPDATING,
   SECTION_LABELS,
   SECCHI_DIRECTION_NOTE,
+  TYPICAL_PREDICTION_MAE_METERS,
 } from "../../lib/copy";
 import { formatMeters, formatSignedMeters, getClarityBand } from "../../lib/formatters";
 import { HELP_CONTENT } from "../../lib/helpContent";
-import { getClarityDescription, SECTION_ACCENTS } from "../../lib/theme";
-import { useReducedMotion } from "../../lib/useReducedMotion";
+import { formatSecchiThreshold, getClarityDescription, SECTION_ACCENTS } from "../../lib/theme";
+import { displayUnitFor, toDisplay } from "../../lib/units";
 import { useUnitSystem } from "../../context/UnitSystemContext";
+import { ClarityScaleBar } from "../layout/ClarityScaleBar";
 import { SectionHelp } from "../ui/SectionHelp";
-import { SectionHeadingIcon } from "../ui/SectionHeadingIcon";
+import { SectionHeading } from "../ui/SectionHeading";
 
 function DeltaValue({ value, system }) {
   if (typeof value !== "number" || Number.isNaN(value)) {
-    return <span className="text-2xl font-medium text-slate-600">--</span>;
+    return <span className="text-2xl font-semibold tabular-nums text-slate-600">--</span>;
   }
   const isPositive = value > 0;
   const isNegative = value < 0;
   const Icon = isPositive ? Plus : isNegative ? Minus : null;
-  const colorClass = isPositive ? "text-delta-up" : isNegative ? "text-delta-down" : "text-slate-700";
+  const colorClass = isPositive ? "text-delta-up" : isNegative ? "text-delta-down" : "text-slate-900";
 
   return (
-    <span className={`inline-flex items-center gap-1 text-xl font-medium sm:text-2xl ${colorClass}`}>
-      {Icon && <Icon className="w-5 h-5" aria-hidden />}
+    <span className={`inline-flex items-center gap-1 text-2xl font-semibold tabular-nums ${colorClass}`}>
+      {Icon && <Icon className="h-4 w-4" aria-hidden />}
       {formatSignedMeters(value, { absolute: true, system })}
     </span>
   );
 }
 
-export function PredictionHero({ forecast, predictionError, isPredicting }) {
+function PredictedValue({ meters, system, isPredicting }) {
+  if (!Number.isFinite(meters)) {
+    return <span className={isPredicting ? "opacity-70" : undefined}>--</span>;
+  }
+  const display = toDisplay(meters, "m", system);
+  const unit = displayUnitFor("m", system);
+  return (
+    <span className={`inline-flex items-baseline gap-2 ${isPredicting ? "opacity-70" : ""}`}>
+      <span>{display.toFixed(2)}</span>
+      <span className="text-[0.4em] font-semibold tracking-normal text-slate-600">{unit}</span>
+    </span>
+  );
+}
+
+function depthContext(predictionMeters, maxDepthFeet, system) {
+  if (!Number.isFinite(predictionMeters) || !Number.isFinite(maxDepthFeet) || maxDepthFeet <= 0) {
+    return null;
+  }
+  const depthMeters = toDisplay(maxDepthFeet, "ft", "metric");
+  const percent = (predictionMeters / depthMeters) * 100;
+  const depthLabel = `${toDisplay(maxDepthFeet, "ft", system).toFixed(1)} ${displayUnitFor("ft", system)}`;
+  if (percent >= 100) {
+    return `At or beyond this lake’s recorded maximum depth (${depthLabel})`;
+  }
+  return `${Math.round(percent)}% of this lake’s maximum depth (${depthLabel})`;
+}
+
+export function PredictionHero({ forecast, predictionError, isPredicting, baseline }) {
   const { system } = useUnitSystem();
-  const reducedMotion = useReducedMotion();
   const prediction = forecast?.predictionMeters;
-  const baseline = forecast?.explainability?.base_value;
+  const typical = forecast?.explainability?.base_value;
+  const hasPrediction = Number.isFinite(prediction);
   const delta =
-    forecast && typeof prediction === "number" && typeof baseline === "number"
-      ? prediction - baseline
-      : null;
-  const clarityBand = getClarityBand(prediction);
+    forecast && hasPrediction && typeof typical === "number" ? prediction - typical : null;
+  const clarityBand = hasPrediction ? getClarityBand(prediction) : null;
   const heroWashClass = clarityBand?.heroWashClass || "hero-wash-prediction";
+  const vsDepth = depthContext(prediction, baseline?.DEPTH_MAX_FEET, system);
+  const maeNote = `Typical error on supported lakes is about ${formatSecchiThreshold(
+    TYPICAL_PREDICTION_MAE_METERS,
+    system
+  )}.`;
 
   return (
     <div
       data-claro-target="prediction-card"
-      className={`panel p-4 sm:p-5 lg:p-6 ${heroWashClass} ${SECTION_ACCENTS.prediction.panelAccentClass}`}
+      className={`panel flex h-full flex-col p-4 sm:p-5 ${heroWashClass} ${SECTION_ACCENTS.prediction.panelAccentClass}`}
     >
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between lg:gap-6">
+      <SectionHeading section="prediction" icon={Waves} help={HELP_CONTENT.prediction}>
+        {SECTION_LABELS.prediction}
+      </SectionHeading>
+
+      <div
+        data-claro-target="prediction-metrics"
+        className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-8"
+      >
         <div className="min-w-0">
-          <h2 className="section-heading text-slate-700">
-            <SectionHeadingIcon section="prediction" icon={Waves} />
-            {SECTION_LABELS.prediction}
-            <SectionHelp content={HELP_CONTENT.prediction} placement="bottom" />
-          </h2>
           <div
-            className={`mt-3 text-4xl font-semibold leading-none tabular-nums sm:text-5xl lg:text-7xl ${
-              isPredicting ? "opacity-70" : ""
-            }`}
+            className="text-7xl font-semibold leading-none tracking-tight tabular-nums sm:text-8xl"
             aria-live="polite"
             aria-atomic="true"
           >
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={prediction ?? "empty"}
-                initial={reducedMotion ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reducedMotion ? undefined : { opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-              >
-                {forecast ? formatMeters(prediction, system) : "--"}
-              </motion.span>
-            </AnimatePresence>
+            <PredictedValue meters={prediction} system={system} isPredicting={isPredicting} />
           </div>
-          <p className="body-copy mt-2">{SECCHI_DIRECTION_NOTE}</p>
-          {clarityBand && forecast && (
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+          {clarityBand ? (
+            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1">
               <span className={clarityBand.pillClass}>{clarityBand.label}</span>
-              <span className="body-copy">{getClarityDescription(clarityBand, system)}</span>
+              <span className="text-lg text-slate-700">{getClarityDescription(clarityBand, system)}</span>
             </div>
+          ) : (
+            <p className="body-copy mt-4">{SECCHI_DIRECTION_NOTE}</p>
           )}
         </div>
 
-        <div
-          data-claro-target="prediction-metrics"
-          className="grid grid-cols-2 gap-3 text-slate-700 sm:flex sm:flex-wrap sm:gap-8"
-        >
-          <div className="min-w-0">
-            <div className="info-label inline-flex items-center">
+        <dl className="grid min-w-[14rem] shrink-0 grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-1 lg:border-l lg:border-slate-200 lg:pl-6">
+          <div>
+            <dt className="info-label inline-flex items-center">
               {METRIC_LABELS.modelBaseline}
               <SectionHelp content={HELP_CONTENT.modelBaseline} placement="bottom" />
-            </div>
-            <div className="mt-1 text-xl font-medium tabular-nums sm:text-2xl">
-              {forecast ? formatMeters(baseline, system) : "--"}
-            </div>
+            </dt>
+            <dd className="mt-1 text-2xl font-semibold tabular-nums">
+              {forecast ? formatMeters(typical, system) : "--"}
+            </dd>
+            <p className="mt-0.5 text-sm text-slate-600 sm:text-base">{PREDICTION_TYPICAL_NOTE}</p>
           </div>
-          <div className="min-w-0">
-            <div className="info-label inline-flex items-center">
+          <div>
+            <dt className="info-label inline-flex items-center">
               {METRIC_LABELS.deltaFromBaseline}
               <SectionHelp content={HELP_CONTENT.deltaFromBaseline} placement="bottom" />
-            </div>
-            <div className="mt-1">
+            </dt>
+            <dd className="mt-1">
               <DeltaValue value={delta} system={system} />
-            </div>
+            </dd>
+            <p className="mt-0.5 text-sm text-slate-600 sm:text-base">{PREDICTION_DELTA_NOTE}</p>
           </div>
-        </div>
+        </dl>
+      </div>
+
+      <div className="mt-auto border-t border-slate-200 pt-4">
+        <p className="info-label">{PREDICTION_SCALE_LABEL}</p>
+        <ClarityScaleBar compact className="mt-2" valueMeters={hasPrediction ? prediction : undefined} />
+        <p className="mt-3 text-base text-slate-700">
+          {vsDepth ? `${vsDepth}. ` : null}
+          {maeNote}
+        </p>
       </div>
 
       {isPredicting && (
-        <p className="mt-4 text-base text-slate-700" role="status">
+        <p className="mt-3 text-base text-slate-700" role="status">
           {PREDICTION_UPDATING}
         </p>
       )}
       {predictionError && (
-        <p className="mt-4 text-base text-delta-down" role="alert">
+        <p className="mt-3 text-base text-delta-down" role="alert">
           {predictionError}
         </p>
       )}

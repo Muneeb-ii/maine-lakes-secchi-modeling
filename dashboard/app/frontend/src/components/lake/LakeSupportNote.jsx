@@ -4,13 +4,15 @@ import { LAKE_SUPPORT_MESSAGES } from "../../lib/copy";
 export function LakeSupportNote({ lakeSupport }) {
   if (!lakeSupport) return null;
 
-  const { supported, isFallback } = lakeSupport;
+  const { supported, isFallback, thinHistory } = lakeSupport;
 
-  if (supported && !isFallback) return null;
+  if (supported && !isFallback && !thinHistory) return null;
 
   const message = isFallback
     ? LAKE_SUPPORT_MESSAGES.fallback
-    : LAKE_SUPPORT_MESSAGES.unsupported;
+    : supported
+      ? LAKE_SUPPORT_MESSAGES.thinHistory
+      : LAKE_SUPPORT_MESSAGES.unsupported;
 
   return (
     <div className="callout-amber flex gap-2.5 body-copy" role="status">

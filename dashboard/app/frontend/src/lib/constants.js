@@ -7,7 +7,16 @@ export const TRAJECTORY_MAX_STEPS = 30;
 export const TRAJECTORY_DEDUPE_METERS = 0.02;
 export const TRAJECTORY_RESET_CONFIRM_THRESHOLD = 5;
 
-export const PARAMETER_GROUPS = [{ key: "chemistry", label: "Chemistry" }];
+// Slider groups rendered by ParameterPanel, in display order. Keys match the
+// backend feature contract `group` values for editable features.
+export const PARAMETER_GROUPS = [
+  { key: "oxygen", label: "Oxygen" },
+  { key: "temperature", label: "Temperature" },
+  { key: "phosphorus", label: "Phosphorus" },
+];
+
+// Locked, lake-level descriptors shown read-only in the lake profile card.
+export const LAKE_CHEMISTRY_GROUP = "lake_chemistry";
 
 // `max` thresholds are canonical Secchi meters and must stay in meters
 // (getClarityTone compares prediction meters against them). The `note` is the

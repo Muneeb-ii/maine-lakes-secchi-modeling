@@ -17,7 +17,7 @@ function MotionSection({ id, children, reducedMotion, className = "" }) {
       };
 
   return (
-    <motion.section id={id} className={`scroll-mt-8 ${className}`} {...motionProps}>
+    <motion.section id={id} className={`flex h-full scroll-mt-8 flex-col ${className}`} {...motionProps}>
       {children}
     </motion.section>
   );
@@ -42,11 +42,11 @@ export function AppShell({
         <div className="mx-auto w-full max-w-[1600px] space-y-4 p-3 sm:p-4 lg:space-y-6 lg:p-8">
           {header}
 
-          <div className="grid grid-cols-1 gap-4 lg:gap-6 xl:grid-cols-12 xl:items-start">
+          <div className="grid grid-cols-1 gap-4 lg:gap-6 xl:grid-cols-12 xl:items-stretch">
             <MotionSection
               id="prediction"
               reducedMotion={reducedMotion}
-              className="order-1 xl:col-span-8 min-w-0"
+              className="order-1 min-w-0 h-full xl:col-span-7"
             >
               {predictionSection || resultsSection}
             </MotionSection>
@@ -54,7 +54,7 @@ export function AppShell({
             <MotionSection
               id="lake"
               reducedMotion={reducedMotion}
-              className="order-2 xl:col-span-4"
+              className="order-2 h-full xl:col-span-5"
             >
               {lakeSection}
             </MotionSection>

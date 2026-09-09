@@ -104,7 +104,7 @@ export const MODELING_PAGE = {
   eyebrow: "Modeling process",
   title: "How we estimate Secchi depth",
   intro:
-    "This dashboard explores lake water clarity with machine learning across two workspaces. The Playground answers “what if” questions when you change water conditions for a lake. Trends will show how clarity has changed over time and what may lie ahead when that workspace launches.",
+    "This dashboard explores lake water clarity across two workspaces. The Playground answers “what if” questions when you change water conditions for a lake. Trends shows monitored summer clarity over time and a five-year baseline outlook for lakes with enough recent history.",
   playground: {
     summary:
       "Scenario predictions: if water conditions change for a lake, how might Secchi depth respond? The sections below explain where those estimates come from, what inputs they use, and how to interpret them responsibly.",
@@ -122,12 +122,13 @@ export const MODELING_PAGE = {
       title: "Data behind the model",
       paragraphs: [
         "Predictions are trained on a merged Maine lakes dataset that combines Secchi observations with chemistry, location, and lake morphology records. Lakes are identified by MIDAS IDs used throughout Maine monitoring programs.",
-        "The active dashboard model uses lakes that pass quality filters: at least 100 observations after base filtering and chemical missingness at or below 90%. That policy keeps predictions focused on lakes with enough monitoring history to support stable estimates.",
+        "The active model uses lakes with at least 100 observations after base filtering. Typical water chemistry is filled with lake-level averages in this snapshot. Lakes with few oxygen, temperature, or phosphorus measurements stay selectable, but the Playground warns that their slider effects rely more on other lakes.",
       ],
       stats: [
-        { label: "Lakes in dataset (after filtering)", value: "994" },
-        { label: "Lakes with strong monitoring support", value: "187" },
-        { label: "Monitoring records in supported set", value: "87,116" },
+        { label: "Lakes in model data (after filtering)", value: "1,011" },
+        { label: "Lakes meeting the support policy", value: "360" },
+        { label: "Of those, thin slider history", value: "152" },
+        { label: "Monitoring records in supported set", value: "151,686" },
       ],
     },
     {
@@ -136,14 +137,14 @@ export const MODELING_PAGE = {
       paragraphs: [
         "The served model is a gradient-boosted tree regressor (CatBoost) tuned for Maine lakes. It learns nonlinear relationships between water measurements, lake characteristics, season, and observed Secchi depth.",
         "Chlorophyll (CHLA) is intentionally excluded from prediction features. During model selection, we found that leaving CHLA out and letting the model handle missing chemistry natively worked better than filling gaps with imputed values for interactive scenario use.",
-        "When you move sliders in the Playground, the model recomputes a prediction for your scenario. Locked inputs—year, month, location, and lake size—stay tied to the lake profile you selected.",
+        "When you move sliders in the Playground, the model recomputes a prediction for your scenario. Year, month, location, lake size, and typical chemistry stay tied to the lake profile you selected.",
       ],
     },
     {
       id: "inputs",
       title: "Inputs used in each prediction",
       paragraphs: [
-        "Fourteen measurements feed every forecast. Some are fixed for the lake you pick; others are editable in the Playground.",
+        "Sixteen inputs feed every prediction. Some are fixed for the lake you pick; others are editable in the Playground.",
       ],
       featureGroups: [
         {
@@ -154,18 +155,16 @@ export const MODELING_PAGE = {
             "Latitude and longitude",
             "Surface area (acres)",
             "Maximum depth (ft)",
+            "Typical pH, water color, conductivity, and alkalinity (lake-level averages)",
           ],
         },
         {
           name: "Adjustable in the Playground",
-          description: "Water chemistry sliders you can change to explore scenarios.",
+          description: "Directly measured water conditions you can change to explore scenarios.",
           features: [
             "Dissolved oxygen (max and min)",
-            "Total phosphorus (epilimnion and bottom grab)",
-            "pH",
-            "Water color",
-            "Conductivity",
-            "Alkalinity",
+            "Water temperature (max and min)",
+            "Total phosphorus (epicore and bottom grab)",
           ],
         },
       ],
@@ -174,13 +173,13 @@ export const MODELING_PAGE = {
       id: "performance",
       title: "How well the model performs",
       paragraphs: [
-        "On supported lakes, chronological evaluation (training on past years and testing on later years) shows the model captures most clarity variation in held-out data. Typical absolute error is a little under one meter on average.",
+        "On supported lakes, chronological evaluation trains on earlier years and tests on later years. Those holdout scores describe accuracy, not the exact weights in the live Playground. The served model is refit on all supported monitoring so current years are included.",
         "Performance is strongest for lakes in the supported monitoring set. For other lakes, the dashboard may still show predictions, but you should treat them as exploratory.",
       ],
       stats: [
-        { label: "R² on supported lakes (chronological)", value: "0.72" },
-        { label: "Typical absolute error (MAE)", value: "0.80 m" },
-        { label: "Typical root error (RMSE)", value: "1.09 m" },
+        { label: "R² on supported lakes (chronological)", value: "0.73" },
+        { label: "Typical absolute error (MAE)", value: "0.79 m" },
+        { label: "Typical root error (RMSE)", value: "1.08 m" },
       ],
     },
     {
@@ -188,7 +187,7 @@ export const MODELING_PAGE = {
       title: "Understanding prediction drivers",
       paragraphs: [
         "Each prediction includes a breakdown of which inputs most pushed the estimate toward clearer or murkier water. The dashboard highlights the top three factors and lets you expand the full list.",
-        "Geographic and morphological features—especially depth, longitude, and latitude—often rank among the strongest global drivers. Chemistry sliders can move a single scenario meaningfully when you change them away from a lake’s usual profile.",
+        "Geographic and morphological features, especially depth, longitude, and latitude, often rank among the strongest global drivers. Chemistry sliders can still move one scenario when you change them from a lake’s usual profile.",
         "Driver values show direction and magnitude in meters of Secchi depth, not causal proof. They help you see what the model weighed most heavily for the scenario you built.",
       ],
     },
@@ -196,7 +195,7 @@ export const MODELING_PAGE = {
       id: "limitations",
       title: "Limitations and responsible use",
       paragraphs: [
-        "Scenario mode answers “what if” questions for adjusted water conditions. It does not forecast long-term trends across years—that question is for the Trends workspace (in development; see below).",
+        "Scenario mode answers “what if” questions for adjusted water conditions. It does not forecast long-term trends. That question belongs in the Trends workspace.",
         "Predictions depend on the quality and completeness of monitoring for each lake. Unsupported lakes, sparse chemistry, or statewide fallback profiles increase uncertainty.",
         "Saved scenarios stay in your browser only; they are not stored on a server. Use results to explore hypotheses and communicate patterns, not as a substitute for site-specific monitoring or management decisions.",
       ],
@@ -204,25 +203,78 @@ export const MODELING_PAGE = {
         "Not a permit, remediation, or regulatory decision tool.",
         "Not validated for lakes outside the Maine training distribution.",
         "Does not model every driver of clarity (e.g., weather events, invasive species, watershed land use).",
-        "Slider ranges may extend beyond values commonly observed for a lake—treat extreme settings cautiously.",
+        "Slider ranges may extend beyond values commonly observed for a lake. Treat extreme settings cautiously.",
       ],
     },
     {
       id: "research",
       title: "How we chose the served model",
       paragraphs: [
-        "The Playground model was not picked from a single offline score. We compared candidate setups on chronological splits, checked whether lakes held up under leave-one-lake-out validation, and benchmarked missing-chemistry strategies before settling on native missing-value handling without chlorophyll.",
-        "We also defined the supported-lake policy from monitoring depth and data completeness so the tool prioritizes lakes with enough history for stable estimates. The dashboard loads one validated model package at deploy time, which keeps predictions, slider definitions, and explainability aligned.",
+        "The Playground model was not picked from a single offline score. Hyperparameters and the decision to skip chlorophyll and imputation come from the 2025 experiments. The June 2026 snapshot then fixed which fields are editable versus locked lake chemistry, and kept lakes with sparse slider measurements selectable with a warning.",
+        "Leave-one-lake-out scores remain weak, so treat a single lake’s slider response as an exploration tool, not a guarantee that the same pattern would hold if that lake had never been seen. The dashboard loads one model package at deploy time so predictions, sliders, and explainability stay aligned.",
       ],
     },
     ],
   },
   trends: {
-    summary: "Clarity over time for Maine lakes.",
-    paragraphs: [
-      "The Trends workspace will explore how clarity has changed over time and what may lie ahead for lakes you follow. It is built for temporal questions—not slider scenarios.",
-      "Model selection, inputs, and performance details for trend forecasting will be documented here when the workspace launches. Until then, use the Playground to explore how water conditions affect Secchi depth for a lake you choose.",
+    summary:
+      "Observed summer clarity through 2024, plus a cautious five-year baseline outlook for lakes with enough recent history.",
+    sections: [
+      {
+        id: "trends-data",
+        title: "What the Trends workspace shows",
+        paragraphs: [
+          "Trends starts with observed summer Secchi depth for each lake. It shows the monitored record through 2024 and, when support is strong enough, a reference outlook from 2025 to 2029.",
+          "The outlook is not a scenario model. It does not change water chemistry or explain what would cause clarity to move. It answers a narrower question: if a lake’s recent level is the best guide we have, what level is reasonable to carry forward?",
+        ],
+        stats: [
+          { label: "Lakes in the Trends dataset", value: "1,084" },
+          { label: "Lakes with a five-year outlook", value: "352" },
+          { label: "Outlook years", value: "2025 to 2029" },
+        ],
+      },
+      {
+        id: "trends-method",
+        title: "How the baseline outlook is calculated",
+        paragraphs: [
+          "For each lake, the model treats the annual summer value as a noisy measurement of an underlying clarity level. It estimates that level from the full observed history, smoothing one-year jumps while updating as new observations arrive.",
+          "The local-level state-space model then carries the latest estimated level forward for five years. Because this is a persistence outlook, its point estimate does not automatically rise or fall over time.",
+          "The shaded 80% and 95% ranges come from errors in earlier backtests. They show how far a future observation has typically landed from the baseline, rather than pretending the point estimate is exact.",
+        ],
+      },
+      {
+        id: "trends-selection",
+        title: "How we checked the baseline",
+        paragraphs: [
+          "Experiment 45 asked whether any model beat simple baselines enough to publish a skillful five-year forecast. None did, including the more complex Bayesian, CatBoost, and GAM attempts.",
+          "Experiment 46 asked whether a labeled persistence outlook with empirical ranges could be shown responsibly. The local-level model had lower five-year error than a recent five-year mean on 2020 to 2024 outcomes. Its interval coverage was close to the intended 80% and 95% levels. Later simple-model checks may look slightly better on historical error, but they do not replace this baseline until a later dataset includes years after 2024.",
+        ],
+        stats: [
+          { label: "Five-year MAE on full support", value: "0.64 m" },
+          { label: "Observed within 80% range", value: "78%" },
+          { label: "Observed within 95% range", value: "95%" },
+        ],
+      },
+      {
+        id: "trends-support",
+        title: "Which lakes receive an outlook",
+        paragraphs: [
+          "A lake receives a five-year outlook only when its record has enough recent support: at least 10 annual summer observations and at least one observation in 2022, 2023, or 2024.",
+          "Lakes that do not meet this policy still keep their observed history in Trends. They are shown as history-only so the dashboard does not imply more forecast confidence than the data support.",
+        ],
+        list: [
+          "Full support: at least 10 observed summer years and a latest observation in 2022 or later.",
+          "History only: the record is still available, but the outlook is withheld when history or recency is limited.",
+        ],
+      },
+      {
+        id: "trends-limitations",
+        title: "How to read it responsibly",
+        paragraphs: [
+          "Start with the observed record and look for the latest measured value, the length of the history, and whether an outlook is available. Treat the point estimate as a baseline, not a promise.",
+          "The ranges are empirical backtest ranges, not formal guarantees. They do not include every source of future change, such as weather, watershed conditions, invasive species, or management actions. Continued monitoring remains the best way to learn what is happening in a lake.",
+        ],
+      },
     ],
-    workspaceCta: "Visit the Trends workspace",
   },
 };
