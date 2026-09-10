@@ -202,8 +202,46 @@
   }
 
   .landing-story-panel {
+    position: relative;
+    isolation: isolate;
     overflow: hidden;
     box-shadow: var(--shadow-soft), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  }
+
+  .landing-story-panel::before,
+  .landing-story-panel::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .landing-story-panel::before {
+    top: 5.5rem;
+    right: 12%;
+    width: 16rem;
+    height: 7rem;
+    border: 2px solid rgba(107, 92, 165, 0.1);
+    border-radius: 50%;
+    transform: rotate(-9deg);
+    box-shadow:
+      1.25rem 0.9rem 0 -0.1rem rgba(107, 92, 165, 0.07),
+      2.5rem 1.8rem 0 -0.2rem rgba(107, 92, 165, 0.05);
+  }
+
+  .landing-story-panel::after {
+    bottom: -2.75rem;
+    left: -2.25rem;
+    width: 12rem;
+    height: 5.5rem;
+    border: 2px solid rgba(107, 92, 165, 0.08);
+    border-radius: 50%;
+    transform: rotate(14deg);
+  }
+
+  .landing-story-panel > * {
+    position: relative;
+    z-index: 1;
   }
 
   .landing-story-intro {
@@ -273,7 +311,6 @@
 
   .landing-playground-preview {
     @apply grid h-full grid-rows-2 gap-1.5 bg-slate-100 p-1.5;
-    grid-template-rows: minmax(0, 1.3fr) minmax(0, 0.7fr);
   }
 
   .landing-trends-preview-panel,
@@ -284,8 +321,10 @@
 
   .landing-trends-preview-panel > span,
   .landing-playground-preview-panel > span {
-    @apply absolute bottom-2 right-2 z-10 rounded-full border bg-white/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-600 shadow-sm;
-    border-color: rgba(15, 23, 42, 0.1);
+    @apply absolute bottom-2 right-2 z-10 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] shadow-sm;
+    background: var(--workspace-tag-bg);
+    border-color: var(--workspace-tag-border);
+    color: var(--workspace-tag-text);
   }
 
   .landing-trends-preview-panel > img,
@@ -297,6 +336,7 @@
     object-position: center bottom;
   }
 
+  .landing-playground-preview-panel:first-child > img,
   .landing-playground-preview-panel:last-child > img {
     object-position: center bottom;
   }

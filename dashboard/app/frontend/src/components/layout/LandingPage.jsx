@@ -60,6 +60,9 @@ function SnapshotStep({
         "--workspace-border": "rgba(230, 159, 0, 0.42)",
         "--workspace-glow": "0 0 0 1px rgba(230, 159, 0, 0.14), 0 18px 42px rgba(230, 159, 0, 0.16)",
         "--workspace-glow-hover": "0 0 0 2px rgba(230, 159, 0, 0.24), 0 20px 48px rgba(230, 159, 0, 0.23)",
+        "--workspace-tag-bg": "var(--dashboard-accent)",
+        "--workspace-tag-text": "#ffffff",
+        "--workspace-tag-border": "var(--dashboard-accent)",
       }
     : {
         "--workspace-accent": "var(--accent)",
@@ -67,6 +70,9 @@ function SnapshotStep({
         "--workspace-border": "rgba(0, 90, 181, 0.34)",
         "--workspace-glow": "0 0 0 1px rgba(0, 90, 181, 0.13), 0 18px 42px rgba(0, 90, 181, 0.16)",
         "--workspace-glow-hover": "0 0 0 2px rgba(0, 90, 181, 0.22), 0 20px 48px rgba(0, 90, 181, 0.23)",
+        "--workspace-tag-bg": "var(--dashboard-accent)",
+        "--workspace-tag-text": "#ffffff",
+        "--workspace-tag-border": "var(--dashboard-accent)",
       };
 
   return (
@@ -201,9 +207,11 @@ export function LandingPage() {
                   preview={(
                     <div className="landing-playground-preview" aria-label="Wilson Lake Playground showing predicted Secchi depth and scenario changes">
                       <div className="landing-playground-preview-panel">
+                        <span>Predicted Secchi depth</span>
                         <img src="/landing/wilson-playground-prediction-strip.png" alt="" loading="lazy" />
                       </div>
                       <div className="landing-playground-preview-panel">
+                        <span>Scenario history</span>
                         <img src="/landing/wilson-playground-changes-strip.png" alt="" loading="lazy" />
                       </div>
                     </div>
